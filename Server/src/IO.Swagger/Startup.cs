@@ -81,7 +81,6 @@ namespace IO.Swagger.Server
                            Url = new Uri("https://github.com/swagger-api/swagger-codegen"),
                            Email = "u.kuehn@tu-berlin.de"
                         },
-                        TermsOfService = new Uri("")
                     });
                     c.CustomSchemaIds(type => type.FullName);
                     c.IncludeXmlComments($"{AppContext.BaseDirectory}{Path.DirectorySeparatorChar}{_hostingEnv.ApplicationName}.xml");
