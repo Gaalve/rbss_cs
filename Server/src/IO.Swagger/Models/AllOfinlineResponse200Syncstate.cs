@@ -18,7 +18,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
-namespace IO.Swagger.Models
+namespace IO.Swagger.Server.Models
 { 
     /// <summary>
     /// Information about next steps, empty when done

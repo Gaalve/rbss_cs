@@ -9,6 +9,7 @@
  */
 using System;
 using System.IO;
+using IO.Swagger.Server.Filters;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -21,10 +22,9 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using IO.Swagger.Filters;
 
 
-namespace IO.Swagger
+namespace IO.Swagger.Server
 {
     /// <summary>
     /// Startup
