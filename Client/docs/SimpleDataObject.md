@@ -1,4 +1,5 @@
-# IO.Swagger.Model.SimpleDataObject
+# Org.OpenAPITools.Model.SimpleDataObject
+
 ## Properties
 
 Name | Type | Description | Notes

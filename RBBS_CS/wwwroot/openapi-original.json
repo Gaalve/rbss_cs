@@ -1,0 +1,399 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "contact" : {
+      "email" : "u.kuehn@tu-berlin.de"
+    },
+    "description" : "This is a simple Framework to synchronize range-based sets.",
+    "license" : {
+      "name" : "Apache 2.0",
+      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "title" : "Range-Based Set Synchronization Framework",
+    "version" : "0.1.0"
+  },
+  "servers" : [ {
+    "description" : "Development server",
+    "url" : "http://localhost:7042"
+  } ],
+  "tags" : [ {
+    "description" : "endpoints for data synchronization",
+    "name" : "sync"
+  }, {
+    "description" : "endpoints for data manipulation",
+    "name" : "modify"
+  } ],
+  "paths" : {
+    "/sync" : {
+      "post" : {
+        "description" : "Checks if the fingerprint of own data matches the given fingerprint and optionally starts an asynchronous process to handle subset syncronization, if not",
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/inline_object_1",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "properties" : {
+                  "idFrom" : {
+                    "description" : "The Id from what the sync process may start",
+                    "type" : "string"
+                  },
+                  "idNext" : {
+                    "description" : "The Id latest the sync process have to work",
+                    "type" : "string"
+                  },
+                  "fpOfData" : {
+                    "description" : "The fingerprint for the data available",
+                    "type" : "string"
+                  }
+                },
+                "required" : [ "idFrom,idNext,fpOfData" ],
+                "type" : "object"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200"
+                }
+              }
+            },
+            "description" : "Returns information neighter an sync process is started or sync is done"
+          }
+        },
+        "tags" : [ "sync" ]
+      },
+      "put" : {
+        "description" : "Checks required actions for given list of sync steps",
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/inline_object",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "properties" : {
+                  "syncstate" : {
+                    "allOf" : [ {
+                      "$ref" : "#/components/schemas/SyncSteps"
+                    } ],
+                    "description" : "Information about next steps, empty when done",
+                    "type" : "object"
+                  }
+                },
+                "required" : [ "syncstate" ],
+                "type" : "object"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200"
+                }
+              }
+            },
+            "description" : "Returns information neighter an sync process is started or sync is done"
+          }
+        },
+        "tags" : [ "sync" ]
+      }
+    },
+    "/insert" : {
+      "post" : {
+        "description" : "Inserts a new data item into the data set and starts asynchronous synchronization with peer",
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/inline_object_2",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "properties" : {
+                  "data" : {
+                    "$ref" : "#/components/schemas/SimpleDataObject"
+                  }
+                },
+                "required" : [ "data" ],
+                "type" : "object"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Returns information about success by insterting data"
+          }
+        },
+        "tags" : [ "modify" ]
+      }
+    },
+    "/update" : {
+      "post" : {
+        "description" : "(Not to be implement yet) Updates an existing data item into the data set and starts asynchronous synchronization with peer",
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/inline_object_3",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "properties" : {
+                  "data" : {
+                    "$ref" : "#/components/schemas/SimpleDataObject"
+                  }
+                },
+                "required" : [ "data" ],
+                "type" : "object"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Returns information about success by updating data"
+          }
+        },
+        "tags" : [ "modify" ]
+      }
+    },
+    "/delete" : {
+      "post" : {
+        "description" : "(Not to be implement yet) Deletes an existing data item into the data set and starts asynchronous synchronization with peer",
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/inline_object_4",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "properties" : {
+                  "data" : {
+                    "$ref" : "#/components/schemas/SimpleDataObject"
+                  }
+                },
+                "required" : [ "data" ],
+                "type" : "object"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Returns information about success by deleting data"
+          }
+        },
+        "tags" : [ "modify" ]
+      }
+    }
+  },
+  "components" : {
+    "requestBodies" : {
+      "inline_object_1" : {
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/inline_object_1"
+            }
+          }
+        }
+      },
+      "inline_object" : {
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/inline_object"
+            }
+          }
+        }
+      },
+      "inline_object_4" : {
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/inline_object_4"
+            }
+          }
+        }
+      },
+      "inline_object_3" : {
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/inline_object_3"
+            }
+          }
+        }
+      },
+      "inline_object_2" : {
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/inline_object_2"
+            }
+          }
+        }
+      }
+    },
+    "schemas" : {
+      "SimpleDataObject" : {
+        "properties" : {
+          "id" : {
+            "description" : "unique identifier",
+            "type" : "string"
+          },
+          "additionalProperties" : {
+            "type" : "object"
+          }
+        },
+        "type" : "object"
+      },
+      "SyncSteps" : {
+        "properties" : {
+          "timeSent" : {
+            "description" : "timestap packet has been sent",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "steps" : {
+            "items" : {
+              "$ref" : "#/components/schemas/Step"
+            },
+            "type" : "array"
+          }
+        },
+        "type" : "object"
+      },
+      "Step" : {
+        "properties" : {
+          "id" : {
+            "description" : "internal identifier for step sended",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "currentStep" : {
+            "anyOf" : [ {
+              "$ref" : "#/components/schemas/ValidateStep"
+            }, {
+              "$ref" : "#/components/schemas/InsertStep"
+            } ]
+          }
+        },
+        "type" : "object"
+      },
+      "ValidateStep" : {
+        "properties" : {
+          "idFrom" : {
+            "type" : "string"
+          },
+          "idTo" : {
+            "type" : "string"
+          },
+          "fpOfData" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "InsertStep" : {
+        "properties" : {
+          "idFrom" : {
+            "type" : "string"
+          },
+          "idNext" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          },
+          "idTo" : {
+            "type" : "string"
+          },
+          "dataToInsert" : {
+            "description" : "should be handled, outside see page 48, or use hash in calculation => conflict have to be solved",
+            "items" : {
+              "$ref" : "#/components/schemas/SimpleDataObject"
+            },
+            "type" : "array"
+          },
+          "handled" : {
+            "description" : "both have to be update dataToInsert in their own set (\"recursion anker\")",
+            "type" : "boolean"
+          }
+        },
+        "type" : "object"
+      },
+      "inline_object" : {
+        "properties" : {
+          "syncstate" : {
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/SyncSteps"
+            } ],
+            "description" : "Information about next steps, empty when done",
+            "type" : "object"
+          }
+        },
+        "required" : [ "syncstate" ],
+        "type" : "object"
+      },
+      "inline_response_200" : {
+        "example" : {
+          "syncstate" : "{}"
+        },
+        "properties" : {
+          "syncstate" : {
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/SyncSteps"
+            } ],
+            "description" : "Information about next steps, empty when done",
+            "type" : "object"
+          }
+        },
+        "type" : "object"
+      },
+      "inline_object_1" : {
+        "properties" : {
+          "idFrom" : {
+            "description" : "The Id from what the sync process may start",
+            "type" : "string"
+          },
+          "idNext" : {
+            "description" : "The Id latest the sync process have to work",
+            "type" : "string"
+          },
+          "fpOfData" : {
+            "description" : "The fingerprint for the data available",
+            "type" : "string"
+          }
+        },
+        "required" : [ "idFrom,idNext,fpOfData" ],
+        "type" : "object"
+      },
+      "inline_object_2" : {
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/SimpleDataObject"
+          }
+        },
+        "required" : [ "data" ],
+        "type" : "object"
+      },
+      "inline_object_3" : {
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/SimpleDataObject"
+          }
+        },
+        "required" : [ "data" ],
+        "type" : "object"
+      },
+      "inline_object_4" : {
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/SimpleDataObject"
+          }
+        },
+        "required" : [ "data" ],
+        "type" : "object"
+      }
+    }
+  }
+}

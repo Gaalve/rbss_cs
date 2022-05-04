@@ -1,4 +1,4 @@
-# IO.Swagger.Api.ModifyApi
+# Org.OpenAPITools.Api.ModifyApi
 
 All URIs are relative to *http://localhost:7042*
 
@@ -8,9 +8,10 @@ Method | HTTP request | Description
 [**InsertPost**](ModifyApi.md#insertpost) | **POST** /insert | 
 [**UpdatePost**](ModifyApi.md#updatepost) | **POST** /update | 
 
+
 <a name="deletepost"></a>
 # **DeletePost**
-> void DeletePost (DeleteBody body = null)
+> void DeletePost (InlineObject4? inlineObject4 = null)
 
 
 
@@ -18,28 +19,32 @@ Method | HTTP request | Description
 
 ### Example
 ```csharp
-using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using IO.Swagger.Api;
-using IO.Swagger.Client;
-using IO.Swagger.Model;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
 
 namespace Example
 {
     public class DeletePostExample
     {
-        public void main()
+        public static void Main()
         {
-            var apiInstance = new ModifyApi();
-            var body = new DeleteBody(); // DeleteBody |  (optional) 
+            Configuration config = new Configuration();
+            config.BasePath = "http://localhost:7042";
+            var apiInstance = new ModifyApi(config);
+            var inlineObject4 = new InlineObject4?(); // InlineObject4? |  (optional) 
 
             try
             {
-                apiInstance.DeletePost(body);
+                apiInstance.DeletePost(inlineObject4);
             }
-            catch (Exception e)
+            catch (ApiException  e)
             {
                 Debug.Print("Exception when calling ModifyApi.DeletePost: " + e.Message );
+                Debug.Print("Status Code: "+ e.ErrorCode);
+                Debug.Print(e.StackTrace);
             }
         }
     }
@@ -50,7 +55,7 @@ namespace Example
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**DeleteBody**](DeleteBody.md)|  | [optional] 
+ **inlineObject4** | [**InlineObject4?**](InlineObject4?.md)|  | [optional] 
 
 ### Return type
 
@@ -65,10 +70,17 @@ No authorization required
  - **Content-Type**: application/json
  - **Accept**: Not defined
 
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Returns information about success by deleting data |  -  |
+
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 <a name="insertpost"></a>
 # **InsertPost**
-> void InsertPost (InsertBody body = null)
+> void InsertPost (InlineObject2? inlineObject2 = null)
 
 
 
@@ -76,28 +88,32 @@ Inserts a new data item into the data set and starts asynchronous synchronizatio
 
 ### Example
 ```csharp
-using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using IO.Swagger.Api;
-using IO.Swagger.Client;
-using IO.Swagger.Model;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
 
 namespace Example
 {
     public class InsertPostExample
     {
-        public void main()
+        public static void Main()
         {
-            var apiInstance = new ModifyApi();
-            var body = new InsertBody(); // InsertBody |  (optional) 
+            Configuration config = new Configuration();
+            config.BasePath = "http://localhost:7042";
+            var apiInstance = new ModifyApi(config);
+            var inlineObject2 = new InlineObject2?(); // InlineObject2? |  (optional) 
 
             try
             {
-                apiInstance.InsertPost(body);
+                apiInstance.InsertPost(inlineObject2);
             }
-            catch (Exception e)
+            catch (ApiException  e)
             {
                 Debug.Print("Exception when calling ModifyApi.InsertPost: " + e.Message );
+                Debug.Print("Status Code: "+ e.ErrorCode);
+                Debug.Print(e.StackTrace);
             }
         }
     }
@@ -108,7 +124,7 @@ namespace Example
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**InsertBody**](InsertBody.md)|  | [optional] 
+ **inlineObject2** | [**InlineObject2?**](InlineObject2?.md)|  | [optional] 
 
 ### Return type
 
@@ -123,10 +139,17 @@ No authorization required
  - **Content-Type**: application/json
  - **Accept**: Not defined
 
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Returns information about success by insterting data |  -  |
+
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 <a name="updatepost"></a>
 # **UpdatePost**
-> void UpdatePost (UpdateBody body = null)
+> void UpdatePost (InlineObject3? inlineObject3 = null)
 
 
 
@@ -134,28 +157,32 @@ No authorization required
 
 ### Example
 ```csharp
-using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using IO.Swagger.Api;
-using IO.Swagger.Client;
-using IO.Swagger.Model;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
 
 namespace Example
 {
     public class UpdatePostExample
     {
-        public void main()
+        public static void Main()
         {
-            var apiInstance = new ModifyApi();
-            var body = new UpdateBody(); // UpdateBody |  (optional) 
+            Configuration config = new Configuration();
+            config.BasePath = "http://localhost:7042";
+            var apiInstance = new ModifyApi(config);
+            var inlineObject3 = new InlineObject3?(); // InlineObject3? |  (optional) 
 
             try
             {
-                apiInstance.UpdatePost(body);
+                apiInstance.UpdatePost(inlineObject3);
             }
-            catch (Exception e)
+            catch (ApiException  e)
             {
                 Debug.Print("Exception when calling ModifyApi.UpdatePost: " + e.Message );
+                Debug.Print("Status Code: "+ e.ErrorCode);
+                Debug.Print(e.StackTrace);
             }
         }
     }
@@ -166,7 +193,7 @@ namespace Example
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**UpdateBody**](UpdateBody.md)|  | [optional] 
+ **inlineObject3** | [**InlineObject3?**](InlineObject3?.md)|  | [optional] 
 
 ### Return type
 
@@ -181,4 +208,11 @@ No authorization required
  - **Content-Type**: application/json
  - **Accept**: Not defined
 
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Returns information about success by updating data |  -  |
+
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+

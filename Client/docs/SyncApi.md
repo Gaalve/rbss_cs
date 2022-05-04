@@ -1,4 +1,4 @@
-# IO.Swagger.Api.SyncApi
+# Org.OpenAPITools.Api.SyncApi
 
 All URIs are relative to *http://localhost:7042*
 
@@ -7,9 +7,10 @@ Method | HTTP request | Description
 [**SyncPost**](SyncApi.md#syncpost) | **POST** /sync | 
 [**SyncPut**](SyncApi.md#syncput) | **PUT** /sync | 
 
+
 <a name="syncpost"></a>
 # **SyncPost**
-> InlineResponse200 SyncPost (SyncBody1 body = null)
+> InlineResponse200 SyncPost (InlineObject1? inlineObject1 = null)
 
 
 
@@ -17,29 +18,33 @@ Checks if the fingerprint of own data matches the given fingerprint and optional
 
 ### Example
 ```csharp
-using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using IO.Swagger.Api;
-using IO.Swagger.Client;
-using IO.Swagger.Model;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
 
 namespace Example
 {
     public class SyncPostExample
     {
-        public void main()
+        public static void Main()
         {
-            var apiInstance = new SyncApi();
-            var body = new SyncBody1(); // SyncBody1 |  (optional) 
+            Configuration config = new Configuration();
+            config.BasePath = "http://localhost:7042";
+            var apiInstance = new SyncApi(config);
+            var inlineObject1 = new InlineObject1?(); // InlineObject1? |  (optional) 
 
             try
             {
-                InlineResponse200 result = apiInstance.SyncPost(body);
+                InlineResponse200 result = apiInstance.SyncPost(inlineObject1);
                 Debug.WriteLine(result);
             }
-            catch (Exception e)
+            catch (ApiException  e)
             {
                 Debug.Print("Exception when calling SyncApi.SyncPost: " + e.Message );
+                Debug.Print("Status Code: "+ e.ErrorCode);
+                Debug.Print(e.StackTrace);
             }
         }
     }
@@ -50,7 +55,7 @@ namespace Example
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**SyncBody1**](SyncBody1.md)|  | [optional] 
+ **inlineObject1** | [**InlineObject1?**](InlineObject1?.md)|  | [optional] 
 
 ### Return type
 
@@ -65,10 +70,17 @@ No authorization required
  - **Content-Type**: application/json
  - **Accept**: application/json
 
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Returns information neighter an sync process is started or sync is done |  -  |
+
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 <a name="syncput"></a>
 # **SyncPut**
-> InlineResponse200 SyncPut (SyncBody body = null)
+> InlineResponse200 SyncPut (InlineObject? inlineObject = null)
 
 
 
@@ -76,29 +88,33 @@ Checks required actions for given list of sync steps
 
 ### Example
 ```csharp
-using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using IO.Swagger.Api;
-using IO.Swagger.Client;
-using IO.Swagger.Model;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
 
 namespace Example
 {
     public class SyncPutExample
     {
-        public void main()
+        public static void Main()
         {
-            var apiInstance = new SyncApi();
-            var body = new SyncBody(); // SyncBody |  (optional) 
+            Configuration config = new Configuration();
+            config.BasePath = "http://localhost:7042";
+            var apiInstance = new SyncApi(config);
+            var inlineObject = new InlineObject?(); // InlineObject? |  (optional) 
 
             try
             {
-                InlineResponse200 result = apiInstance.SyncPut(body);
+                InlineResponse200 result = apiInstance.SyncPut(inlineObject);
                 Debug.WriteLine(result);
             }
-            catch (Exception e)
+            catch (ApiException  e)
             {
                 Debug.Print("Exception when calling SyncApi.SyncPut: " + e.Message );
+                Debug.Print("Status Code: "+ e.ErrorCode);
+                Debug.Print(e.StackTrace);
             }
         }
     }
@@ -109,7 +125,7 @@ namespace Example
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**SyncBody**](SyncBody.md)|  | [optional] 
+ **inlineObject** | [**InlineObject?**](InlineObject?.md)|  | [optional] 
 
 ### Return type
 
@@ -124,4 +140,11 @@ No authorization required
  - **Content-Type**: application/json
  - **Accept**: application/json
 
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Returns information neighter an sync process is started or sync is done |  -  |
+
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+

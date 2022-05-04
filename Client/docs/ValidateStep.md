@@ -1,4 +1,5 @@
-# IO.Swagger.Model.ValidateStep
+# Org.OpenAPITools.Model.ValidateStep
+
 ## Properties
 
 Name | Type | Description | Notes
