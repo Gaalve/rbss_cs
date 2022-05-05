@@ -37,7 +37,7 @@ namespace Org.OpenAPIToolsServer.Models
         /// Gets or Sets CurrentStep
         /// </summary>
         [DataMember(Name="currentStep", EmitDefaultValue=true)]
-        public AnyOfValidateStepInsertStep CurrentStep { get; set; }
+        public OneOfValidateStepInsertStep CurrentStep { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object

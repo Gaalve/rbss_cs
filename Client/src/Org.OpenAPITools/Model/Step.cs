@@ -37,7 +37,7 @@ namespace Org.OpenAPITools.Model
         /// </summary>
         /// <param name="id">internal identifier for step sended.</param>
         /// <param name="currentStep">currentStep.</param>
-        public Step(long id = default(long), AnyOfValidateStepInsertStep currentStep = default(AnyOfValidateStepInsertStep))
+        public Step(long id = default(long), OneOfValidateStepInsertStep currentStep = default(OneOfValidateStepInsertStep))
         {
             this.Id = id;
             this.CurrentStep = currentStep;
@@ -54,7 +54,7 @@ namespace Org.OpenAPITools.Model
         /// Gets or Sets CurrentStep
         /// </summary>
         [DataMember(Name = "currentStep", EmitDefaultValue = true)]
-        public AnyOfValidateStepInsertStep CurrentStep { get; set; }
+        public OneOfValidateStepInsertStep CurrentStep { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object

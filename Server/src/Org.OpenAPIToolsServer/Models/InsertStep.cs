@@ -24,13 +24,17 @@ namespace Org.OpenAPIToolsServer.Models
     /// 
     /// </summary>
     [DataContract]
-    public class InsertStep : IEquatable<InsertStep>
+    public class InsertStep : AbstractStep, IEquatable<InsertStep>
     {
-        /// <summary>
-        /// Gets or Sets IdFrom
-        /// </summary>
-        [DataMember(Name="idFrom", EmitDefaultValue=false)]
-        public string IdFrom { get; set; }
+
+        public InsertStep(string idFrom = default(string), List<string> idNext = default(List<string>), string idTo = default(string), List<SimpleDataObject> dataToInsert = default(List<SimpleDataObject>), bool handled = default(bool))
+        {
+            this.IdFrom = idFrom;
+            this.IdNext = idNext;
+            this.IdTo = idTo;
+            this.DataToInsert = dataToInsert;
+            this.Handled = handled;
+        }
 
         /// <summary>
         /// Gets or Sets IdNext
@@ -38,11 +42,7 @@ namespace Org.OpenAPIToolsServer.Models
         [DataMember(Name="idNext", EmitDefaultValue=false)]
         public List<string> IdNext { get; set; }
 
-        /// <summary>
-        /// Gets or Sets IdTo
-        /// </summary>
-        [DataMember(Name="idTo", EmitDefaultValue=false)]
-        public string IdTo { get; set; }
+
 
         /// <summary>
         /// should be handled, outside see page 48, or use hash in calculation &#x3D;&gt; conflict have to be solved

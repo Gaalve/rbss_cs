@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace Org.OpenAPITools.Model
 {
@@ -19,26 +20,28 @@ namespace Org.OpenAPITools.Model
     /// 
     /// </summary>
     [DataContract(Name = "AnyOfValidateStepInsertStep")]
-    public partial class AnyOfValidateStepInsertStep : IEquatable<AnyOfValidateStepInsertStep>, IValidatableObject
+    public partial class OneOfValidateStepInsertStep : IEquatable<OneOfValidateStepInsertStep>, IValidatableObject
     {
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AnyOfValidateStepInsertStep" /> class.
+        /// Initializes a new instance of the <see cref="OneOfValidateStepInsertStep" /> class.
         /// </summary>
         /// <param name="step"> Validate Step </param>
-        public AnyOfValidateStepInsertStep(ValidateStep step)
+        public OneOfValidateStepInsertStep(ValidateStep step)
         {
             this.Step = step;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AnyOfValidateStepInsertStep" /> class.
+        /// Initializes a new instance of the <see cref="OneOfValidateStepInsertStep" /> class.
         /// </summary>
         /// <param name="step"> Insert Step </param>
-        public AnyOfValidateStepInsertStep(InsertStep step)
+        public OneOfValidateStepInsertStep(InsertStep step)
         {
             this.Step = step;
         }
+
+
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -74,7 +77,7 @@ namespace Org.OpenAPITools.Model
         {
             if (obj is null) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((AnyOfValidateStepInsertStep)obj);
+            return obj.GetType() == GetType() && Equals((OneOfValidateStepInsertStep)obj);
         }
 
         /// <summary>
@@ -82,7 +85,7 @@ namespace Org.OpenAPITools.Model
         /// </summary>
         /// <param name="other">Instance of Step to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(AnyOfValidateStepInsertStep other)
+        public bool Equals(OneOfValidateStepInsertStep other)
         {
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;

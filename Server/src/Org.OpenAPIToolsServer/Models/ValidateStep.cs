@@ -24,19 +24,26 @@ namespace Org.OpenAPIToolsServer.Models
     /// 
     /// </summary>
     [DataContract]
-    public class ValidateStep : IEquatable<ValidateStep>
+    public class ValidateStep : AbstractStep, IEquatable<ValidateStep>
     {
-        /// <summary>
-        /// Gets or Sets IdFrom
-        /// </summary>
-        [DataMember(Name="idFrom", EmitDefaultValue=false)]
-        public string IdFrom { get; set; }
 
-        /// <summary>
-        /// Gets or Sets IdTo
-        /// </summary>
-        [DataMember(Name="idTo", EmitDefaultValue=false)]
-        public string IdTo { get; set; }
+        public ValidateStep(string idFrom = default(string), string idTo = default(string), string fpOfData = default(string))
+        {
+            this.IdFrom = idFrom;
+            this.IdTo = idTo;
+            this.FpOfData = fpOfData;
+        }
+        // /// <summary>
+        // /// Gets or Sets IdFrom
+        // /// </summary>
+        // [DataMember(Name="idFrom", EmitDefaultValue=false)]
+        // public string IdFrom { get; set; }
+        //
+        // /// <summary>
+        // /// Gets or Sets IdTo
+        // /// </summary>
+        // [DataMember(Name="idTo", EmitDefaultValue=false)]
+        // public string IdTo { get; set; }
 
         /// <summary>
         /// Gets or Sets FpOfData

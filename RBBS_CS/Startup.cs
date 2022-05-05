@@ -95,6 +95,8 @@ namespace RBBS_CS
                     // Include DataAnnotation attributes on Controller Action parameters as OpenAPI validation rules (e.g required, pattern, ..)
                     // Use [ValidateModelState] on Actions to actually validate it in C# as well!
                     c.OperationFilter<GeneratePathParamsValidationFilter>();
+
+                    c.UseOneOfForPolymorphism();
                 });
                 services
                     .AddSwaggerGenNewtonsoftSupport();

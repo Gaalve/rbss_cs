@@ -21,6 +21,7 @@ namespace RBBS_CS.Controllers
         [ProducesResponseType(statusCode: 200, type: typeof(InlineResponse200))]
         public override IActionResult SyncPost(InlineObject1 inlineObject1)
         {
+
             throw new NotImplementedException();
         }
 
@@ -37,6 +38,9 @@ namespace RBBS_CS.Controllers
         [ProducesResponseType(statusCode: 200, type: typeof(InlineResponse200))]
         public override IActionResult SyncPut(InlineObject inlineObject)
         {
+
+            Console.WriteLine(inlineObject.ToString());
+
             throw new NotImplementedException();
         }
     }
