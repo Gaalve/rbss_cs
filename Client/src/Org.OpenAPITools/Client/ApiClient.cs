@@ -72,15 +72,7 @@ namespace Org.OpenAPITools.Client
         /// <returns>A JSON string.</returns>
         public string Serialize(object obj)
         {
-            if (obj != null && obj is Org.OpenAPITools.Model.AbstractOpenAPISchema)
-            {
-                // the object to be serialized is an oneOf/anyOf schema
-                return ((Org.OpenAPITools.Model.AbstractOpenAPISchema)obj).ToJson();
-            }
-            else
-            {
-                return JsonConvert.SerializeObject(obj, _serializerSettings);
-            }
+            return JsonConvert.SerializeObject(obj, _serializerSettings);
         }
 
         public T Deserialize<T>(IRestResponse response)
@@ -496,19 +488,7 @@ namespace Org.OpenAPITools.Client
                 response = client.Execute<T>(req);
             }
 
-            // if the response type is oneOf/anyOf, call FromJSON to deserialize the data
-            if (typeof(Org.OpenAPITools.Model.AbstractOpenAPISchema).IsAssignableFrom(typeof(T)))
-            {
-                try
-                {
-                    response.Data = (T) typeof(T).GetMethod("FromJson").Invoke(null, new object[] { response.Content });
-                }
-                catch (Exception ex)
-                {
-                    throw ex.InnerException != null ? ex.InnerException : ex;
-                }
-            }
-            else if (typeof(T).Name == "Stream") // for binary response
+           if (typeof(T).Name == "Stream") // for binary response
             {
                 response.Data = (T)(object)new MemoryStream(response.RawBytes);
             }
@@ -615,12 +595,7 @@ namespace Org.OpenAPITools.Client
                 response = await client.ExecuteAsync<T>(req, cancellationToken).ConfigureAwait(false);
             }
 
-            // if the response type is oneOf/anyOf, call FromJSON to deserialize the data
-            if (typeof(Org.OpenAPITools.Model.AbstractOpenAPISchema).IsAssignableFrom(typeof(T)))
-            {
-                response.Data = (T) typeof(T).GetMethod("FromJson").Invoke(null, new object[] { response.Content });
-            }
-            else if (typeof(T).Name == "Stream") // for binary response
+            if (typeof(T).Name == "Stream") // for binary response
             {
                 response.Data = (T)(object)new MemoryStream(response.RawBytes);
             }

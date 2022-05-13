@@ -62,8 +62,8 @@ namespace Org.OpenAPITools.Test.Api
         public void DeletePostTest()
         {
             // TODO uncomment below to test the method and replace null with proper value
-            //InlineObject4? inlineObject4 = null;
-            //instance.DeletePost(inlineObject4);
+            //SimpleDataObject? simpleDataObject = null;
+            //instance.DeletePost(simpleDataObject);
         }
 
         /// <summary>
@@ -73,8 +73,8 @@ namespace Org.OpenAPITools.Test.Api
         public void InsertPostTest()
         {
             // TODO uncomment below to test the method and replace null with proper value
-            //InlineObject2? inlineObject2 = null;
-            //instance.InsertPost(inlineObject2);
+            //SimpleDataObject? simpleDataObject = null;
+            //instance.InsertPost(simpleDataObject);
         }
 
         /// <summary>
@@ -84,8 +84,8 @@ namespace Org.OpenAPITools.Test.Api
         public void UpdatePostTest()
         {
             // TODO uncomment below to test the method and replace null with proper value
-            //InlineObject3? inlineObject3 = null;
-            //instance.UpdatePost(inlineObject3);
+            //SimpleDataObject? simpleDataObject = null;
+            //instance.UpdatePost(simpleDataObject);
         }
     }
 }

@@ -1,11 +1,9 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.CSharp.RuntimeBinder;
 
 namespace Org.OpenAPIToolsServer.Attributes
 {
@@ -56,7 +54,6 @@ namespace Org.OpenAPIToolsServer.Attributes
                     {
                         modelState.AddModelError(parameter.Name, validationAttribute.FormatErrorMessage(parameter.Name));
                     }
-                    
                 }
             }
         }

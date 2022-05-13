@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Org.OpenAPIToolsServer.Attributes;
-using Org.OpenAPIToolsServer.Models;
+using Models.RBB_CS;
 
 namespace Org.OpenAPIToolsServer.Controllers
 { 
@@ -29,26 +29,26 @@ namespace Org.OpenAPIToolsServer.Controllers
         /// 
         /// </summary>
         /// <remarks>Checks if the fingerprint of own data matches the given fingerprint and optionally starts an asynchronous process to handle subset syncronization, if not</remarks>
-        /// <param name="inlineObject1"></param>
+        /// <param name="validateStep"></param>
         /// <response code="200">Returns information neighter an sync process is started or sync is done</response>
         [HttpPost]
         [Route("/sync")]
         [Consumes("application/json")]
         [ValidateModelState]
-        [ProducesResponseType(statusCode: 200, type: typeof(InlineResponse200))]
-        public abstract IActionResult SyncPost([FromBody]InlineObject1 inlineObject1);
+        [ProducesResponseType(statusCode: 200, type: typeof(SyncState))]
+        public abstract IActionResult SyncPost([FromBody]ValidateStep validateStep);
 
         /// <summary>
         /// 
         /// </summary>
         /// <remarks>Checks required actions for given list of sync steps</remarks>
-        /// <param name="inlineObject"></param>
+        /// <param name="syncState"></param>
         /// <response code="200">Returns information neighter an sync process is started or sync is done</response>
         [HttpPut]
         [Route("/sync")]
         [Consumes("application/json")]
         [ValidateModelState]
-        [ProducesResponseType(statusCode: 200, type: typeof(InlineResponse200))]
-        public abstract IActionResult SyncPut([FromBody]InlineObject inlineObject);
+        [ProducesResponseType(statusCode: 200, type: typeof(SyncState))]
+        public abstract IActionResult SyncPut([FromBody]SyncState syncState);
     }
 }

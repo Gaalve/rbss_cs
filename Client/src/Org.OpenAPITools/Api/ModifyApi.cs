@@ -16,7 +16,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Mime;
 using Org.OpenAPITools.Client;
-using Org.OpenAPITools.Model;
+using Models.RBB_CS;
 
 namespace Org.OpenAPITools.Api
 {
@@ -34,9 +34,9 @@ namespace Org.OpenAPITools.Api
         /// (Not to be implement yet) Deletes an existing data item into the data set and starts asynchronous synchronization with peer
         /// </remarks>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject4"> (optional)</param>
+        /// <param name="simpleDataObject"> (optional)</param>
         /// <returns></returns>
-        void DeletePost(InlineObject4? inlineObject4 = default(InlineObject4?));
+        void DeletePost(SimpleDataObject? simpleDataObject = default(SimpleDataObject?));
 
         /// <summary>
         /// 
@@ -45,9 +45,9 @@ namespace Org.OpenAPITools.Api
         /// (Not to be implement yet) Deletes an existing data item into the data set and starts asynchronous synchronization with peer
         /// </remarks>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject4"> (optional)</param>
+        /// <param name="simpleDataObject"> (optional)</param>
         /// <returns>ApiResponse of Object(void)</returns>
-        ApiResponse<Object> DeletePostWithHttpInfo(InlineObject4? inlineObject4 = default(InlineObject4?));
+        ApiResponse<Object> DeletePostWithHttpInfo(SimpleDataObject? simpleDataObject = default(SimpleDataObject?));
         /// <summary>
         /// 
         /// </summary>
@@ -55,9 +55,9 @@ namespace Org.OpenAPITools.Api
         /// Inserts a new data item into the data set and starts asynchronous synchronization with peer
         /// </remarks>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject2"> (optional)</param>
+        /// <param name="simpleDataObject"> (optional)</param>
         /// <returns></returns>
-        void InsertPost(InlineObject2? inlineObject2 = default(InlineObject2?));
+        void InsertPost(SimpleDataObject? simpleDataObject = default(SimpleDataObject?));
 
         /// <summary>
         /// 
@@ -66,9 +66,9 @@ namespace Org.OpenAPITools.Api
         /// Inserts a new data item into the data set and starts asynchronous synchronization with peer
         /// </remarks>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject2"> (optional)</param>
+        /// <param name="simpleDataObject"> (optional)</param>
         /// <returns>ApiResponse of Object(void)</returns>
-        ApiResponse<Object> InsertPostWithHttpInfo(InlineObject2? inlineObject2 = default(InlineObject2?));
+        ApiResponse<Object> InsertPostWithHttpInfo(SimpleDataObject? simpleDataObject = default(SimpleDataObject?));
         /// <summary>
         /// 
         /// </summary>
@@ -76,9 +76,9 @@ namespace Org.OpenAPITools.Api
         /// (Not to be implement yet) Updates an existing data item into the data set and starts asynchronous synchronization with peer
         /// </remarks>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject3"> (optional)</param>
+        /// <param name="simpleDataObject"> (optional)</param>
         /// <returns></returns>
-        void UpdatePost(InlineObject3? inlineObject3 = default(InlineObject3?));
+        void UpdatePost(SimpleDataObject? simpleDataObject = default(SimpleDataObject?));
 
         /// <summary>
         /// 
@@ -87,9 +87,9 @@ namespace Org.OpenAPITools.Api
         /// (Not to be implement yet) Updates an existing data item into the data set and starts asynchronous synchronization with peer
         /// </remarks>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject3"> (optional)</param>
+        /// <param name="simpleDataObject"> (optional)</param>
         /// <returns>ApiResponse of Object(void)</returns>
-        ApiResponse<Object> UpdatePostWithHttpInfo(InlineObject3? inlineObject3 = default(InlineObject3?));
+        ApiResponse<Object> UpdatePostWithHttpInfo(SimpleDataObject? simpleDataObject = default(SimpleDataObject?));
         #endregion Synchronous Operations
     }
 
@@ -106,10 +106,10 @@ namespace Org.OpenAPITools.Api
         /// (Not to be implement yet) Deletes an existing data item into the data set and starts asynchronous synchronization with peer
         /// </remarks>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject4"> (optional)</param>
+        /// <param name="simpleDataObject"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of void</returns>
-        System.Threading.Tasks.Task DeletePostAsync(InlineObject4? inlineObject4 = default(InlineObject4?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task DeletePostAsync(SimpleDataObject? simpleDataObject = default(SimpleDataObject?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
         /// 
@@ -118,10 +118,10 @@ namespace Org.OpenAPITools.Api
         /// (Not to be implement yet) Deletes an existing data item into the data set and starts asynchronous synchronization with peer
         /// </remarks>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject4"> (optional)</param>
+        /// <param name="simpleDataObject"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse</returns>
-        System.Threading.Tasks.Task<ApiResponse<Object>> DeletePostWithHttpInfoAsync(InlineObject4? inlineObject4 = default(InlineObject4?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<Object>> DeletePostWithHttpInfoAsync(SimpleDataObject? simpleDataObject = default(SimpleDataObject?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
         /// <summary>
         /// 
         /// </summary>
@@ -129,10 +129,10 @@ namespace Org.OpenAPITools.Api
         /// Inserts a new data item into the data set and starts asynchronous synchronization with peer
         /// </remarks>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject2"> (optional)</param>
+        /// <param name="simpleDataObject"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of void</returns>
-        System.Threading.Tasks.Task InsertPostAsync(InlineObject2? inlineObject2 = default(InlineObject2?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task InsertPostAsync(SimpleDataObject? simpleDataObject = default(SimpleDataObject?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
         /// 
@@ -141,10 +141,10 @@ namespace Org.OpenAPITools.Api
         /// Inserts a new data item into the data set and starts asynchronous synchronization with peer
         /// </remarks>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject2"> (optional)</param>
+        /// <param name="simpleDataObject"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse</returns>
-        System.Threading.Tasks.Task<ApiResponse<Object>> InsertPostWithHttpInfoAsync(InlineObject2? inlineObject2 = default(InlineObject2?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<Object>> InsertPostWithHttpInfoAsync(SimpleDataObject? simpleDataObject = default(SimpleDataObject?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
         /// <summary>
         /// 
         /// </summary>
@@ -152,10 +152,10 @@ namespace Org.OpenAPITools.Api
         /// (Not to be implement yet) Updates an existing data item into the data set and starts asynchronous synchronization with peer
         /// </remarks>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject3"> (optional)</param>
+        /// <param name="simpleDataObject"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of void</returns>
-        System.Threading.Tasks.Task UpdatePostAsync(InlineObject3? inlineObject3 = default(InlineObject3?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task UpdatePostAsync(SimpleDataObject? simpleDataObject = default(SimpleDataObject?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
         /// 
@@ -164,10 +164,10 @@ namespace Org.OpenAPITools.Api
         /// (Not to be implement yet) Updates an existing data item into the data set and starts asynchronous synchronization with peer
         /// </remarks>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject3"> (optional)</param>
+        /// <param name="simpleDataObject"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse</returns>
-        System.Threading.Tasks.Task<ApiResponse<Object>> UpdatePostWithHttpInfoAsync(InlineObject3? inlineObject3 = default(InlineObject3?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<Object>> UpdatePostWithHttpInfoAsync(SimpleDataObject? simpleDataObject = default(SimpleDataObject?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
         #endregion Asynchronous Operations
     }
 
@@ -292,20 +292,20 @@ namespace Org.OpenAPITools.Api
         ///  (Not to be implement yet) Deletes an existing data item into the data set and starts asynchronous synchronization with peer
         /// </summary>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject4"> (optional)</param>
+        /// <param name="simpleDataObject"> (optional)</param>
         /// <returns></returns>
-        public void DeletePost(InlineObject4? inlineObject4 = default(InlineObject4?))
+        public void DeletePost(SimpleDataObject? simpleDataObject = default(SimpleDataObject?))
         {
-            DeletePostWithHttpInfo(inlineObject4);
+            DeletePostWithHttpInfo(simpleDataObject);
         }
 
         /// <summary>
         ///  (Not to be implement yet) Deletes an existing data item into the data set and starts asynchronous synchronization with peer
         /// </summary>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject4"> (optional)</param>
+        /// <param name="simpleDataObject"> (optional)</param>
         /// <returns>ApiResponse of Object(void)</returns>
-        public Org.OpenAPITools.Client.ApiResponse<Object> DeletePostWithHttpInfo(InlineObject4? inlineObject4 = default(InlineObject4?))
+        public Org.OpenAPITools.Client.ApiResponse<Object> DeletePostWithHttpInfo(SimpleDataObject? simpleDataObject = default(SimpleDataObject?))
         {
             Org.OpenAPITools.Client.RequestOptions localVarRequestOptions = new Org.OpenAPITools.Client.RequestOptions();
 
@@ -329,7 +329,7 @@ namespace Org.OpenAPITools.Api
                 localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             }
 
-            localVarRequestOptions.Data = inlineObject4;
+            localVarRequestOptions.Data = simpleDataObject;
 
 
             // make the HTTP request
@@ -350,22 +350,22 @@ namespace Org.OpenAPITools.Api
         ///  (Not to be implement yet) Deletes an existing data item into the data set and starts asynchronous synchronization with peer
         /// </summary>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject4"> (optional)</param>
+        /// <param name="simpleDataObject"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of void</returns>
-        public async System.Threading.Tasks.Task DeletePostAsync(InlineObject4? inlineObject4 = default(InlineObject4?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public async System.Threading.Tasks.Task DeletePostAsync(SimpleDataObject? simpleDataObject = default(SimpleDataObject?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            await DeletePostWithHttpInfoAsync(inlineObject4, cancellationToken).ConfigureAwait(false);
+            await DeletePostWithHttpInfoAsync(simpleDataObject, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         ///  (Not to be implement yet) Deletes an existing data item into the data set and starts asynchronous synchronization with peer
         /// </summary>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject4"> (optional)</param>
+        /// <param name="simpleDataObject"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse</returns>
-        public async System.Threading.Tasks.Task<Org.OpenAPITools.Client.ApiResponse<Object>> DeletePostWithHttpInfoAsync(InlineObject4? inlineObject4 = default(InlineObject4?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public async System.Threading.Tasks.Task<Org.OpenAPITools.Client.ApiResponse<Object>> DeletePostWithHttpInfoAsync(SimpleDataObject? simpleDataObject = default(SimpleDataObject?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
 
             Org.OpenAPITools.Client.RequestOptions localVarRequestOptions = new Org.OpenAPITools.Client.RequestOptions();
@@ -390,7 +390,7 @@ namespace Org.OpenAPITools.Api
                 localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             }
 
-            localVarRequestOptions.Data = inlineObject4;
+            localVarRequestOptions.Data = simpleDataObject;
 
 
             // make the HTTP request
@@ -412,20 +412,20 @@ namespace Org.OpenAPITools.Api
         ///  Inserts a new data item into the data set and starts asynchronous synchronization with peer
         /// </summary>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject2"> (optional)</param>
+        /// <param name="simpleDataObject"> (optional)</param>
         /// <returns></returns>
-        public void InsertPost(InlineObject2? inlineObject2 = default(InlineObject2?))
+        public void InsertPost(SimpleDataObject? simpleDataObject = default(SimpleDataObject?))
         {
-            InsertPostWithHttpInfo(inlineObject2);
+            InsertPostWithHttpInfo(simpleDataObject);
         }
 
         /// <summary>
         ///  Inserts a new data item into the data set and starts asynchronous synchronization with peer
         /// </summary>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject2"> (optional)</param>
+        /// <param name="simpleDataObject"> (optional)</param>
         /// <returns>ApiResponse of Object(void)</returns>
-        public Org.OpenAPITools.Client.ApiResponse<Object> InsertPostWithHttpInfo(InlineObject2? inlineObject2 = default(InlineObject2?))
+        public Org.OpenAPITools.Client.ApiResponse<Object> InsertPostWithHttpInfo(SimpleDataObject? simpleDataObject = default(SimpleDataObject?))
         {
             Org.OpenAPITools.Client.RequestOptions localVarRequestOptions = new Org.OpenAPITools.Client.RequestOptions();
 
@@ -449,7 +449,7 @@ namespace Org.OpenAPITools.Api
                 localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             }
 
-            localVarRequestOptions.Data = inlineObject2;
+            localVarRequestOptions.Data = simpleDataObject;
 
 
             // make the HTTP request
@@ -470,22 +470,22 @@ namespace Org.OpenAPITools.Api
         ///  Inserts a new data item into the data set and starts asynchronous synchronization with peer
         /// </summary>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject2"> (optional)</param>
+        /// <param name="simpleDataObject"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of void</returns>
-        public async System.Threading.Tasks.Task InsertPostAsync(InlineObject2? inlineObject2 = default(InlineObject2?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public async System.Threading.Tasks.Task InsertPostAsync(SimpleDataObject? simpleDataObject = default(SimpleDataObject?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            await InsertPostWithHttpInfoAsync(inlineObject2, cancellationToken).ConfigureAwait(false);
+            await InsertPostWithHttpInfoAsync(simpleDataObject, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         ///  Inserts a new data item into the data set and starts asynchronous synchronization with peer
         /// </summary>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject2"> (optional)</param>
+        /// <param name="simpleDataObject"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse</returns>
-        public async System.Threading.Tasks.Task<Org.OpenAPITools.Client.ApiResponse<Object>> InsertPostWithHttpInfoAsync(InlineObject2? inlineObject2 = default(InlineObject2?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public async System.Threading.Tasks.Task<Org.OpenAPITools.Client.ApiResponse<Object>> InsertPostWithHttpInfoAsync(SimpleDataObject? simpleDataObject = default(SimpleDataObject?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
 
             Org.OpenAPITools.Client.RequestOptions localVarRequestOptions = new Org.OpenAPITools.Client.RequestOptions();
@@ -510,7 +510,7 @@ namespace Org.OpenAPITools.Api
                 localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             }
 
-            localVarRequestOptions.Data = inlineObject2;
+            localVarRequestOptions.Data = simpleDataObject;
 
 
             // make the HTTP request
@@ -532,20 +532,20 @@ namespace Org.OpenAPITools.Api
         ///  (Not to be implement yet) Updates an existing data item into the data set and starts asynchronous synchronization with peer
         /// </summary>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject3"> (optional)</param>
+        /// <param name="simpleDataObject"> (optional)</param>
         /// <returns></returns>
-        public void UpdatePost(InlineObject3? inlineObject3 = default(InlineObject3?))
+        public void UpdatePost(SimpleDataObject? simpleDataObject = default(SimpleDataObject?))
         {
-            UpdatePostWithHttpInfo(inlineObject3);
+            UpdatePostWithHttpInfo(simpleDataObject);
         }
 
         /// <summary>
         ///  (Not to be implement yet) Updates an existing data item into the data set and starts asynchronous synchronization with peer
         /// </summary>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject3"> (optional)</param>
+        /// <param name="simpleDataObject"> (optional)</param>
         /// <returns>ApiResponse of Object(void)</returns>
-        public Org.OpenAPITools.Client.ApiResponse<Object> UpdatePostWithHttpInfo(InlineObject3? inlineObject3 = default(InlineObject3?))
+        public Org.OpenAPITools.Client.ApiResponse<Object> UpdatePostWithHttpInfo(SimpleDataObject? simpleDataObject = default(SimpleDataObject?))
         {
             Org.OpenAPITools.Client.RequestOptions localVarRequestOptions = new Org.OpenAPITools.Client.RequestOptions();
 
@@ -569,7 +569,7 @@ namespace Org.OpenAPITools.Api
                 localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             }
 
-            localVarRequestOptions.Data = inlineObject3;
+            localVarRequestOptions.Data = simpleDataObject;
 
 
             // make the HTTP request
@@ -590,22 +590,22 @@ namespace Org.OpenAPITools.Api
         ///  (Not to be implement yet) Updates an existing data item into the data set and starts asynchronous synchronization with peer
         /// </summary>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject3"> (optional)</param>
+        /// <param name="simpleDataObject"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of void</returns>
-        public async System.Threading.Tasks.Task UpdatePostAsync(InlineObject3? inlineObject3 = default(InlineObject3?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public async System.Threading.Tasks.Task UpdatePostAsync(SimpleDataObject? simpleDataObject = default(SimpleDataObject?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            await UpdatePostWithHttpInfoAsync(inlineObject3, cancellationToken).ConfigureAwait(false);
+            await UpdatePostWithHttpInfoAsync(simpleDataObject, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         ///  (Not to be implement yet) Updates an existing data item into the data set and starts asynchronous synchronization with peer
         /// </summary>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject3"> (optional)</param>
+        /// <param name="simpleDataObject"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse</returns>
-        public async System.Threading.Tasks.Task<Org.OpenAPITools.Client.ApiResponse<Object>> UpdatePostWithHttpInfoAsync(InlineObject3? inlineObject3 = default(InlineObject3?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public async System.Threading.Tasks.Task<Org.OpenAPITools.Client.ApiResponse<Object>> UpdatePostWithHttpInfoAsync(SimpleDataObject? simpleDataObject = default(SimpleDataObject?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
 
             Org.OpenAPITools.Client.RequestOptions localVarRequestOptions = new Org.OpenAPITools.Client.RequestOptions();
@@ -630,7 +630,7 @@ namespace Org.OpenAPITools.Api
                 localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             }
 
-            localVarRequestOptions.Data = inlineObject3;
+            localVarRequestOptions.Data = simpleDataObject;
 
 
             // make the HTTP request

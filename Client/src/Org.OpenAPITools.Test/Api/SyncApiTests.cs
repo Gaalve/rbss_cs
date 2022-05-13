@@ -62,9 +62,9 @@ namespace Org.OpenAPITools.Test.Api
         public void SyncPostTest()
         {
             // TODO uncomment below to test the method and replace null with proper value
-            //InlineObject1? inlineObject1 = null;
-            //var response = instance.SyncPost(inlineObject1);
-            //Assert.IsType<InlineResponse200>(response);
+            //ValidateStep? validateStep = null;
+            //var response = instance.SyncPost(validateStep);
+            //Assert.IsType<SyncState>(response);
         }
 
         /// <summary>
@@ -74,9 +74,9 @@ namespace Org.OpenAPITools.Test.Api
         public void SyncPutTest()
         {
             // TODO uncomment below to test the method and replace null with proper value
-            //InlineObject? inlineObject = null;
-            //var response = instance.SyncPut(inlineObject);
-            //Assert.IsType<InlineResponse200>(response);
+            //SyncState? syncState = null;
+            //var response = instance.SyncPut(syncState);
+            //Assert.IsType<SyncState>(response);
         }
     }
 }

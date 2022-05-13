@@ -1,22 +1,23 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DAL1.RBB_CS;
+using Microsoft.AspNetCore.Mvc;
 using Org.OpenAPIToolsServer.Controllers;
-using Org.OpenAPIToolsServer.Models;
+using Models.RBB_CS;
 
 namespace RBBS_CS.Controllers
 {
     public class ModifyApi : ModifyApiController
     {
-        public override IActionResult DeletePost(InlineObject4 inlineObject4)
+        public override IActionResult DeletePost(SimpleDataObject simpleDataObject)
         {
             throw new NotImplementedException();
         }
 
-        public override IActionResult InsertPost(InlineObject2 inlineObject2)
+        public override IActionResult InsertPost(SimpleDataObject simpleDataObject)
         {
             throw new NotImplementedException();
         }
 
-        public override IActionResult UpdatePost(InlineObject3 inlineObject3)
+        public override IActionResult UpdatePost(SimpleDataObject simpleDataObject)
         {
             throw new NotImplementedException();
         }

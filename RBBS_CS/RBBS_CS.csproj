@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Client\src\Org.OpenAPITools\Org.OpenAPITools.csproj" />
+    <ProjectReference Include="..\DAL1.RBB_CS\DAL1.RBB_CS.csproj" />
     <ProjectReference Include="..\Server\src\Org.OpenAPIToolsServer\Org.OpenAPIToolsServer.csproj" />
   </ItemGroup>
 

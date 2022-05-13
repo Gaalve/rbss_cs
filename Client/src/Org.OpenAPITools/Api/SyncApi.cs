@@ -16,7 +16,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Mime;
 using Org.OpenAPITools.Client;
-using Org.OpenAPITools.Model;
+using Models.RBB_CS;
 
 namespace Org.OpenAPITools.Api
 {
@@ -34,9 +34,9 @@ namespace Org.OpenAPITools.Api
         /// Checks if the fingerprint of own data matches the given fingerprint and optionally starts an asynchronous process to handle subset syncronization, if not
         /// </remarks>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject1"> (optional)</param>
-        /// <returns>InlineResponse200</returns>
-        InlineResponse200 SyncPost(InlineObject1? inlineObject1 = default(InlineObject1?));
+        /// <param name="validateStep"> (optional)</param>
+        /// <returns>SyncState</returns>
+        SyncState SyncPost(ValidateStep? validateStep = default(ValidateStep?));
 
         /// <summary>
         /// 
@@ -45,9 +45,9 @@ namespace Org.OpenAPITools.Api
         /// Checks if the fingerprint of own data matches the given fingerprint and optionally starts an asynchronous process to handle subset syncronization, if not
         /// </remarks>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject1"> (optional)</param>
-        /// <returns>ApiResponse of InlineResponse200</returns>
-        ApiResponse<InlineResponse200> SyncPostWithHttpInfo(InlineObject1? inlineObject1 = default(InlineObject1?));
+        /// <param name="validateStep"> (optional)</param>
+        /// <returns>ApiResponse of SyncState</returns>
+        ApiResponse<SyncState> SyncPostWithHttpInfo(ValidateStep? validateStep = default(ValidateStep?));
         /// <summary>
         /// 
         /// </summary>
@@ -55,9 +55,9 @@ namespace Org.OpenAPITools.Api
         /// Checks required actions for given list of sync steps
         /// </remarks>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject"> (optional)</param>
-        /// <returns>InlineResponse200</returns>
-        InlineResponse200 SyncPut(InlineObject? inlineObject = default(InlineObject?));
+        /// <param name="syncState"> (optional)</param>
+        /// <returns>SyncState</returns>
+        SyncState SyncPut(SyncState? syncState = default(SyncState?));
 
         /// <summary>
         /// 
@@ -66,9 +66,9 @@ namespace Org.OpenAPITools.Api
         /// Checks required actions for given list of sync steps
         /// </remarks>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject"> (optional)</param>
-        /// <returns>ApiResponse of InlineResponse200</returns>
-        ApiResponse<InlineResponse200> SyncPutWithHttpInfo(InlineObject? inlineObject = default(InlineObject?));
+        /// <param name="syncState"> (optional)</param>
+        /// <returns>ApiResponse of SyncState</returns>
+        ApiResponse<SyncState> SyncPutWithHttpInfo(SyncState? syncState = default(SyncState?));
         #endregion Synchronous Operations
     }
 
@@ -85,10 +85,10 @@ namespace Org.OpenAPITools.Api
         /// Checks if the fingerprint of own data matches the given fingerprint and optionally starts an asynchronous process to handle subset syncronization, if not
         /// </remarks>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject1"> (optional)</param>
+        /// <param name="validateStep"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of InlineResponse200</returns>
-        System.Threading.Tasks.Task<InlineResponse200> SyncPostAsync(InlineObject1? inlineObject1 = default(InlineObject1?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        /// <returns>Task of SyncState</returns>
+        System.Threading.Tasks.Task<SyncState> SyncPostAsync(ValidateStep? validateStep = default(ValidateStep?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
         /// 
@@ -97,10 +97,10 @@ namespace Org.OpenAPITools.Api
         /// Checks if the fingerprint of own data matches the given fingerprint and optionally starts an asynchronous process to handle subset syncronization, if not
         /// </remarks>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject1"> (optional)</param>
+        /// <param name="validateStep"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (InlineResponse200)</returns>
-        System.Threading.Tasks.Task<ApiResponse<InlineResponse200>> SyncPostWithHttpInfoAsync(InlineObject1? inlineObject1 = default(InlineObject1?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        /// <returns>Task of ApiResponse (SyncState)</returns>
+        System.Threading.Tasks.Task<ApiResponse<SyncState>> SyncPostWithHttpInfoAsync(ValidateStep? validateStep = default(ValidateStep?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
         /// <summary>
         /// 
         /// </summary>
@@ -108,10 +108,10 @@ namespace Org.OpenAPITools.Api
         /// Checks required actions for given list of sync steps
         /// </remarks>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject"> (optional)</param>
+        /// <param name="syncState"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of InlineResponse200</returns>
-        System.Threading.Tasks.Task<InlineResponse200> SyncPutAsync(InlineObject? inlineObject = default(InlineObject?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        /// <returns>Task of SyncState</returns>
+        System.Threading.Tasks.Task<SyncState> SyncPutAsync(SyncState? syncState = default(SyncState?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
         /// 
@@ -120,10 +120,10 @@ namespace Org.OpenAPITools.Api
         /// Checks required actions for given list of sync steps
         /// </remarks>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject"> (optional)</param>
+        /// <param name="syncState"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (InlineResponse200)</returns>
-        System.Threading.Tasks.Task<ApiResponse<InlineResponse200>> SyncPutWithHttpInfoAsync(InlineObject? inlineObject = default(InlineObject?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        /// <returns>Task of ApiResponse (SyncState)</returns>
+        System.Threading.Tasks.Task<ApiResponse<SyncState>> SyncPutWithHttpInfoAsync(SyncState? syncState = default(SyncState?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
         #endregion Asynchronous Operations
     }
 
@@ -248,11 +248,11 @@ namespace Org.OpenAPITools.Api
         ///  Checks if the fingerprint of own data matches the given fingerprint and optionally starts an asynchronous process to handle subset syncronization, if not
         /// </summary>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject1"> (optional)</param>
-        /// <returns>InlineResponse200</returns>
-        public InlineResponse200 SyncPost(InlineObject1? inlineObject1 = default(InlineObject1?))
+        /// <param name="validateStep"> (optional)</param>
+        /// <returns>SyncState</returns>
+        public SyncState SyncPost(ValidateStep? validateStep = default(ValidateStep?))
         {
-            Org.OpenAPITools.Client.ApiResponse<InlineResponse200> localVarResponse = SyncPostWithHttpInfo(inlineObject1);
+            Org.OpenAPITools.Client.ApiResponse<SyncState> localVarResponse = SyncPostWithHttpInfo(validateStep);
             return localVarResponse.Data;
         }
 
@@ -260,9 +260,9 @@ namespace Org.OpenAPITools.Api
         ///  Checks if the fingerprint of own data matches the given fingerprint and optionally starts an asynchronous process to handle subset syncronization, if not
         /// </summary>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject1"> (optional)</param>
-        /// <returns>ApiResponse of InlineResponse200</returns>
-        public Org.OpenAPITools.Client.ApiResponse<InlineResponse200> SyncPostWithHttpInfo(InlineObject1? inlineObject1 = default(InlineObject1?))
+        /// <param name="validateStep"> (optional)</param>
+        /// <returns>ApiResponse of SyncState</returns>
+        public Org.OpenAPITools.Client.ApiResponse<SyncState> SyncPostWithHttpInfo(ValidateStep? validateStep = default(ValidateStep?))
         {
             Org.OpenAPITools.Client.RequestOptions localVarRequestOptions = new Org.OpenAPITools.Client.RequestOptions();
 
@@ -287,11 +287,11 @@ namespace Org.OpenAPITools.Api
                 localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             }
 
-            localVarRequestOptions.Data = inlineObject1;
+            localVarRequestOptions.Data = validateStep;
 
 
             // make the HTTP request
-            var localVarResponse = this.Client.Post<InlineResponse200>("/sync", localVarRequestOptions, this.Configuration);
+            var localVarResponse = this.Client.Post<SyncState>("/sync", localVarRequestOptions, this.Configuration);
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("SyncPost", localVarResponse);
@@ -308,12 +308,12 @@ namespace Org.OpenAPITools.Api
         ///  Checks if the fingerprint of own data matches the given fingerprint and optionally starts an asynchronous process to handle subset syncronization, if not
         /// </summary>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject1"> (optional)</param>
+        /// <param name="validateStep"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of InlineResponse200</returns>
-        public async System.Threading.Tasks.Task<InlineResponse200> SyncPostAsync(InlineObject1? inlineObject1 = default(InlineObject1?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        /// <returns>Task of SyncState</returns>
+        public async System.Threading.Tasks.Task<SyncState> SyncPostAsync(ValidateStep? validateStep = default(ValidateStep?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            Org.OpenAPITools.Client.ApiResponse<InlineResponse200> localVarResponse = await SyncPostWithHttpInfoAsync(inlineObject1, cancellationToken).ConfigureAwait(false);
+            Org.OpenAPITools.Client.ApiResponse<SyncState> localVarResponse = await SyncPostWithHttpInfoAsync(validateStep, cancellationToken).ConfigureAwait(false);
             return localVarResponse.Data;
         }
 
@@ -321,10 +321,10 @@ namespace Org.OpenAPITools.Api
         ///  Checks if the fingerprint of own data matches the given fingerprint and optionally starts an asynchronous process to handle subset syncronization, if not
         /// </summary>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject1"> (optional)</param>
+        /// <param name="validateStep"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (InlineResponse200)</returns>
-        public async System.Threading.Tasks.Task<Org.OpenAPITools.Client.ApiResponse<InlineResponse200>> SyncPostWithHttpInfoAsync(InlineObject1? inlineObject1 = default(InlineObject1?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        /// <returns>Task of ApiResponse (SyncState)</returns>
+        public async System.Threading.Tasks.Task<Org.OpenAPITools.Client.ApiResponse<SyncState>> SyncPostWithHttpInfoAsync(ValidateStep? validateStep = default(ValidateStep?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
 
             Org.OpenAPITools.Client.RequestOptions localVarRequestOptions = new Org.OpenAPITools.Client.RequestOptions();
@@ -350,11 +350,11 @@ namespace Org.OpenAPITools.Api
                 localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             }
 
-            localVarRequestOptions.Data = inlineObject1;
+            localVarRequestOptions.Data = validateStep;
 
 
             // make the HTTP request
-            var localVarResponse = await this.AsynchronousClient.PostAsync<InlineResponse200>("/sync", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
+            var localVarResponse = await this.AsynchronousClient.PostAsync<SyncState>("/sync", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
 
             if (this.ExceptionFactory != null)
             {
@@ -372,11 +372,11 @@ namespace Org.OpenAPITools.Api
         ///  Checks required actions for given list of sync steps
         /// </summary>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject"> (optional)</param>
-        /// <returns>InlineResponse200</returns>
-        public InlineResponse200 SyncPut(InlineObject? inlineObject = default(InlineObject?))
+        /// <param name="syncState"> (optional)</param>
+        /// <returns>SyncState</returns>
+        public SyncState SyncPut(SyncState? syncState = default(SyncState?))
         {
-            Org.OpenAPITools.Client.ApiResponse<InlineResponse200> localVarResponse = SyncPutWithHttpInfo(inlineObject);
+            Org.OpenAPITools.Client.ApiResponse<SyncState> localVarResponse = SyncPutWithHttpInfo(syncState);
             return localVarResponse.Data;
         }
 
@@ -384,9 +384,9 @@ namespace Org.OpenAPITools.Api
         ///  Checks required actions for given list of sync steps
         /// </summary>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject"> (optional)</param>
-        /// <returns>ApiResponse of InlineResponse200</returns>
-        public Org.OpenAPITools.Client.ApiResponse<InlineResponse200> SyncPutWithHttpInfo(InlineObject? inlineObject = default(InlineObject?))
+        /// <param name="syncState"> (optional)</param>
+        /// <returns>ApiResponse of SyncState</returns>
+        public Org.OpenAPITools.Client.ApiResponse<SyncState> SyncPutWithHttpInfo(SyncState? syncState = default(SyncState?))
         {
             Org.OpenAPITools.Client.RequestOptions localVarRequestOptions = new Org.OpenAPITools.Client.RequestOptions();
 
@@ -411,11 +411,11 @@ namespace Org.OpenAPITools.Api
                 localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             }
 
-            localVarRequestOptions.Data = inlineObject;
+            localVarRequestOptions.Data = syncState;
 
 
             // make the HTTP request
-            var localVarResponse = this.Client.Put<InlineResponse200>("/sync", localVarRequestOptions, this.Configuration);
+            var localVarResponse = this.Client.Put<SyncState>("/sync", localVarRequestOptions, this.Configuration);
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("SyncPut", localVarResponse);
@@ -432,12 +432,12 @@ namespace Org.OpenAPITools.Api
         ///  Checks required actions for given list of sync steps
         /// </summary>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject"> (optional)</param>
+        /// <param name="syncState"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of InlineResponse200</returns>
-        public async System.Threading.Tasks.Task<InlineResponse200> SyncPutAsync(InlineObject? inlineObject = default(InlineObject?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        /// <returns>Task of SyncState</returns>
+        public async System.Threading.Tasks.Task<SyncState> SyncPutAsync(SyncState? syncState = default(SyncState?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            Org.OpenAPITools.Client.ApiResponse<InlineResponse200> localVarResponse = await SyncPutWithHttpInfoAsync(inlineObject, cancellationToken).ConfigureAwait(false);
+            Org.OpenAPITools.Client.ApiResponse<SyncState> localVarResponse = await SyncPutWithHttpInfoAsync(syncState, cancellationToken).ConfigureAwait(false);
             return localVarResponse.Data;
         }
 
@@ -445,10 +445,10 @@ namespace Org.OpenAPITools.Api
         ///  Checks required actions for given list of sync steps
         /// </summary>
         /// <exception cref="Org.OpenAPITools.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inlineObject"> (optional)</param>
+        /// <param name="syncState"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (InlineResponse200)</returns>
-        public async System.Threading.Tasks.Task<Org.OpenAPITools.Client.ApiResponse<InlineResponse200>> SyncPutWithHttpInfoAsync(InlineObject? inlineObject = default(InlineObject?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        /// <returns>Task of ApiResponse (SyncState)</returns>
+        public async System.Threading.Tasks.Task<Org.OpenAPITools.Client.ApiResponse<SyncState>> SyncPutWithHttpInfoAsync(SyncState? syncState = default(SyncState?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
 
             Org.OpenAPITools.Client.RequestOptions localVarRequestOptions = new Org.OpenAPITools.Client.RequestOptions();
@@ -474,11 +474,11 @@ namespace Org.OpenAPITools.Api
                 localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             }
 
-            localVarRequestOptions.Data = inlineObject;
+            localVarRequestOptions.Data = syncState;
 
 
             // make the HTTP request
-            var localVarResponse = await this.AsynchronousClient.PutAsync<InlineResponse200>("/sync", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
+            var localVarResponse = await this.AsynchronousClient.PutAsync<SyncState>("/sync", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
 
             if (this.ExceptionFactory != null)
             {

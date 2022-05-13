@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Org.OpenAPIToolsServer.Attributes;
-using Org.OpenAPIToolsServer.Models;
+using Models.RBB_CS;
 
 namespace Org.OpenAPIToolsServer.Controllers
 { 
@@ -29,36 +29,36 @@ namespace Org.OpenAPIToolsServer.Controllers
         /// 
         /// </summary>
         /// <remarks>(Not to be implement yet) Deletes an existing data item into the data set and starts asynchronous synchronization with peer</remarks>
-        /// <param name="inlineObject4"></param>
+        /// <param name="simpleDataObject"></param>
         /// <response code="200">Returns information about success by deleting data</response>
         [HttpPost]
         [Route("/delete")]
         [Consumes("application/json")]
         [ValidateModelState]
-        public abstract IActionResult DeletePost([FromBody]InlineObject4 inlineObject4);
+        public abstract IActionResult DeletePost([FromBody]SimpleDataObject simpleDataObject);
 
         /// <summary>
         /// 
         /// </summary>
         /// <remarks>Inserts a new data item into the data set and starts asynchronous synchronization with peer</remarks>
-        /// <param name="inlineObject2"></param>
+        /// <param name="simpleDataObject"></param>
         /// <response code="200">Returns information about success by insterting data</response>
         [HttpPost]
         [Route("/insert")]
         [Consumes("application/json")]
         [ValidateModelState]
-        public abstract IActionResult InsertPost([FromBody]InlineObject2 inlineObject2);
+        public abstract IActionResult InsertPost([FromBody]SimpleDataObject simpleDataObject);
 
         /// <summary>
         /// 
         /// </summary>
         /// <remarks>(Not to be implement yet) Updates an existing data item into the data set and starts asynchronous synchronization with peer</remarks>
-        /// <param name="inlineObject3"></param>
+        /// <param name="simpleDataObject"></param>
         /// <response code="200">Returns information about success by updating data</response>
         [HttpPost]
         [Route("/update")]
         [Consumes("application/json")]
         [ValidateModelState]
-        public abstract IActionResult UpdatePost([FromBody]InlineObject3 inlineObject3);
+        public abstract IActionResult UpdatePost([FromBody]SimpleDataObject simpleDataObject);
     }
 }

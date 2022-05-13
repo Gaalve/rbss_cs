@@ -58,12 +58,12 @@ namespace Org.OpenAPITools.Test.Model
 
 
         /// <summary>
-        /// Test the property 'Id'
+        /// Test the property 'TimeSent'
         /// </summary>
         [Fact]
-        public void IdTest()
+        public void TimeSentTest()
         {
-            // TODO unit test for the property 'Id'
+            // TODO unit test for the property 'TimeSent'
         }
         /// <summary>
         /// Test the property 'CurrentStep'

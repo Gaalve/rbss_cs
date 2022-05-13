@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
-namespace Org.OpenAPIToolsServer.Models
+namespace Models.RBB_CS
 {
     [DataContract]
     [JsonConverter(typeof(StepConverter))]
@@ -25,6 +21,7 @@ namespace Org.OpenAPIToolsServer.Models
         /// </summary>
         [DataMember(Name="idTo", EmitDefaultValue=false)]
         public string IdTo { get; set; }
+
     }
 
 
