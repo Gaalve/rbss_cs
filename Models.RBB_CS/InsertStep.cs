@@ -19,7 +19,7 @@ namespace Models.RBB_CS
     /// InsertStep
     /// </summary>
     [DataContract]
-        public partial class InsertStep :  IEquatable<InsertStep>, IValidatableObject
+        public partial class InsertStep : AbstractStep, IEquatable<InsertStep>, IValidatableObject
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="InsertStep" /> class.
@@ -37,24 +37,12 @@ namespace Models.RBB_CS
             this.DataToInsert = dataToInsert;
             this.Handled = handled;
         }
-        
-        /// <summary>
-        /// Gets or Sets IdFrom
-        /// </summary>
-        [DataMember(Name="idFrom", EmitDefaultValue=false)]
-        public string IdFrom { get; set; }
 
         /// <summary>
         /// Gets or Sets IdNext
         /// </summary>
         [DataMember(Name="idNext", EmitDefaultValue=false)]
         public List<string> IdNext { get; set; }
-
-        /// <summary>
-        /// Gets or Sets IdTo
-        /// </summary>
-        [DataMember(Name="idTo", EmitDefaultValue=false)]
-        public string IdTo { get; set; }
 
         /// <summary>
         /// should be handled, outside see page 48, or use hash in calculation &#x3D;&gt; conflict have to be solved

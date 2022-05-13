@@ -19,7 +19,7 @@ namespace Models.RBB_CS
     /// ValidateStep
     /// </summary>
     [DataContract]
-        public partial class ValidateStep :  IEquatable<ValidateStep>, IValidatableObject
+        public partial class ValidateStep : AbstractStep, IEquatable<ValidateStep>, IValidatableObject
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidateStep" /> class.
@@ -34,18 +34,6 @@ namespace Models.RBB_CS
             this.FpOfData = fpOfData;
         }
         
-        /// <summary>
-        /// Gets or Sets IdFrom
-        /// </summary>
-        [DataMember(Name="idFrom", EmitDefaultValue=false)]
-        public string IdFrom { get; set; }
-
-        /// <summary>
-        /// Gets or Sets IdTo
-        /// </summary>
-        [DataMember(Name="idTo", EmitDefaultValue=false)]
-        public string IdTo { get; set; }
-
         /// <summary>
         /// Gets or Sets FpOfData
         /// </summary>
