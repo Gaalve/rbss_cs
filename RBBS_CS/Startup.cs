@@ -118,7 +118,8 @@ namespace RBBS_CS
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
+            
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseSwagger(c =>
@@ -136,6 +137,7 @@ namespace RBBS_CS
                     // c.SwaggerEndpoint("/openapi-original.json", "Range-Based Set Synchronization Framework Original");
                 });
             app.UseRouting();
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers();

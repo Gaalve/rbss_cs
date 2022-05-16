@@ -15,7 +15,29 @@ namespace RBBS_CS
         /// <param name="args"></param>
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+            host.RunAsync();
+            string? command;
+            bool quitNow = false;
+            while(!quitNow)
+            {
+                command = Console.ReadLine();
+                var commands = command?.Split(' ');
+                switch (commands?[0])
+                {
+                    case "/help":
+                        Console.WriteLine("Use /quit to quit.");
+                        break;
+
+                    case "/quit": case "/q":
+                        quitNow = true;
+                        break;
+
+                    default:
+                        Console.WriteLine("Unknown Command " + commands?[0]);
+                        break;
+                }
+            }
         }
 
         /// <summary>
@@ -27,8 +49,9 @@ namespace RBBS_CS
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>()
-                        .UseUrls("http://0.0.0.0:7042/");
+                    webBuilder.UseStartup<Startup>();
+                    webBuilder.UseUrls("http://0.0.0.0:7042/");
+                    webBuilder.UseUrls("http://0.0.0.0:80/");
                 });
     }
 }
