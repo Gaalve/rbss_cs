@@ -13,16 +13,16 @@ public class SimpleObjectWrapper : IComparable<SimpleObjectWrapper>
         Hash = sdo.GetHashCode();
     }
 
-    public SimpleObjectWrapper(int hash)
+    public SimpleObjectWrapper(string id)
     {
-        Data = null;
-        Hash = hash;
+        Data = new SimpleDataObject(id);
+        Hash = 0;
     }
 
     public int CompareTo(SimpleObjectWrapper? other)
     {
         if (ReferenceEquals(this, other)) return 0;
         if (ReferenceEquals(null, other)) return 1;
-        return Hash.CompareTo(other.Hash);
+        return string.Compare(Data.Id, other.Data.Id, StringComparison.Ordinal);
     }
 }

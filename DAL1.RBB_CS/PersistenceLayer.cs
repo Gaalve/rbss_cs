@@ -14,11 +14,11 @@ namespace DAL1.RBB_CS
         }
 
 
-        public int get_fingerprint(int lower, int upper)
+        public int get_fingerprint(string lower, string upper)
         {
-            if (lower > upper) return 0;
+            if (string.Compare(lower, upper, StringComparison.Ordinal) > 0) return 0;
             int hash = 0;
-            if (lower == upper)
+            if (string.Compare(lower, upper, StringComparison.Ordinal) == 0)
             {
                 foreach (var v in _set)
                 {
