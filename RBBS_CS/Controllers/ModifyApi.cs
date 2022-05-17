@@ -14,7 +14,8 @@ namespace RBBS_CS.Controllers
 
         public override IActionResult InsertPost(SimpleDataObject simpleDataObject)
         {
-            throw new NotImplementedException();
+            if (PersistenceLayer.Instance.Insert(simpleDataObject)) return Ok();
+            return Conflict();
         }
 
         public override IActionResult UpdatePost(SimpleDataObject simpleDataObject)
