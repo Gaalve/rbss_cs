@@ -69,7 +69,7 @@ namespace Models.RBB_CS
             sb.Append("  IdFrom: ").Append(IdFrom).Append("\n");
             sb.Append("  IdNext: ").Append(IdNext).Append("\n");
             sb.Append("  IdTo: ").Append(IdTo).Append("\n");
-            sb.Append("  DataToInsert: ").Append(DataToInsert).Append("\n");
+            sb.Append("  DataToInsert: ").Append(string.Join( ",", DataToInsert.Select(s => s.Id))).Append("\n");
             sb.Append("  Handled: ").Append(Handled).Append("\n");
             sb.Append("}\n");
             return sb.ToString();

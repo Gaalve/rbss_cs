@@ -101,6 +101,26 @@ namespace Models.RBB_CS
                 );
         }
 
+
+        private static int GetStableHash(string str)
+        {
+            unchecked
+            {
+                int hash1 = (5381 << 16) + 5381;
+                int hash2 = hash1;
+
+                for (int i = 0; i < str.Length; i += 2)
+                {
+                    hash1 = ((hash1 << 5) + hash1) ^ str[i];
+                    if (i == str.Length - 1)
+                        break;
+                    hash2 = ((hash2 << 5) + hash2) ^ str[i + 1];
+                }
+
+                return hash1 + (hash2 * 1566083941);
+            }
+        }
+
         /// <summary>
         /// Gets the hash code
         /// </summary>
@@ -109,14 +129,18 @@ namespace Models.RBB_CS
         {
             unchecked // Overflow is fine, just wrap
             {
-                int hashCode = 41;
-                if (this.Id != null)
-                    hashCode = hashCode * 59 + this.Id.GetHashCode();
-                if (this.AdditionalProperties != null)
-                    hashCode = hashCode * 59 + this.AdditionalProperties.GetHashCode();
-                return hashCode;
+                // int hashCode = 41;
+                // if (this.Id != null)
+                //     hashCode = hashCode * 59 + this.Id.GetHashCode();
+                // // if (this.AdditionalProperties != null)
+                // //     hashCode = hashCode * 59 + this.AdditionalProperties.GetHashCode();
+                // return hashCode;
+
+                return GetStableHash(this.ToJson());
             }
         }
+
+
 
         /// <summary>
         /// To validate all properties of the instance

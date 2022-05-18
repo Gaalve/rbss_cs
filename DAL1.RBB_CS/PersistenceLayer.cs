@@ -42,31 +42,33 @@ namespace DAL1.RBB_CS
         }
 
 
-        public int get_fingerprint(string lower, string upper)
+        public int GetFingerprint(string lower, string upper)
         {
-            if (string.Compare(lower, upper, StringComparison.Ordinal) > 0) return 0;
+            //if (string.Compare(lower, upper, StringComparison.Ordinal) > 0) return 0;
             int hash = 0;
             if (string.Compare(lower, upper, StringComparison.Ordinal) == 0)
             {
                 foreach (var v in _set)
                 {
-                    hash ^= v.GetHashCode();
+                    hash ^= v.Hash;
                 }
 
                 return hash;
             }
 
-            var upperData = new SimpleObjectWrapper(upper);
+            var upperData = (string.Compare(lower, upper, StringComparison.Ordinal) > 0) ? _set.Last() : new SimpleObjectWrapper(upper);
             var subset = _set.GetViewBetween(new SimpleObjectWrapper(lower), upperData);
-
+            Console.Write("Fp[");
             foreach (var v in subset)
             {
-                if (v.Hash != upperData.Hash)
+                if (v.Data.Id != upper)
                 {
-                    hash ^= v.GetHashCode();
+                    Console.Write(v.Data.Id + "(" + v.Hash.ToString() + "),");
+                    hash ^= v.Hash;
                 }
                 
             }
+            Console.Write(") = "+hash.ToString() + "\n");
             return hash;
         }
 
@@ -79,6 +81,54 @@ namespace DAL1.RBB_CS
         public SimpleDataObject[] GetDataObjects()
         {
             return _set.Select(sel => sel.Data).ToArray();
+        }
+
+
+        private RangeSet[] SplitRange(string id)
+        {
+            var lower = new SimpleObjectWrapper(id);
+            var upper = _set.Last();
+            RangeSet[] ranges = new RangeSet[2];
+            var midId = _set.Select(s => s.Data.Id).ToArray()[(1 + _set.Count) / 2];
+            var mid = new SimpleObjectWrapper(midId);
+            var range1 = _set.GetViewBetween(lower, mid);
+            var range2 = _set.GetViewBetween(mid, upper);
+            
+            ranges[0] = new RangeSet(id, midId, GetFingerprint(id, midId).ToString(), range1.Select(s => s.Data).Where(s => s.Id != midId).ToArray());
+            ranges[1] = new RangeSet(midId, id, GetFingerprint(midId, id).ToString(), range2.Select(s => s.Data).ToArray());
+            return ranges;
+        }
+
+        public RangeSet[] SplitRange(string idFrom, string idTo)
+        {
+            if (idFrom == idTo) return SplitRange(idFrom);
+            var lower = new SimpleObjectWrapper(idFrom);
+            var upper = string.Compare(idFrom, idTo, StringComparison.Ordinal) > 0 ? _set.Last() : new SimpleObjectWrapper(idTo);
+            RangeSet[] ranges = new RangeSet[2];
+            var subset = _set.GetViewBetween(lower, upper);
+            var midId = subset.Select(s => s.Data.Id).ToArray()[(1 + subset.Count) / 2];
+            var mid = new SimpleObjectWrapper(midId);
+
+            var range1 = subset.GetViewBetween(lower, mid);
+            var range2 = subset.GetViewBetween(mid, upper);
+
+            ranges[0] = new RangeSet(idFrom, midId, GetFingerprint(idFrom, midId).ToString(), range1.Select(s => s.Data).Where(s => s.Id != midId).ToArray());
+            ranges[1] = new RangeSet(midId, idTo, GetFingerprint(midId, idTo).ToString(), range2.Select(s => s.Data).Where(s => s.Id != idTo).ToArray());
+            return ranges;
+        }
+
+        public RangeSet CreateRangeSet(string idFrom, string idTo)
+        {
+            return new RangeSet(idFrom, idTo, "null", _set.GetViewBetween(new SimpleObjectWrapper(idFrom),
+                string.Compare(idFrom, idTo, StringComparison.Ordinal) > 0 ? _set.Last() : new SimpleObjectWrapper(idTo)).Select(s => s.Data).Where(s => s.Id != idTo).ToArray());
+        }
+
+
+        public RangeSet CreateRangeSet()
+        {
+            var data = _set.First();
+
+            return new RangeSet(data.Data.Id, data.Data.Id, GetFingerprint(data.Data.Id, data.Data.Id).ToString());
         }
 
     }

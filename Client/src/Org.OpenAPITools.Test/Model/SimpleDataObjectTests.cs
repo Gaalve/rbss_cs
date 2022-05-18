@@ -16,10 +16,11 @@ using System.Linq;
 using System.IO;
 using System.Collections.Generic;
 using Org.OpenAPITools.Api;
-using Org.OpenAPITools.Model;
+using Models.RBB_CS;
 using Org.OpenAPITools.Client;
 using System.Reflection;
 using Newtonsoft.Json;
+using Xunit.Abstractions;
 
 namespace Org.OpenAPITools.Test.Model
 {
@@ -32,13 +33,16 @@ namespace Org.OpenAPITools.Test.Model
     /// </remarks>
     public class SimpleDataObjectTests : IDisposable
     {
-        // TODO uncomment below to declare an instance variable for SimpleDataObject
-        //private SimpleDataObject instance;
+        private readonly ITestOutputHelper _testOutputHelper;
 
-        public SimpleDataObjectTests()
+        // TODO uncomment below to declare an instance variable for SimpleDataObject
+        private SimpleDataObject instance;
+
+        public SimpleDataObjectTests(ITestOutputHelper testOutputHelper)
         {
+            _testOutputHelper = testOutputHelper;
             // TODO uncomment below to create an instance of SimpleDataObject
-            //instance = new SimpleDataObject();
+            instance = new SimpleDataObject("eel", "string");
         }
 
         public void Dispose()
@@ -53,7 +57,9 @@ namespace Org.OpenAPITools.Test.Model
         public void SimpleDataObjectInstanceTest()
         {
             // TODO uncomment below to test "IsType" SimpleDataObject
-            //Assert.IsType<SimpleDataObject>(instance);
+            Assert.IsType<SimpleDataObject>(instance);
+            Assert.Equal(instance.GetHashCode(), new SimpleDataObject("eel", "string").GetHashCode());
+            _testOutputHelper.WriteLine("Hash: " + instance.GetHashCode());
         }
 
 
