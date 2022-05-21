@@ -8,6 +8,16 @@ namespace RBBS_CS.Controllers
     [ApiController]
     public class DebugApi : ControllerBase
     {
+        private readonly ModifyApi _modifyApi;
+        private readonly SyncApi _syncApi;
+
+        public DebugApi(ModifyApi modifyApi, SyncApi syncApi)
+        {
+            _modifyApi = modifyApi;
+            _syncApi = syncApi;
+        }
+
+
         [HttpGet]
         [Route("/getset")]
         [Consumes("application/json")]
@@ -24,17 +34,19 @@ namespace RBBS_CS.Controllers
         [ValidateModelState]
         public async Task<IActionResult> DebugConnect(string inetAddress)
         {
-            ClientMap.Instance.PeerClient = new Client(inetAddress);
+            var remoteClient = new Client(inetAddress);
             var range = PersistenceLayer.Instance.CreateRangeSet();
-            var remoteResult = await ClientMap.Instance.PeerClient.SyncApi.SyncPostAsync(
+            var remoteResult = await remoteClient.SyncApi.SyncPostAsync(
                 new ValidateStep(range.IdFrom, range.IdTo, range.Fingerprint));
 
             while (remoteResult.Steps is { Count: > 0 })
             {
-                Client local = new Client("http://localhost:80/");
-                var localResult = await local.SyncApi.SyncPutAsync(remoteResult);
-                if (localResult.Steps.Count == 0) break;
-                remoteResult = await ClientMap.Instance.PeerClient.SyncApi.SyncPutAsync(localResult);
+                var localAction = _syncApi.SyncPut(remoteResult);
+
+                var localResult = localAction.Value;
+
+                if (localResult == null || localResult.Steps.Count == 0) break;
+                remoteResult = await remoteClient.SyncApi.SyncPutAsync(localResult);
             }
 
             return Ok();
@@ -46,23 +58,21 @@ namespace RBBS_CS.Controllers
         [ValidateModelState]
         public async Task<IActionResult> DebugCreateSet(bool isX0)
         {
-
-            Client local = new Client("http://localhost:80/");
             if (isX0)
             {
-                local.ModifyApi.InsertPost(new SimpleDataObject("bee", "string"));
-                local.ModifyApi.InsertPost(new SimpleDataObject("cat", "string"));
-                local.ModifyApi.InsertPost(new SimpleDataObject("doe", "string"));
-                local.ModifyApi.InsertPost(new SimpleDataObject("eel", "string"));
-                local.ModifyApi.InsertPost(new SimpleDataObject("fox", "string"));
-                local.ModifyApi.InsertPost(new SimpleDataObject("hog", "string"));
+                _modifyApi.InsertPost(new SimpleDataObject("bee", "string"));
+                _modifyApi.InsertPost(new SimpleDataObject("cat", "string"));
+                _modifyApi.InsertPost(new SimpleDataObject("doe", "string"));
+                _modifyApi.InsertPost(new SimpleDataObject("eel", "string"));
+                _modifyApi.InsertPost(new SimpleDataObject("fox", "string"));
+                _modifyApi.InsertPost(new SimpleDataObject("hog", "string"));
             }
             else
             {
-                local.ModifyApi.InsertPost(new SimpleDataObject("ape", "string"));
-                local.ModifyApi.InsertPost(new SimpleDataObject("eel", "string"));
-                local.ModifyApi.InsertPost(new SimpleDataObject("fox", "string"));
-                local.ModifyApi.InsertPost(new SimpleDataObject("gnu", "string"));
+                _modifyApi.InsertPost(new SimpleDataObject("ape", "string"));
+                _modifyApi.InsertPost(new SimpleDataObject("eel", "string"));
+                _modifyApi.InsertPost(new SimpleDataObject("fox", "string"));
+                _modifyApi.InsertPost(new SimpleDataObject("gnu", "string"));
             }
             
 

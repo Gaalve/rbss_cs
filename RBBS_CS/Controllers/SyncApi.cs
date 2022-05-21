@@ -65,7 +65,7 @@ namespace RBBS_CS.Controllers
             return Ok(state);
         }
 
-        public override IActionResult SyncPut(SyncState syncState)
+        public override ActionResult<SyncState> SyncPut(SyncState syncState)
         {
             Console.WriteLine("SyncPut Begin");
             if (syncState.Steps == null || syncState.Steps.Count == 0)

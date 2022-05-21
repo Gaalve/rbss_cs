@@ -67,7 +67,7 @@ namespace RBBS_CS
                         NamingStrategy = new CamelCaseNamingStrategy()
                     });
                 });
-
+            services.AddMvc().AddControllersAsServices();
             services
                 .AddSwaggerGen(c =>
                 {
