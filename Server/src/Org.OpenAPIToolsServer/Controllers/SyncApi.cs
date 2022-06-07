@@ -49,6 +49,6 @@ namespace Org.OpenAPIToolsServer.Controllers
         [Consumes("application/json")]
         [ValidateModelState]
         [ProducesResponseType(statusCode: 200, type: typeof(SyncState))]
-        public abstract ActionResult<SyncState> SyncPut([FromBody]SyncState syncState);
+        public abstract IActionResult SyncPut([FromBody]SyncState syncState);
     }
 }

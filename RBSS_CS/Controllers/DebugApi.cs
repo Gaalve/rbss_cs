@@ -1,7 +1,9 @@
 ﻿using DAL1.RBB_CS;
+using DAL1.RBSS_CS;
 using Microsoft.AspNetCore.Mvc;
 using Models.RBB_CS;
 using Org.OpenAPIToolsServer.Attributes;
+using RBSS_CS;
 
 namespace RBBS_CS.Controllers
 {
@@ -34,6 +36,7 @@ namespace RBBS_CS.Controllers
         [ValidateModelState]
         public async Task<IActionResult> DebugConnect(string inetAddress)
         {
+            Console.WriteLine("Debug Start");
             var remoteClient = new Client(inetAddress);
             var range = PersistenceLayer.Instance.CreateRangeSet();
             var remoteResult = await remoteClient.SyncApi.SyncPostAsync(
@@ -43,12 +46,36 @@ namespace RBBS_CS.Controllers
             {
                 var localAction = _syncApi.SyncPut(remoteResult);
 
-                var localResult = localAction.Value;
+                if (localAction.GetType() != typeof(OkObjectResult))
+                {
+                    Console.WriteLine("Wrong Result Type returned.");
+                    break;
+                }
 
-                if (localResult == null || localResult.Steps.Count == 0) break;
-                remoteResult = await remoteClient.SyncApi.SyncPutAsync(localResult);
+                var localResult = ((OkObjectResult)localAction).Value;
+
+                if (localResult == null)
+                {
+                    Console.WriteLine("No object attached.");
+                    break;
+                }
+
+                if (localResult.GetType() != typeof(SyncState))
+                {
+                    Console.WriteLine("Wrong object attached.");
+                    break;
+                }
+
+                var localSyncState = (SyncState)localResult;
+
+                if (localSyncState.Steps.Count == 0)
+                {
+                    break; // Sync finished
+                }
+
+                remoteResult = await remoteClient.SyncApi.SyncPutAsync(localSyncState);
             }
-
+            Console.WriteLine("Debug Finished");
             return Ok();
         }
 

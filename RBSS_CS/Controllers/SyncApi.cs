@@ -1,8 +1,10 @@
 ﻿using DAL1.RBB_CS;
+using DAL1.RBSS_CS;
 using Microsoft.AspNetCore.Mvc;
 using Org.OpenAPIToolsServer.Attributes;
 using Org.OpenAPIToolsServer.Controllers;
 using Models.RBB_CS;
+using Models.RBSS_CS;
 
 namespace RBBS_CS.Controllers
 {
@@ -41,7 +43,7 @@ namespace RBBS_CS.Controllers
 
             if (insertStep.Handled == false)
             {
-                RangeSet set = PersistenceLayer.Instance.CreateRangeSet(insertStep.IdFrom, insertStep.IdTo);
+                RangeSet set = PersistenceLayer.Instance.CreateRangeSet(insertStep.IdFrom, insertStep.IdTo, insertStep.DataToInsert);
 
                 if (set.Data != null && set.Data.Length > 0)
                 {
@@ -65,7 +67,7 @@ namespace RBBS_CS.Controllers
             return Ok(state);
         }
 
-        public override ActionResult<SyncState> SyncPut(SyncState syncState)
+        public override IActionResult SyncPut(SyncState syncState)
         {
             Console.WriteLine("SyncPut Begin");
             if (syncState.Steps == null || syncState.Steps.Count == 0)

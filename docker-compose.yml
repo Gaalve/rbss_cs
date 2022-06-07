@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  rbss_cs_initiator:
+    build:
+      context: .
+      dockerfile: RBSS_CS/Dockerfile
+    ports:
+      - "5633:80"
+    entrypoint: sh -c "cp -f settings-testing.yml settings.yml && dotnet RBSS_CS.dll"
+  rbss_cs_participant:
+    build:
+      context: .
+      dockerfile: RBSS_CS/Dockerfile
+    ports:
+      - "5634:80"
+    entrypoint: sh -c "cp -f settings-testing2.yml settings.yml && dotnet RBSS_CS.dll"

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RBBS_CS", "RBBS_CS\RBBS_CS.csproj", "{936B75DB-59A7-4093-B32C-FED21C1D5425}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RBSS_CS", "RBSS_CS\RBSS_CS.csproj", "{936B75DB-59A7-4093-B32C-FED21C1D5425}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Org.OpenAPIToolsServer", "Server\src\Org.OpenAPIToolsServer\Org.OpenAPIToolsServer.csproj", "{E1C313D8-B9D3-444E-8899-7A8379B19DEE}"
 EndProject
@@ -11,9 +11,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Org.OpenAPITools", "Client\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Org.OpenAPITools.Test", "Client\src\Org.OpenAPITools.Test\Org.OpenAPITools.Test.csproj", "{3D24F3C5-B7FB-4742-ADCB-7EE3FFCE1253}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL1.RBB_CS", "DAL1.RBB_CS\DAL1.RBB_CS.csproj", "{D516D17E-F1B6-4F18-9D2C-35860FC165B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL1.RBSS_CS", "DAL1.RBSS_CS\DAL1.RBSS_CS.csproj", "{D516D17E-F1B6-4F18-9D2C-35860FC165B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models.RBB_CS", "Models.RBB_CS\Models.RBB_CS.csproj", "{2301D567-1977-4D38-BD78-2DC8DCDF8D1E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models.RBSS_CS", "Models.RBSS_CS\Models.RBSS_CS.csproj", "{2301D567-1977-4D38-BD78-2DC8DCDF8D1E}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-integration-test", "docker-integration-test.dcproj", "{9D2A67CF-4CF6-488E-8C2C-C92F823BFA77}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.RBSS_CS", "Tests.RBSS_CS\Tests.RBSS_CS.csproj", "{5713B751-CCA3-4FF5-A42C-FE1FBD0027AE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +49,14 @@ Global
 		{2301D567-1977-4D38-BD78-2DC8DCDF8D1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2301D567-1977-4D38-BD78-2DC8DCDF8D1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2301D567-1977-4D38-BD78-2DC8DCDF8D1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D2A67CF-4CF6-488E-8C2C-C92F823BFA77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D2A67CF-4CF6-488E-8C2C-C92F823BFA77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D2A67CF-4CF6-488E-8C2C-C92F823BFA77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D2A67CF-4CF6-488E-8C2C-C92F823BFA77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5713B751-CCA3-4FF5-A42C-FE1FBD0027AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5713B751-CCA3-4FF5-A42C-FE1FBD0027AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5713B751-CCA3-4FF5-A42C-FE1FBD0027AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5713B751-CCA3-4FF5-A42C-FE1FBD0027AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

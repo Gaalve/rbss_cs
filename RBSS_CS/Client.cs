@@ -1,7 +1,7 @@
 ﻿using Org.OpenAPITools.Api;
 using Org.OpenAPITools.Client;
 
-namespace RBBS_CS;
+namespace RBSS_CS;
 
 public class Client
 {

@@ -52,7 +52,7 @@ namespace RBBS_CS
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.Configure<ServerSettings>(Configuration.GetSection(ServerSettings.Key));
             // Add framework services.
             services
                 // Don't need the full MVC stack for an API, see https://andrewlock.net/comparing-startup-between-the-asp-net-core-3-templates/
@@ -68,6 +68,7 @@ namespace RBBS_CS
                     });
                 });
             services.AddMvc().AddControllersAsServices();
+            
             services
                 .AddSwaggerGen(c =>
                 {

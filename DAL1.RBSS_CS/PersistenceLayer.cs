@@ -1,6 +1,7 @@
-﻿using Models.RBB_CS;
+﻿using DAL1.RBB_CS;
+using Models.RBB_CS;
 
-namespace DAL1.RBB_CS
+namespace DAL1.RBSS_CS
 {
     public sealed class PersistenceLayer
     {
@@ -103,10 +104,12 @@ namespace DAL1.RBB_CS
         {
             if (idFrom == idTo) return SplitRange(idFrom);
             var lower = new SimpleObjectWrapper(idFrom);
-            var upper = string.Compare(idFrom, idTo, StringComparison.Ordinal) > 0 ? _set.Last() : new SimpleObjectWrapper(idTo);
+            var lastExceeded = string.Compare(idFrom, idTo, StringComparison.Ordinal) > 0;
+            var upper = lastExceeded ? _set.Last() : new SimpleObjectWrapper(idTo);
             RangeSet[] ranges = new RangeSet[2];
             var subset = _set.GetViewBetween(lower, upper);
-            var midId = subset.Select(s => s.Data.Id).ToArray()[(1 + subset.Count) / 2];
+            var offset = subset.Last().Data.Id.Equals(upper.Data.Id) && !lastExceeded? 0 : 1;
+            var midId = subset.Count == 1 ? subset.First().Data.Id : subset.Select(s => s.Data.Id).ToArray()[(subset.Count + offset) / 2];
             var mid = new SimpleObjectWrapper(midId);
 
             var range1 = subset.GetViewBetween(lower, mid);
@@ -123,12 +126,24 @@ namespace DAL1.RBB_CS
                 string.Compare(idFrom, idTo, StringComparison.Ordinal) > 0 ? _set.Last() : new SimpleObjectWrapper(idTo)).Select(s => s.Data).Where(s => s.Id != idTo).ToArray());
         }
 
+        public RangeSet CreateRangeSet(string idFrom, string idTo, ICollection<SimpleDataObject> exclude)
+        {
+            return new RangeSet(idFrom, idTo, "null", _set.GetViewBetween(new SimpleObjectWrapper(idFrom),
+                string.Compare(idFrom, idTo, StringComparison.Ordinal) > 0 ? _set.Last() : 
+                    new SimpleObjectWrapper(idTo)).Select(s => s.Data).Where(s => s.Id != idTo && !exclude.Contains(s)).ToArray());
+        }
+
 
         public RangeSet CreateRangeSet()
         {
             var data = _set.First();
 
             return new RangeSet(data.Data.Id, data.Data.Id, GetFingerprint(data.Data.Id, data.Data.Id).ToString());
+        }
+
+        public void Clear()
+        {
+            _set.Clear();
         }
 
     }

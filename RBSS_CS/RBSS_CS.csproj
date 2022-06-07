@@ -9,6 +9,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <UserSecretsId>fbdf57a0-2750-493f-8e02-ed2936ec46d6</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerComposeProjectPath>..\docker-integration-test.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,12 +19,24 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.3.1" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.3.1" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.3.1" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.utility" Version="2.4.1" />
+    <PackageReference Include="YamlDotNet" Version="11.2.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Client\src\Org.OpenAPITools\Org.OpenAPITools.csproj" />
-    <ProjectReference Include="..\DAL1.RBB_CS\DAL1.RBB_CS.csproj" />
+    <ProjectReference Include="..\DAL1.RBSS_CS\DAL1.RBSS_CS.csproj" />
     <ProjectReference Include="..\Server\src\Org.OpenAPIToolsServer\Org.OpenAPIToolsServer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="settings-testing.yml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="settings-testing2.yml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

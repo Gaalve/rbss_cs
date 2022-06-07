@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
+using Models.RBB_CS;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
-namespace Models.RBB_CS
+namespace Models.RBSS_CS
 {
     [DataContract]
     [JsonConverter(typeof(StepConverter))]
