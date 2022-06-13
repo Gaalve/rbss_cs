@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using DAL1.RBB_CS;
 using DAL1.RBSS_CS;
-using Models.RBB_CS;
+using Models.RBSS_CS;
 using Xunit;
 
 namespace Tests.RBSS_CS
@@ -28,6 +27,9 @@ namespace Tests.RBSS_CS
             PersistenceLayer.Instance.Clear();
         }
 
+        /// <summary>
+        /// Tests case where a subset contains the last element of the range specified
+        /// </summary>
         [Fact]
         public void SplitRangesTest1()
         {
@@ -58,6 +60,9 @@ namespace Tests.RBSS_CS
 
         }
 
+        /// <summary>
+        /// Tests case where a range goes over the last element
+        /// </summary>
         [Fact]
         public void SplitRangesTest2()
         {
@@ -83,6 +88,9 @@ namespace Tests.RBSS_CS
 
         }
 
+        /// <summary>
+        /// Tests case where ranges consist only of an insert step
+        /// </summary>
         [Fact]
         public void SplitRangesTest3()
         {
@@ -103,6 +111,64 @@ namespace Tests.RBSS_CS
 
 
 
+        }
+
+        [Fact]
+        public void SplitRangesTestEmptySetFullRange()
+        {
+            var set = new SortedSet<SimpleObjectWrapper>()
+            {
+            };
+            AddAllToLayer(set);
+
+            var ranges = PersistenceLayer.Instance.SplitRange("ape", "ape");
+        }
+
+        [Fact]
+        public void SplitRangesTestEmptySetSpecific()
+        {
+            var set = new SortedSet<SimpleObjectWrapper>()
+            {
+            };
+            AddAllToLayer(set);
+
+            var ranges = PersistenceLayer.Instance.SplitRange("ape", "eel");
+        }
+
+        [Fact]
+        public void SplitRangesTestOneElementSetFullRange()
+        {
+            var set = new SortedSet<SimpleObjectWrapper>()
+            {
+                new(new SimpleDataObject("cat", "")),
+            };
+            AddAllToLayer(set);
+
+            var ranges = PersistenceLayer.Instance.SplitRange("ape", "ape");
+        }
+
+        [Fact]
+        public void SplitRangesTestOneElementSetSpecificRangeIn()
+        {
+            var set = new SortedSet<SimpleObjectWrapper>()
+            {
+                new(new SimpleDataObject("cat", "")),
+            };
+            AddAllToLayer(set);
+
+            var ranges = PersistenceLayer.Instance.SplitRange("ape", "eel");
+        }
+
+        [Fact]
+        public void SplitRangesTestOneElementSetSpecificRangeOut()
+        {
+            var set = new SortedSet<SimpleObjectWrapper>()
+            {
+                new(new SimpleDataObject("cat", "")),
+            };
+            AddAllToLayer(set);
+
+            var ranges = PersistenceLayer.Instance.SplitRange("eel", "gnu");
         }
     }
 }
