@@ -124,15 +124,26 @@ namespace DAL1.RBSS_CS
 
         public RangeSet CreateRangeSet(string idFrom, string idTo)
         {
+            if (_set.Count == 0) return new RangeSet(idFrom, idTo, "0");
+            if (idFrom == idTo)
+                return new RangeSet(idFrom, idTo, "null",
+                    _set.Select(s => s.Data).ToArray());
             return new RangeSet(idFrom, idTo, "null", _set.GetViewBetween(new SimpleObjectWrapper(idFrom),
-                string.Compare(idFrom, idTo, StringComparison.Ordinal) > 0 ? _set.Last() : new SimpleObjectWrapper(idTo)).Select(s => s.Data).Where(s => s.Id != idTo).ToArray());
+                string.Compare(idFrom, idTo, StringComparison.Ordinal) > 0 ? _set.Last() : 
+                    new SimpleObjectWrapper(idTo)).Select(s => s.Data).Where(s => s.Id != idTo).ToArray());
         }
 
         public RangeSet CreateRangeSet(string idFrom, string idTo, ICollection<SimpleDataObject> exclude)
         {
+            if (_set.Count == 0) return new RangeSet(idFrom, idTo, "0");
+            if (idFrom == idTo)
+                return new RangeSet(idFrom, idTo, "null",
+                    _set.Select(s => s.Data).Where(
+                        s => s.Id != idTo && !exclude.Contains(s)).ToArray());
             return new RangeSet(idFrom, idTo, "null", _set.GetViewBetween(new SimpleObjectWrapper(idFrom),
                 string.Compare(idFrom, idTo, StringComparison.Ordinal) > 0 ? _set.Last() : 
-                    new SimpleObjectWrapper(idTo)).Select(s => s.Data).Where(s => s.Id != idTo && !exclude.Contains(s)).ToArray());
+                    new SimpleObjectWrapper(idTo)).Select(s => s.Data).Where(
+                s => s.Id != idTo && !exclude.Contains(s)).ToArray());
         }
 
 
