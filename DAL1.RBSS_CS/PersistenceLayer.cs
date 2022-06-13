@@ -138,6 +138,7 @@ namespace DAL1.RBSS_CS
 
         public RangeSet CreateRangeSet()
         {
+            if (_set.Count == 0) return new RangeSet("", "", "0");
             var data = _set.First();
 
             return new RangeSet(data.Data.Id, data.Data.Id, GetFingerprint(data.Data.Id, data.Data.Id).ToString());

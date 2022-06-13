@@ -9,9 +9,9 @@ namespace RBSS_CS.Controllers
     public class SyncApi : SyncApiController
     {
 
-        private AbstractStep? createStep(RangeSet set)
+        private AbstractStep? createStep(RangeSet? set)
         {
-            if (set.Data == null || set.Data.Length == 0) return null;
+            if (set?.Data == null || set.Data.Length == 0) return null;
             else if (set.Data.Length == 1)
                 return new InsertStep(set.IdFrom, new List<string>(), set.IdTo, new List<SimpleDataObject>(collection: set.Data), false);
 
@@ -31,6 +31,8 @@ namespace RBSS_CS.Controllers
 
             if (step1 != null) state.Steps.Add(new Step(0, new OneOfValidateStepInsertStep(step1)));
             if (step2 != null) state.Steps.Add(new Step(0, new OneOfValidateStepInsertStep(step2)));
+            if (step1 == null && step2 == null) state.Steps.Add(new Step(0, new OneOfValidateStepInsertStep(
+                new InsertStep("", new List<string>(), "", new List<SimpleDataObject>(), false))));
         }
 
         private void HandleInsertStep(InsertStep insertStep, SyncState state)
