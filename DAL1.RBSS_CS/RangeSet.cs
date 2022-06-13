@@ -1,6 +1,6 @@
-﻿using Models.RBB_CS;
+﻿using Models.RBSS_CS;
 
-namespace DAL1.RBB_CS;
+namespace DAL1.RBSS_CS;
 
 public class RangeSet
 {

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Models.RBB_CS;
+using Models.RBSS_CS;
 using Org.OpenAPIToolsServer.Controllers;
 
-namespace RBBS_CS.Controllers
+namespace RBSS_CS.Controllers
 {
     public class PeerNetworkApi : PeerNetworkApiController
     {

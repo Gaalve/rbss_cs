@@ -11,10 +11,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using System.Text;
-using Models.RBSS_CS;
 using Newtonsoft.Json;
 
-namespace Models.RBB_CS
+namespace Models.RBSS_CS
 {
     /// <summary>
     /// ValidateStep

@@ -1,6 +1,4 @@
-﻿using RBSS_CS;
-
-namespace RBBS_CS;
+﻿namespace RBSS_CS;
 
 public sealed class ClientMap
 {

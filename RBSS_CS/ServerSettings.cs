@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-
-namespace RBBS_CS
+﻿namespace RBSS_CS
 {
     public class ServerSettings
     {

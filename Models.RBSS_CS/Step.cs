@@ -13,7 +13,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using Newtonsoft.Json;
 
-namespace Models.RBB_CS
+namespace Models.RBSS_CS
 {
     /// <summary>
     /// Step

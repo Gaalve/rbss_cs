@@ -1,11 +1,9 @@
-﻿using DAL1.RBB_CS;
-using DAL1.RBSS_CS;
+﻿using DAL1.RBSS_CS;
 using Microsoft.AspNetCore.Mvc;
-using Models.RBB_CS;
+using Models.RBSS_CS;
 using Org.OpenAPIToolsServer.Attributes;
-using RBSS_CS;
 
-namespace RBBS_CS.Controllers
+namespace RBSS_CS.Controllers
 {
     [ApiController]
     public class DebugApi : ControllerBase

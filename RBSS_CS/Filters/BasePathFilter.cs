@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace RBBS_CS.Filters
+namespace RBSS_CS.Filters
 {
     /// <summary>
     /// BasePath Document Filter sets BasePath property of OpenAPI and removes it from the individual URL paths

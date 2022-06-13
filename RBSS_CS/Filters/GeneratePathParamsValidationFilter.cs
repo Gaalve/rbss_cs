@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace RBBS_CS.Filters
+namespace RBSS_CS.Filters
 {
     /// <summary>
     /// Path Parameter Validation Rules Filter

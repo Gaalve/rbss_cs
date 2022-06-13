@@ -1,14 +1,12 @@
 ﻿using System.Reflection;
-using DAL1.RBB_CS;
 using DAL1.RBSS_CS;
 using Microsoft.AspNetCore.Mvc;
-using Models.RBB_CS;
-using RBBS_CS.Controllers;
-using RBSS_CS;
+using Models.RBSS_CS;
+using RBSS_CS.Controllers;
 using Xunit;
 using Xunit.Sdk;
 
-namespace RBBS_CS
+namespace RBSS_CS
 {
 
     public class IntegrationTest
