@@ -164,5 +164,48 @@ namespace Tests.RBSS_CS
             Assert.IsType<InsertStep>(state.Steps[0].CurrentStep.Step);
             Assert.Single(((InsertStep)state.Steps[0].CurrentStep.Step).DataToInsert);
         }
+
+
+        [Fact]
+        public void PutRequest0ElemInsertStep()
+        {
+            var setRemote = new SortedSet<SimpleObjectWrapper>()
+            {
+                new(new SimpleDataObject("cat", "")),
+            };
+            var setHost = new SortedSet<SimpleObjectWrapper>()
+            {
+
+            };
+            var range = createRangeSet(setRemote);
+            AddAllToLayer(setHost);
+
+            var result = _sync.SyncPost(new ValidateStep(range.IdFrom, range.IdTo, range.Fingerprint));
+            
+            Assert.IsType<OkObjectResult>(result);
+            Assert.NotNull(((OkObjectResult)result).Value);
+            Assert.IsType<SyncState>(((OkObjectResult)result).Value);
+            var state = (SyncState)((OkObjectResult)result).Value!;
+            Assert.False(equalFP(state));
+            Assert.NotEmpty(state.Steps);
+            Assert.Single(state.Steps);
+            Assert.IsType<InsertStep>(state.Steps[0].CurrentStep.Step);
+            Assert.Empty(((InsertStep)state.Steps[0].CurrentStep.Step).DataToInsert);
+
+
+            Dispose();
+            AddAllToLayer(setRemote);
+            result = _sync.SyncPut(state);
+
+            Assert.IsType<OkObjectResult>(result);
+            Assert.NotNull(((OkObjectResult)result).Value);
+            Assert.IsType<SyncState>(((OkObjectResult)result).Value);
+            state = (SyncState)((OkObjectResult)result).Value!;
+
+            Assert.NotEmpty(state.Steps);
+            Assert.Single(state.Steps);
+            Assert.IsType<InsertStep>(state.Steps[0].CurrentStep.Step);
+            Assert.Single(((InsertStep)state.Steps[0].CurrentStep.Step).DataToInsert);
+        }
     }
 }

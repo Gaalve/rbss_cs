@@ -30,6 +30,7 @@ namespace RBSS_CS
 
         private void Cleanup()
         {
+            _modifyApi.DeletePost(new SimpleDataObject("", ""));
             _remoteClient.ModifyApi.DeletePost(new SimpleDataObject("", ""));
         }
 
@@ -88,17 +89,16 @@ namespace RBSS_CS
             return (SyncState)localResult;
         }
 
-        private bool Synchronize()
+        private void Synchronize()
         {
             var remoteResult = InitiateSync();
             while (remoteResult.Steps is { Count: > 0 })
             {
                 var localSyncState = GetLocalResult(remoteResult);
                 Assert.NotNull(localSyncState);
-                Assert.NotEmpty(localSyncState!.Steps);
+                if (localSyncState!.Steps.Count == 0) return;
                 remoteResult = _remoteClient.SyncApi.SyncPut(localSyncState);
             }
-            return true;
         }
 
         public void Run()
@@ -355,6 +355,75 @@ namespace RBSS_CS
             remoteResult = _remoteClient.SyncApi.SyncPut(localSyncState);
             Assert.NotNull(remoteResult);
             Assert.Empty(remoteResult!.Steps);
+
+            Assert.True(SetsSynchronized());
+        }
+
+        /// <summary>
+        /// Tests for equal Fp when both peers have no elements in their respective sets
+        /// </summary>
+        [IntegrationTestMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
+        // ReSharper disable once UnusedMember.Local
+        private void Test0To0()
+        {
+            var setParticipant = new SortedSet<SimpleObjectWrapper>()
+            {
+            };
+            var setInitiator = new SortedSet<SimpleObjectWrapper>()
+            {
+            };
+            AddToRemote(setParticipant);
+            AddToHost(setInitiator);
+
+            Synchronize();
+
+            Assert.True(SetsSynchronized());
+        }
+
+        /// <summary>
+        /// Tests for equal Fp after synchronization when the participant has exactly one element in the set and the initiator has none
+        /// </summary>
+        [IntegrationTestMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
+        // ReSharper disable once UnusedMember.Local
+        private void Test0To1()
+        {
+            var setParticipant = new SortedSet<SimpleObjectWrapper>()
+            {
+                new(new SimpleDataObject("ape", "")),
+            };
+            var setInitiator = new SortedSet<SimpleObjectWrapper>()
+            {
+            };
+            AddToRemote(setParticipant);
+            AddToHost(setInitiator);
+
+            Synchronize();
+
+
+            Assert.True(SetsSynchronized());
+        }
+
+        /// <summary>
+        /// Tests for equal Fp after synchronization when the initiator has exactly one element in the set and the participant has none
+        /// </summary>
+        [IntegrationTestMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
+        // ReSharper disable once UnusedMember.Local
+        private void Test1To0()
+        {
+            var setParticipant = new SortedSet<SimpleObjectWrapper>()
+            {
+            };
+            var setInitiator = new SortedSet<SimpleObjectWrapper>()
+            {
+                new(new SimpleDataObject("ape", "")),
+            };
+            AddToRemote(setParticipant);
+            AddToHost(setInitiator);
+
+            Synchronize();
 
             Assert.True(SetsSynchronized());
         }
