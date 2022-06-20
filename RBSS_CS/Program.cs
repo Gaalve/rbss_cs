@@ -36,7 +36,7 @@ namespace RBSS_CS
                 if (debugAPI != null && syncAPI != null && modifyAPI != null)
                 {
                     var integrationTest = new IntegrationTest((DebugApi)debugAPI, (SyncApi)syncAPI, (ModifyApi)modifyAPI, 
-                        host.Services.GetService<IPersitenceLayerSingleton>()!);
+                        host.Services.GetService<IPersistenceLayerSingleton>()!);
                     integrationTest.Run();
                 }
                 
@@ -58,7 +58,7 @@ namespace RBSS_CS
                     webBuilder.ConfigureServices((services) =>
                     {
                         services.AddSingleton<ServerSettings>(serverSettings ?? new ServerSettings());
-                        services.AddSingleton<IPersitenceLayerSingleton>(PersistenceLayer<SortedSetPersistence>.Instance);
+                        services.AddSingleton<IPersistenceLayerSingleton>(PersistenceLayer<SortedSetPersistence>.Instance);
                     });
 
                     webBuilder.UseStartup<Startup>();

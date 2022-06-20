@@ -8,18 +8,18 @@ namespace RBSS_CS.Controllers
     public class ModifyApi : ModifyApiController
     {
         private readonly ServerSettings _settings;
-        private readonly IPersitenceLayerSingleton _persitenceLayer;
-        public ModifyApi(ServerSettings settings, IPersitenceLayerSingleton persitence)
+        private readonly IPersistenceLayerSingleton _persistenceLayer;
+        public ModifyApi(ServerSettings settings, IPersistenceLayerSingleton persistence)
         {
             _settings = settings;
-            _persitenceLayer = persitence;
+            _persistenceLayer = persistence;
         }
 
         public override IActionResult DeletePost(SimpleDataObject simpleDataObject)
         {
             if (_settings.TestingMode)
             {
-                _persitenceLayer.Clear();
+                _persistenceLayer.Clear();
                 return Ok();
             }
             else
@@ -30,7 +30,7 @@ namespace RBSS_CS.Controllers
 
         public override IActionResult InsertPost(SimpleDataObject simpleDataObject)
         {
-            if (_persitenceLayer.Insert(simpleDataObject)) return Ok();
+            if (_persistenceLayer.Insert(simpleDataObject)) return Ok();
             return Conflict();
         }
 

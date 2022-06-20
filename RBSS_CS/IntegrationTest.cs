@@ -19,15 +19,15 @@ namespace RBSS_CS
         private readonly SyncApi _syncApi;
         private readonly ModifyApi _modifyApi;
         private readonly Client _remoteClient;
-        private readonly IPersitenceLayerSingleton _persitenceLayer;
+        private readonly IPersistenceLayerSingleton _persistenceLayer;
 
-        public IntegrationTest(DebugApi dbgApi, SyncApi syncApi, ModifyApi modifyApi, IPersitenceLayerSingleton persitenceLayer)
+        public IntegrationTest(DebugApi dbgApi, SyncApi syncApi, ModifyApi modifyApi, IPersistenceLayerSingleton persistenceLayer)
         {
             _debugApi = dbgApi;
             _syncApi = syncApi;
             _modifyApi = modifyApi;
             _remoteClient = new Client("http://host.docker.internal:5634");
-            _persitenceLayer = persitenceLayer;
+            _persistenceLayer = persistenceLayer;
         }
 
         private void Cleanup()
@@ -54,7 +54,7 @@ namespace RBSS_CS
 
         private SyncState InitiateSync()
         {
-            var range = _persitenceLayer.CreateRangeSet();
+            var range = _persistenceLayer.CreateRangeSet();
             return _remoteClient.SyncApi.SyncPost(new ValidateStep(range.IdFrom, range.IdTo, range.Fingerprint));
         }
 

@@ -8,23 +8,23 @@ namespace Tests.RBSS_CS
 {
     public abstract class PersistenceLayerTests : IDisposable 
     {
-        private readonly IPersitenceLayerSingleton _persitenceLayer;
-        public PersistenceLayerTests(IPersitenceLayerSingleton persitenceLayer)
+        private readonly IPersistenceLayerSingleton _persistenceLayer;
+        public PersistenceLayerTests(IPersistenceLayerSingleton persistenceLayer)
         {
-            _persitenceLayer = persitenceLayer;
+            _persistenceLayer = persistenceLayer;
         }
 
         private void AddAllToLayer(SortedSet<SimpleObjectWrapper> set)
         {
             foreach (var e in set)
             {
-                _persitenceLayer.Insert(e.Data);
+                _persistenceLayer.Insert(e.Data);
             }
         }
 
         public void Dispose()
         {
-            _persitenceLayer.Clear();
+            _persistenceLayer.Clear();
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace Tests.RBSS_CS
             };
             AddAllToLayer(set);
 
-            var ranges = _persitenceLayer.SplitRange("ape", "eel");
+            var ranges = _persistenceLayer.SplitRange("ape", "eel");
             Assert.Equal(2, ranges.Length);
             Assert.NotNull(ranges[0].Data);
             Assert.Equal(2, ranges[0].Data!.Length);
@@ -75,7 +75,7 @@ namespace Tests.RBSS_CS
             };
             AddAllToLayer(set);
 
-            var ranges = _persitenceLayer.SplitRange("eel", "ape");
+            var ranges = _persistenceLayer.SplitRange("eel", "ape");
             Assert.Equal(2, ranges.Length);
             Assert.NotNull(ranges[0].Data);
             Assert.Equal(2, ranges[0].Data!.Length);
@@ -103,11 +103,11 @@ namespace Tests.RBSS_CS
             };
             AddAllToLayer(set);
 
-            var ranges = _persitenceLayer.SplitRange("ape", "cat");
+            var ranges = _persistenceLayer.SplitRange("ape", "cat");
 
-            ranges = _persitenceLayer.SplitRange("cat", "eel");
-            ranges = _persitenceLayer.SplitRange("eel", "gnu");
-            ranges = _persitenceLayer.SplitRange("gnu", "ape");
+            ranges = _persistenceLayer.SplitRange("cat", "eel");
+            ranges = _persistenceLayer.SplitRange("eel", "gnu");
+            ranges = _persistenceLayer.SplitRange("gnu", "ape");
 
 
 
@@ -121,7 +121,7 @@ namespace Tests.RBSS_CS
             };
             AddAllToLayer(set);
 
-            var ranges = _persitenceLayer.SplitRange("ape", "ape");
+            var ranges = _persistenceLayer.SplitRange("ape", "ape");
         }
 
         [Fact]
@@ -132,7 +132,7 @@ namespace Tests.RBSS_CS
             };
             AddAllToLayer(set);
 
-            var ranges = _persitenceLayer.SplitRange("ape", "eel");
+            var ranges = _persistenceLayer.SplitRange("ape", "eel");
         }
 
         [Fact]
@@ -144,7 +144,7 @@ namespace Tests.RBSS_CS
             };
             AddAllToLayer(set);
 
-            var ranges = _persitenceLayer.SplitRange("ape", "ape");
+            var ranges = _persistenceLayer.SplitRange("ape", "ape");
         }
 
         [Fact]
@@ -156,7 +156,7 @@ namespace Tests.RBSS_CS
             };
             AddAllToLayer(set);
 
-            var ranges = _persitenceLayer.SplitRange("ape", "eel");
+            var ranges = _persistenceLayer.SplitRange("ape", "eel");
         }
 
         [Fact]
@@ -168,7 +168,7 @@ namespace Tests.RBSS_CS
             };
             AddAllToLayer(set);
 
-            var ranges = _persitenceLayer.SplitRange("eel", "gnu");
+            var ranges = _persistenceLayer.SplitRange("eel", "gnu");
         }
     }
 

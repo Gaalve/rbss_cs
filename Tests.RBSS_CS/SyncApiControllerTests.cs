@@ -13,40 +13,40 @@ namespace Tests.RBSS_CS
 {
     public abstract class SyncApiControllerTests : IDisposable
     {
-        private readonly IPersitenceLayerSingleton _persitenceLayer;
+        private readonly IPersistenceLayerSingleton _persistenceLayer;
         private readonly SyncApi _sync;
         
-        public SyncApiControllerTests(IPersitenceLayerSingleton persitenceLayer)
+        public SyncApiControllerTests(IPersistenceLayerSingleton persistenceLayer)
         {
-            _persitenceLayer = persitenceLayer;
-            _sync = new SyncApi(_persitenceLayer);
+            _persistenceLayer = persistenceLayer;
+            _sync = new SyncApi(_persistenceLayer);
         }
 
         public void Dispose()
         {
-            _persitenceLayer.Clear();
+            _persistenceLayer.Clear();
         }
         private void AddAllToLayer(SortedSet<SimpleObjectWrapper> set)
         {
             foreach (var e in set)
             {
-                _persitenceLayer.Insert(e.Data);
+                _persistenceLayer.Insert(e.Data);
             }
         }
 
         private RangeSet createRangeSet(SortedSet<SimpleObjectWrapper> set)
         {
             AddAllToLayer(set);
-            var range = _persitenceLayer.CreateRangeSet();
-            _persitenceLayer.Clear();
+            var range = _persistenceLayer.CreateRangeSet();
+            _persistenceLayer.Clear();
             return range;
         }
 
         private RangeSet createRangeSet(SortedSet<SimpleObjectWrapper> set, string idFrom, string idTo)
         {
             AddAllToLayer(set);
-            var range = _persitenceLayer.CreateRangeSet(idFrom, idTo);
-            _persitenceLayer.Clear();
+            var range = _persistenceLayer.CreateRangeSet(idFrom, idTo);
+            _persistenceLayer.Clear();
             return range;
         }
 

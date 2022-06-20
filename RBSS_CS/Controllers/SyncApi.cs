@@ -8,11 +8,11 @@ namespace RBSS_CS.Controllers
     [ApiController]
     public class SyncApi : SyncApiController
     {
-        private readonly IPersitenceLayerSingleton _persitenceLayer;
+        private readonly IPersistenceLayerSingleton _persistenceLayer;
 
-        public SyncApi(IPersitenceLayerSingleton persitenceLayer)
+        public SyncApi(IPersistenceLayerSingleton persistenceLayer)
         {
-            _persitenceLayer = persitenceLayer;
+            _persistenceLayer = persistenceLayer;
         }
         private AbstractStep? createStep(RangeSet? set)
         {
@@ -26,10 +26,10 @@ namespace RBSS_CS.Controllers
         private void HandleValidateStep(ValidateStep validateStep, SyncState state)
         {
             Console.WriteLine("\tHandleValidateStep: " + validateStep.ToString());
-            var equalFp = _persitenceLayer.GetFingerprint(validateStep.IdFrom, validateStep.IdTo).ToString() ==
+            var equalFp = _persistenceLayer.GetFingerprint(validateStep.IdFrom, validateStep.IdTo).ToString() ==
                           validateStep.FpOfData;
             if (equalFp) return;
-            var ranges = _persitenceLayer.SplitRange(validateStep.IdFrom, validateStep.IdTo);
+            var ranges = _persistenceLayer.SplitRange(validateStep.IdFrom, validateStep.IdTo);
 
             var step1 = createStep(ranges[0]);
             var step2 = createStep(ranges[1]);
@@ -47,7 +47,7 @@ namespace RBSS_CS.Controllers
 
             if (insertStep.Handled == false)
             {
-                RangeSet set = _persitenceLayer.CreateRangeSet(insertStep.IdFrom, insertStep.IdTo, insertStep.DataToInsert);
+                RangeSet set = _persistenceLayer.CreateRangeSet(insertStep.IdFrom, insertStep.IdTo, insertStep.DataToInsert);
 
                 if (set.Data != null && set.Data.Length > 0)
                 {
@@ -58,7 +58,7 @@ namespace RBSS_CS.Controllers
             
             foreach (var data in insertStep.DataToInsert)
             {
-                _persitenceLayer.Insert(data);
+                _persistenceLayer.Insert(data);
             }
         }
 

@@ -2,7 +2,7 @@
 
 namespace DAL1.RBSS_CS
 {
-    public sealed class PersistenceLayer<T> : IPersitenceLayerSingleton where T : IPersistenceLayer, new()
+    public sealed class PersistenceLayer<T> : IPersistenceLayerSingleton where T : IPersistenceLayer, new()
     {
         // private static readonly Lazy<PersistenceLayer> Lazy = new(() => new PersistenceLayer());
         // public static PersistenceLayer Instance => Lazy.Value;

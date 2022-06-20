@@ -10,13 +10,13 @@ namespace RBSS_CS.Controllers
     {
         private readonly ModifyApi _modifyApi;
         private readonly SyncApi _syncApi;
-        private readonly IPersitenceLayerSingleton _persitenceLayer;
+        private readonly IPersistenceLayerSingleton _persistenceLayer;
 
-        public DebugApi(ModifyApi modifyApi, SyncApi syncApi, IPersitenceLayerSingleton persitence)
+        public DebugApi(ModifyApi modifyApi, SyncApi syncApi, IPersistenceLayerSingleton persistence)
         {
             _modifyApi = modifyApi;
             _syncApi = syncApi;
-            _persitenceLayer = persitence;
+            _persistenceLayer = persistence;
         }
 
 
@@ -27,7 +27,7 @@ namespace RBSS_CS.Controllers
         [ProducesResponseType(statusCode: 200, type: typeof(SimpleDataObject[]))]
         public IActionResult DebugGetSet()
         {
-            return Ok(_persitenceLayer.GetDataObjects());
+            return Ok(_persistenceLayer.GetDataObjects());
         }
 
         [HttpPost]
@@ -38,7 +38,7 @@ namespace RBSS_CS.Controllers
         {
             Console.WriteLine("Debug Start");
             var remoteClient = new Client(inetAddress);
-            var range = _persitenceLayer.CreateRangeSet();
+            var range = _persistenceLayer.CreateRangeSet();
             var remoteResult = await remoteClient.SyncApi.SyncPostAsync(
                 new ValidateStep(range.IdFrom, range.IdTo, range.Fingerprint));
 

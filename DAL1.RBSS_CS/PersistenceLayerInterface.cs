@@ -19,9 +19,9 @@ namespace DAL1.RBSS_CS
         public void Clear();
     }
 
-    public interface IPersitenceLayerSingleton: IPersistenceLayer
+    public interface IPersistenceLayerSingleton: IPersistenceLayer
     {
-        static IPersitenceLayerSingleton Instance { get; }
+        static IPersistenceLayerSingleton Instance { get; }
     }
 
 
