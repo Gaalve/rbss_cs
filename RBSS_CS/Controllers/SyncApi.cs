@@ -8,7 +8,12 @@ namespace RBSS_CS.Controllers
     [ApiController]
     public class SyncApi : SyncApiController
     {
+        private readonly IPersitenceLayerSingleton _persitenceLayer;
 
+        public SyncApi(IPersitenceLayerSingleton persitenceLayer)
+        {
+            _persitenceLayer = persitenceLayer;
+        }
         private AbstractStep? createStep(RangeSet? set)
         {
             if (set?.Data == null || set.Data.Length == 0) return null;
@@ -21,10 +26,10 @@ namespace RBSS_CS.Controllers
         private void HandleValidateStep(ValidateStep validateStep, SyncState state)
         {
             Console.WriteLine("\tHandleValidateStep: " + validateStep.ToString());
-            var equalFp = PersistenceLayer.Instance.GetFingerprint(validateStep.IdFrom, validateStep.IdTo).ToString() ==
+            var equalFp = _persitenceLayer.GetFingerprint(validateStep.IdFrom, validateStep.IdTo).ToString() ==
                           validateStep.FpOfData;
             if (equalFp) return;
-            var ranges = PersistenceLayer.Instance.SplitRange(validateStep.IdFrom, validateStep.IdTo);
+            var ranges = _persitenceLayer.SplitRange(validateStep.IdFrom, validateStep.IdTo);
 
             var step1 = createStep(ranges[0]);
             var step2 = createStep(ranges[1]);
@@ -42,7 +47,7 @@ namespace RBSS_CS.Controllers
 
             if (insertStep.Handled == false)
             {
-                RangeSet set = PersistenceLayer.Instance.CreateRangeSet(insertStep.IdFrom, insertStep.IdTo, insertStep.DataToInsert);
+                RangeSet set = _persitenceLayer.CreateRangeSet(insertStep.IdFrom, insertStep.IdTo, insertStep.DataToInsert);
 
                 if (set.Data != null && set.Data.Length > 0)
                 {
@@ -53,7 +58,7 @@ namespace RBSS_CS.Controllers
             
             foreach (var data in insertStep.DataToInsert)
             {
-                PersistenceLayer.Instance.Insert(data);
+                _persitenceLayer.Insert(data);
             }
         }
 

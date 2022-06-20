@@ -1,4 +1,5 @@
-﻿using RBSS_CS.Controllers;
+﻿using DAL1.RBSS_CS;
+using RBSS_CS.Controllers;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -34,7 +35,8 @@ namespace RBSS_CS
 
                 if (debugAPI != null && syncAPI != null && modifyAPI != null)
                 {
-                    var integrationTest = new IntegrationTest((DebugApi)debugAPI, (SyncApi)syncAPI, (ModifyApi)modifyAPI);
+                    var integrationTest = new IntegrationTest((DebugApi)debugAPI, (SyncApi)syncAPI, (ModifyApi)modifyAPI, 
+                        host.Services.GetService<IPersitenceLayerSingleton>()!);
                     integrationTest.Run();
                 }
                 
@@ -56,6 +58,7 @@ namespace RBSS_CS
                     webBuilder.ConfigureServices((services) =>
                     {
                         services.AddSingleton<ServerSettings>(serverSettings ?? new ServerSettings());
+                        services.AddSingleton<IPersitenceLayerSingleton>(PersistenceLayer<SortedSetPersistence>.Instance);
                     });
 
                     webBuilder.UseStartup<Startup>();

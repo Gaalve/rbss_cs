@@ -18,4 +18,11 @@ namespace DAL1.RBSS_CS
         public RangeSet CreateRangeSet();
         public void Clear();
     }
+
+    public interface IPersitenceLayerSingleton: IPersistenceLayer
+    {
+        static IPersitenceLayerSingleton Instance { get; }
+    }
+
+
 }

@@ -11,39 +11,42 @@ using Xunit;
 
 namespace Tests.RBSS_CS
 {
-    public class SyncApiControllerTests : IDisposable
+    public abstract class SyncApiControllerTests : IDisposable
     {
+        private readonly IPersitenceLayerSingleton _persitenceLayer;
         private readonly SyncApi _sync;
-        public SyncApiControllerTests()
+        
+        public SyncApiControllerTests(IPersitenceLayerSingleton persitenceLayer)
         {
-            _sync = new SyncApi();
+            _persitenceLayer = persitenceLayer;
+            _sync = new SyncApi(_persitenceLayer);
         }
 
         public void Dispose()
         {
-            PersistenceLayer.Instance.Clear();
+            _persitenceLayer.Clear();
         }
         private void AddAllToLayer(SortedSet<SimpleObjectWrapper> set)
         {
             foreach (var e in set)
             {
-                PersistenceLayer.Instance.Insert(e.Data);
+                _persitenceLayer.Insert(e.Data);
             }
         }
 
         private RangeSet createRangeSet(SortedSet<SimpleObjectWrapper> set)
         {
             AddAllToLayer(set);
-            var range = PersistenceLayer.Instance.CreateRangeSet();
-            PersistenceLayer.Instance.Clear();
+            var range = _persitenceLayer.CreateRangeSet();
+            _persitenceLayer.Clear();
             return range;
         }
 
         private RangeSet createRangeSet(SortedSet<SimpleObjectWrapper> set, string idFrom, string idTo)
         {
             AddAllToLayer(set);
-            var range = PersistenceLayer.Instance.CreateRangeSet(idFrom, idTo);
-            PersistenceLayer.Instance.Clear();
+            var range = _persitenceLayer.CreateRangeSet(idFrom, idTo);
+            _persitenceLayer.Clear();
             return range;
         }
 
@@ -206,6 +209,13 @@ namespace Tests.RBSS_CS
             Assert.Single(state.Steps);
             Assert.IsType<InsertStep>(state.Steps[0].CurrentStep.Step);
             Assert.Single(((InsertStep)state.Steps[0].CurrentStep.Step).DataToInsert);
+        }
+    }
+
+    public class SortedSetSyncControllerTests : PersistenceLayerTests
+    {
+        public SortedSetSyncControllerTests(): base(PersistenceLayer<SortedSetPersistence>.Instance)
+        {
         }
     }
 }
