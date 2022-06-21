@@ -1,28 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DAL1.RBSS_CS
+﻿namespace DAL1.RBSS_CS
 {
     
 
     
     
-    public class RedBlackTree<T> where T : IComparable<T>
+    public class RedBlackTree<T> where T : PrecalculatedHash, IComparable<T>
     {
-        enum NodeColor
+        private enum NodeColor
         {
             Black,
             Red
         }
-        enum Direction
+
+        private enum Direction
         {
             Left,
             Right
         }
-        private class TreeNode<T> where T : IComparable<T>
+        private class TreeNode<T> where T : PrecalculatedHash, IComparable<T>
         {
             public TreeNode<T>? Parent;
             public TreeNode<T>? LeftChild;
@@ -43,9 +38,9 @@ namespace DAL1.RBSS_CS
 
         }
 
-        private TreeNode<T>? root;
+        private TreeNode<T>? _root;
 
-        private TreeNode<T> getMaximum(TreeNode<T> node)
+        private TreeNode<T> GetMaximum(TreeNode<T> node)
         {
             while (node.RightChild != null)
             {
@@ -55,7 +50,7 @@ namespace DAL1.RBSS_CS
             return node;
         }
 
-        private TreeNode<T> getMinimum(TreeNode<T> node)
+        private TreeNode<T> GetMinimum(TreeNode<T> node)
         {
             while (node.LeftChild != null)
             {
@@ -65,9 +60,9 @@ namespace DAL1.RBSS_CS
             return node;
         }
 
-        private TreeNode<T>? getSuccessor(TreeNode<T> node)
+        private TreeNode<T>? GetSuccessor(TreeNode<T> node)
         {
-            if (node.RightChild != null) return getMinimum(node.RightChild);
+            if (node.RightChild != null) return GetMinimum(node.RightChild);
             var parent = node.Parent;
             while (parent != null && node == parent.RightChild)
             {
@@ -78,9 +73,9 @@ namespace DAL1.RBSS_CS
             return parent;
         }
 
-        private TreeNode<T>? getPredecessor(TreeNode<T> node)
+        private TreeNode<T>? GetPredecessor(TreeNode<T> node)
         {
-            if (node.LeftChild != null) return getMaximum(node.LeftChild);
+            if (node.LeftChild != null) return GetMaximum(node.LeftChild);
             var parent = node.Parent;
             while (parent != null && node == parent.LeftChild)
             {
@@ -91,57 +86,57 @@ namespace DAL1.RBSS_CS
             return parent;
         }
 
-        private TreeNode<T> RotateRootLeft(TreeNode<T> node)
+        private TreeNode<T> RotateRootLeft(TreeNode<T> parent)
         {
-            var parent = node.Parent;
-            var nextRoot = node.RightChild;
-            var nextChild = node.LeftChild;
-            node.RightChild = nextChild;
-            if (nextChild != null) nextChild.Parent = node;
-            nextRoot!.LeftChild = node;
-            node.Parent = nextRoot;
-            nextRoot.Parent = parent;
-            if (parent != null)
+            var grandParent = parent.Parent;
+            var sibling = parent.RightChild;
+            var nextChild = sibling!.LeftChild;
+            parent.RightChild = nextChild;
+            if (nextChild != null) nextChild.Parent = parent;
+            sibling.LeftChild = parent;
+            parent.Parent = sibling;
+            sibling.Parent = grandParent;
+            if (grandParent != null)
             {
-                if (node == parent.RightChild) parent.RightChild = nextRoot;
-                else parent.LeftChild = nextRoot;
+                if (parent == grandParent.RightChild) grandParent.RightChild = sibling;
+                else grandParent.LeftChild = sibling;
             }
             else
             {
-                root = nextRoot;
+                _root = sibling;
             }
-            return nextRoot;
+            return sibling;
         }
 
-        private TreeNode<T> RotateRootRight(TreeNode<T> node)
+        private TreeNode<T> RotateRootRight(TreeNode<T> parent)
         {
-            var parent = node.Parent;
-            var nextRoot = node.LeftChild;
-            var nextChild = node.RightChild;
-            node.LeftChild = nextChild;
-            if (nextChild != null) nextChild.Parent = node;
-            nextRoot!.RightChild = node;
-            node.Parent = nextRoot;
-            nextRoot.Parent = parent;
-            if (parent != null)
+            var grandParent = parent.Parent;
+            var sibling = parent.LeftChild;
+            var nextChild = sibling!.RightChild;
+            parent.LeftChild = nextChild;
+            if (nextChild != null) nextChild.Parent = parent;
+            sibling.RightChild = parent;
+            parent.Parent = sibling;
+            sibling.Parent = grandParent;
+            if (grandParent != null)
             {
-                if (node == parent.RightChild) parent.RightChild = nextRoot;
-                else parent.LeftChild = nextRoot;
+                if (parent == grandParent.RightChild) grandParent.RightChild = sibling;
+                else grandParent.LeftChild = sibling;
             }
             else
             {
-                root = nextRoot;
+                _root = sibling;
             }
-            return nextRoot;
+            return sibling;
         }
 
 
-        private Direction getOpposite(Direction dir)
+        private static Direction GetOpposite(Direction dir)
         {
             return dir == Direction.Left ? Direction.Right : Direction.Left;
         }
 
-        private ref TreeNode<T>? getChild(TreeNode<T> node, Direction dir)
+        private static ref TreeNode<T>? GetChild(TreeNode<T> node, Direction dir)
         {
             if (dir == Direction.Left) return ref node.LeftChild;
             return ref node.RightChild;
@@ -156,11 +151,11 @@ namespace DAL1.RBSS_CS
 
             if (parent == null)
             {
-                root = newNode;
+                _root = newNode;
                 return;
             }
 
-            getChild(parent, dir) = newNode;
+            GetChild(parent, dir) = newNode;
 
             do
             {
@@ -173,16 +168,16 @@ namespace DAL1.RBSS_CS
                 }
 
                 dir = grandParent.LeftChild == parent ? Direction.Left : Direction.Right;
-                var uncle = getChild(grandParent, getOpposite(dir));
+                var uncle = GetChild(grandParent, GetOpposite(dir));
 
                 if (uncle == null || uncle.Color == NodeColor.Black)
                 {
-                    if (newNode == getChild(parent, getOpposite(dir)))
+                    if (newNode == GetChild(parent, GetOpposite(dir)))
                     {
                         if (dir == Direction.Left) RotateRootLeft(parent);
                         else RotateRootRight(parent);
                         // newNode = parent;
-                        parent = getChild(grandParent, dir);
+                        parent = GetChild(grandParent, dir);
                     }
 
                     if (dir == Direction.Left) RotateRootRight(grandParent);
@@ -206,11 +201,11 @@ namespace DAL1.RBSS_CS
         private void Delete(TreeNode<T> node)
         {
             //TODO
-            if (node == root)
+            if (node == _root)
             {
                 if (node.LeftChild == null && node.RightChild == null)
                 {
-                    root = null;
+                    _root = null;
                     return;
                 }
 
@@ -222,15 +217,15 @@ namespace DAL1.RBSS_CS
 
                 if (node.LeftChild != null)
                 {
-                    root = node.LeftChild;
-                    root.Parent = null;
-                    root.Color = NodeColor.Black;
+                    _root = node.LeftChild;
+                    _root.Parent = null;
+                    _root.Color = NodeColor.Black;
                 }
                 else
                 {
-                    root = node.RightChild;
-                    root!.Parent = null;
-                    root.Color = NodeColor.Black;
+                    _root = node.RightChild;
+                    _root!.Parent = null;
+                    _root.Color = NodeColor.Black;
                 }
 
                 return;
@@ -239,13 +234,75 @@ namespace DAL1.RBSS_CS
             var parent = node.Parent;
             var dir = parent!.LeftChild == node ? Direction.Left : Direction.Right;
 
-            getChild(parent, dir) = null;
+            GetChild(parent, dir) = null;
 
 
         }
 
+        /// <summary>
+        /// Find the node within with [x, y)S that is closest to the root, assuming x is less than y 
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        private TreeNode<T>? FindInitial(T x, T y, bool enableRightBoundCheck)
+        {
+            TreeNode<T>? node = _root;
+            while (node != null)
+            {
+                if (node.Data.CompareTo(x) < 0)
+                {
+                    node = node.RightChild;
+                }
+                else if (enableRightBoundCheck && node.Data.CompareTo(y) >= 0)
+                {
+                    node = node.LeftChild;
+                }
+                else break;
+            }
 
-        private TreeNode<T>? search(TreeNode<T>? node, T key)
+            return node;
+        }
+
+
+        private int GetFingerprint(TreeNode<T>? node, T x, T y)
+        {
+            if (node == null) return 0;
+            if (node.Data.CompareTo(x) < 0) return 0;
+            if (node.Data.CompareTo(y) >= 0) return 0;
+            return node.Data.Hash ^ GetFingerprint(node.LeftChild, x, y) ^
+                   GetFingerprint(node.RightChild, x, y);
+        }
+
+        /// <summary>
+        /// Calculates Hash within the range [x, y) via bifunctor xor
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public int GetFingerprint(T x, T y)
+        {
+            var enableRightBoundCheck = x.CompareTo(y) < 0;
+            TreeNode<T>? node = FindInitial(x, y, enableRightBoundCheck);
+            return GetFingerprint(node, x, y);
+        }
+        private static List<T> GetSortedListBetween(List<T> list, TreeNode<T>? node, T x, T y, bool enableRightBoundCheck)
+        {
+            if (node == null || node.Data.CompareTo(x) < 0 || (enableRightBoundCheck && node.Data.CompareTo(y) >= 0)) return list;
+            GetSortedListBetween(list, node.LeftChild, x, y, enableRightBoundCheck);
+            list.Add(node.Data);
+            GetSortedListBetween(list, node.RightChild, x, y, enableRightBoundCheck);
+
+            return list;
+        }
+        public List<T> GetSortedListBetween(T x, T y)
+        {
+            var enableRightBoundCheck = x.CompareTo(y) < 0;
+            var node = FindInitial(x, y, enableRightBoundCheck);
+            return GetSortedListBetween(new List<T>(), node, x, y, enableRightBoundCheck);
+        }
+
+        private static TreeNode<T>? Search(TreeNode<T>? node, T key)
         {
             int comp;
             while (node != null && (comp = key.CompareTo(node.Data)) != 0)
@@ -258,61 +315,59 @@ namespace DAL1.RBSS_CS
 
         public T? Search(T key)
         {
-            var node = search(root, key);
-            return node == null ? default : node.Data;
+            var node = Search(_root, key);
+            return node?.Data;
         }
 
-        private List<T> getSortedList(List<T> list, TreeNode<T>? node)
+        private static List<T> GetSortedList(List<T> list, TreeNode<T>? node)
         {
-            if (node != null)
-            {
-                getSortedList(list, node.LeftChild);
-                list.Add(node.Data);
-                getSortedList(list, node.RightChild);
-
-            }
+            if (node == null) return list;
+            GetSortedList(list, node.LeftChild);
+            list.Add(node.Data);
+            GetSortedList(list, node.RightChild);
 
             return list;
         }
         public List<T> GetSortedList()
         {
-            return getSortedList(new List<T>(), root);
+            return GetSortedList(new List<T>(), _root);
         }
 
-        public void Insert(T key)
+        public bool Insert(T key)
         {
             TreeNode<T> keyNode = new TreeNode<T>(key);
             TreeNode<T>? parent = null;
-            TreeNode<T>? current = root;
+            TreeNode<T>? current = _root;
 
             while (current != null)
             {
                 parent = current;
                 var comp = keyNode.Data.CompareTo(current.Data);
-                if (comp == 0) return;
+                if (comp == 0) return false;
                 if (comp < 0) current = current.LeftChild;
                 else current = current.RightChild;
             }
 
             if (parent == null) Insert(keyNode, parent, Direction.Left);
             else Insert(keyNode, parent, key.CompareTo(parent.Data) < 0 ? Direction.Left : Direction.Right);
+            return true;
         }
 
-        private int getHeight(TreeNode<T>? node, int h)
+        private static int GetHeight(TreeNode<T>? node, int h)
         {
             if (node == null) return h;
             h += 1;
-            return Math.Max(getHeight(node.LeftChild, h), getHeight(node.RightChild, h));
+            return Math.Max(GetHeight(node.LeftChild, h), GetHeight(node.RightChild, h));
         }
 
         public int GetHeight()
         {
-            return getHeight(root, 0);
+            return GetHeight(_root, 0);
         }
 
         public void Clear()
         {
-            root = null;
+            _root = null;
         }
     }
 

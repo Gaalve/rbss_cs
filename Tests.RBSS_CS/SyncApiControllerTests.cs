@@ -218,4 +218,11 @@ namespace Tests.RBSS_CS
         {
         }
     }
+
+    public class RedBlackTreeSyncControllerTests : PersistenceLayerTests
+    {
+        public RedBlackTreeSyncControllerTests(): base(PersistenceLayer<RedBlackTreePersistence>.Instance)
+        {
+        }
+    }
 }

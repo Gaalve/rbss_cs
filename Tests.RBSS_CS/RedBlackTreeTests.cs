@@ -14,7 +14,15 @@ namespace Tests.RBSS_CS
         public void Dispose()
         {
         }
-
+        private void CheckArrayEquality(SimpleObjectWrapper[] rbtArr, SimpleObjectWrapper[] sortedSetArr)
+        {
+            
+            Assert.Equal(rbtArr.Length, sortedSetArr.Length);
+            for (int i = 0; i < rbtArr.Length; i++)
+            {
+                Assert.Equal(rbtArr[i], sortedSetArr[i]);
+            }
+        }
         [Fact]
         public void TestSorting()
         {
@@ -39,12 +47,41 @@ namespace Tests.RBSS_CS
                 rbt.Insert(v);
                 sortedSet.Add(v);
                 ++n;
+                CheckArrayEquality(rbt.GetSortedList().ToArray(), sortedSet.ToArray());
             }
             Assert.True(rbt.GetHeight() <= 2 * Math.Log2(n + 1));
-            var rbtArr = rbt.GetSortedList().ToArray();
-            var sortedSetArr = sortedSet.ToArray();
+        }
+
+
+        
+
+        [Fact]
+        public void TestSorting2()
+        {
+            var list = new List<SimpleObjectWrapper>()
+            {
+                new(new SimpleDataObject("ape", "")),
+                new(new SimpleDataObject("bee", "")),
+                new(new SimpleDataObject("cat", "")),
+                new(new SimpleDataObject("doe", "")),
+                new(new SimpleDataObject("eel", "")),
+                new(new SimpleDataObject("fox", "")),
+                new(new SimpleDataObject("gnu", "")),
+                new(new SimpleDataObject("hog", "")),
+            };
             
-            Assert.Equal(sortedSetArr, sortedSetArr);
+            RedBlackTree<SimpleObjectWrapper> rbt = new();
+            SortedSet<SimpleObjectWrapper> sortedSet = new();
+            int n = 0;
+            foreach (var v in list)
+            {
+                Assert.True(rbt.GetHeight() <= 2 * Math.Log2(n + 1));
+                rbt.Insert(v);
+                sortedSet.Add(v);
+                ++n;
+                CheckArrayEquality(rbt.GetSortedList().ToArray(), sortedSet.ToArray());
+            }
+            Assert.True(rbt.GetHeight() <= 2 * Math.Log2(n + 1));
         }
     }
 }

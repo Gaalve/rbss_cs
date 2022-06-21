@@ -73,6 +73,7 @@ namespace DAL1.RBSS_CS
             return ranges;
         }
 
+
         public RangeSet[] SplitRange(string idFrom, string idTo)
         {
             if (_set.Count == 0) return new RangeSet[2];

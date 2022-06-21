@@ -178,4 +178,11 @@ namespace Tests.RBSS_CS
         {
         }
     }
+
+    public class RedBlackTreePersistenceTests : PersistenceLayerTests
+    {
+        public RedBlackTreePersistenceTests(): base(PersistenceLayer<RedBlackTreePersistence>.Instance)
+        {
+        }
+    }
 }
