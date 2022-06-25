@@ -5,7 +5,8 @@ namespace DAL1.RBSS_CS;
 public class SimpleObjectWrapper : PrecalculatedHash, IComparable<SimpleObjectWrapper>
 {
     public SimpleDataObject Data { get; private set; }
-    public int Hash { get; private set; }
+
+    public int UnixTimestamp { get; private set; }
 
     public SimpleObjectWrapper(SimpleDataObject sdo)
     {

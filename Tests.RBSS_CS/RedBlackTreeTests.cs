@@ -14,12 +14,13 @@ namespace Tests.RBSS_CS
         public void Dispose()
         {
         }
-        private void CheckArrayEquality(SimpleObjectWrapper[] rbtArr, SimpleObjectWrapper[] sortedSetArr)
+        private void CheckArrayEquality(RedBlackTree<SimpleObjectWrapper> rbt, SimpleObjectWrapper[] rbtArr, SimpleObjectWrapper[] sortedSetArr)
         {
             
             Assert.Equal(rbtArr.Length, sortedSetArr.Length);
             for (int i = 0; i < rbtArr.Length; i++)
             {
+                Assert.NotNull(rbt.Search(rbtArr[i]));
                 Assert.Equal(rbtArr[i], sortedSetArr[i]);
             }
         }
@@ -47,7 +48,7 @@ namespace Tests.RBSS_CS
                 rbt.Insert(v);
                 sortedSet.Add(v);
                 ++n;
-                CheckArrayEquality(rbt.GetSortedList().ToArray(), sortedSet.ToArray());
+                CheckArrayEquality(rbt, rbt.GetSortedList().ToArray(), sortedSet.ToArray());
             }
             Assert.True(rbt.GetHeight() <= 2 * Math.Log2(n + 1));
         }
@@ -79,7 +80,34 @@ namespace Tests.RBSS_CS
                 rbt.Insert(v);
                 sortedSet.Add(v);
                 ++n;
-                CheckArrayEquality(rbt.GetSortedList().ToArray(), sortedSet.ToArray());
+                CheckArrayEquality(rbt, rbt.GetSortedList().ToArray(), sortedSet.ToArray());
+            }
+            Assert.True(rbt.GetHeight() <= 2 * Math.Log2(n + 1));
+        }
+
+        [Fact]
+        public void TestSorting3()
+        {
+            var list = new List<SimpleObjectWrapper>()
+            {
+                new(new SimpleDataObject("bee", "")),
+                new(new SimpleDataObject("cat", "")),
+                new(new SimpleDataObject("doe", "")),
+                new(new SimpleDataObject("eel", "")),
+                new(new SimpleDataObject("fox", "")),
+                new(new SimpleDataObject("hog", "")),
+            };
+            
+            RedBlackTree<SimpleObjectWrapper> rbt = new();
+            SortedSet<SimpleObjectWrapper> sortedSet = new();
+            int n = 0;
+            foreach (var v in list)
+            {
+                Assert.True(rbt.GetHeight() <= 2 * Math.Log2(n + 1));
+                rbt.Insert(v);
+                sortedSet.Add(v);
+                ++n;
+                CheckArrayEquality(rbt, rbt.GetSortedList().ToArray(), sortedSet.ToArray());
             }
             Assert.True(rbt.GetHeight() <= 2 * Math.Log2(n + 1));
         }

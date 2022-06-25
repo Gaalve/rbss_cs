@@ -265,13 +265,26 @@
         }
 
 
-        private int GetFingerprint(TreeNode<T>? node, T x, T y)
+        private static int GetFingerprint(TreeNode<T>? node, T x, T y, bool enableRightBoundCheck)
         {
-            if (node == null) return 0;
-            if (node.Data.CompareTo(x) < 0) return 0;
-            if (node.Data.CompareTo(y) >= 0) return 0;
-            return node.Data.Hash ^ GetFingerprint(node.LeftChild, x, y) ^
-                   GetFingerprint(node.RightChild, x, y);
+            while (node != null)
+            {
+                if (node.Data.CompareTo(x) < 0)
+                {
+                    node = node.RightChild;
+                    continue;
+                }
+
+                if (enableRightBoundCheck && node.Data.CompareTo(y) >= 0)
+                {
+                    node = node.LeftChild;
+                    continue;
+                }
+
+                return node.Data.Hash ^ GetFingerprint(node.LeftChild, x, y, enableRightBoundCheck) ^ GetFingerprint(node.RightChild, x, y, enableRightBoundCheck);
+            }
+
+            return 0;
         }
 
         /// <summary>
@@ -284,12 +297,13 @@
         {
             var enableRightBoundCheck = x.CompareTo(y) < 0;
             TreeNode<T>? node = FindInitial(x, y, enableRightBoundCheck);
-            return GetFingerprint(node, x, y);
+            return GetFingerprint(node, x, y, enableRightBoundCheck);
         }
         private static List<T> GetSortedListBetween(List<T> list, TreeNode<T>? node, T x, T y, bool enableRightBoundCheck)
         {
-            if (node == null || node.Data.CompareTo(x) < 0 || (enableRightBoundCheck && node.Data.CompareTo(y) >= 0)) return list;
+            if (node == null) return list;
             GetSortedListBetween(list, node.LeftChild, x, y, enableRightBoundCheck);
+            if (node.Data.CompareTo(x) < 0 || (enableRightBoundCheck && node.Data.CompareTo(y) >= 0)) return list;
             list.Add(node.Data);
             GetSortedListBetween(list, node.RightChild, x, y, enableRightBoundCheck);
 

@@ -8,6 +8,6 @@ namespace DAL1.RBSS_CS
 {
     public abstract class PrecalculatedHash
     {
-        public int Hash { get; }
+        public int Hash { get; set;  }
     }
 }
