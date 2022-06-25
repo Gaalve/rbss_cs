@@ -1,4 +1,5 @@
-﻿using DAL1.RBSS_CS;
+﻿using System.Reflection;
+using DAL1.RBSS_CS;
 using RBSS_CS.Controllers;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -42,7 +43,18 @@ namespace RBSS_CS
                 
 
             }
+            
+        }
 
+        private static Type? GetByName(string name)
+        {
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies().Reverse())
+            {
+                var tempType = assembly.GetType(name);
+                if (tempType != null) return tempType;
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -50,15 +62,26 @@ namespace RBSS_CS
         /// </summary>
         /// <param name="args"></param>
         /// <returns>IHostBuilder</returns>
-        public static IHostBuilder CreateHostBuilder(string[] args, ServerSettings? serverSettings) =>
+        public static IHostBuilder CreateHostBuilder(string[] args, ServerSettings serverSettings) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
 
+                    
+
+
                     webBuilder.ConfigureServices((services) =>
                     {
+                        var auxDsType = GetByName(serverSettings.AuxillaryDS);
+                        if (auxDsType == null)
+                            throw new TypeAccessException("Type not found: " + serverSettings.AuxillaryDS);
+
+                        var genric = typeof(PersistenceLayer<>).MakeGenericType(auxDsType);
+                        if (Activator.CreateInstance(genric, true) is not IPersistenceLayerSingleton instance) 
+                            throw new TypeAccessException("Type is not assignable as auxillaryDS: " + serverSettings.AuxillaryDS);
+
                         services.AddSingleton<ServerSettings>(serverSettings ?? new ServerSettings());
-                        services.AddSingleton<IPersistenceLayerSingleton>(PersistenceLayer<SortedSetPersistence>.Instance);
+                        services.AddSingleton<IPersistenceLayerSingleton>(instance);
                     });
 
                     webBuilder.UseStartup<Startup>();
