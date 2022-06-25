@@ -29,8 +29,19 @@ namespace Models.RBSS_CS
         public SimpleDataObject(string id = default(string), Object additionalProperties = default(Object))
         {
             this.Id = id;
+            this.Timestamp = DateTimeOffset.UnixEpoch.ToUnixTimeSeconds();
             this.AdditionalProperties = additionalProperties;
         }
+
+        public SimpleDataObject(string id = default(string), long timestamp = default, Object additionalProperties = default(Object))
+        {
+            this.Id = id;
+            this.Timestamp = timestamp;
+            this.AdditionalProperties = additionalProperties;
+        }
+
+        [DataMember(Name="timestamp", EmitDefaultValue=false)]
+        public long Timestamp { get; set; }
         
         /// <summary>
         /// unique identifier

@@ -16,7 +16,7 @@ public class SimpleObjectWrapper : PrecalculatedHash, IComparable<SimpleObjectWr
 
     public SimpleObjectWrapper(string id)
     {
-        Data = new SimpleDataObject(id);
+        Data = new SimpleDataObject(id, 0, "");
         Hash = 0;
     }
 
