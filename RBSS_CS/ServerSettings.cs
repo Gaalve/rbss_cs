@@ -21,7 +21,10 @@ namespace RBSS_CS
         /// The naming follows the convention of TopNamespace.SubNameSpace.ContainingClass+NestedClass (see https://docs.microsoft.com/en-us/dotnet/api/system.type.assemblyqualifiedname?view=net-6.0)
         /// The auxillary datastructure has to be loaded within the current AppDomain (see https://docs.microsoft.com/en-us/dotnet/api/system.appdomain.currentdomain?view=net-6.0)
         /// The datastructure has to implement the interface DAL1.RBSS_CS.IPersistenceLayer
-        /// 
+        ///
+        /// Possible values:
+        /// DAL1.RBSS_CS.RedBlackTreePersistence
+        /// DAL1.RBSS_CS.SortedSetPersistence
         /// </summary>
         public string AuxillaryDS { get; set; } = typeof(DAL1.RBSS_CS.RedBlackTreePersistence).FullName!;
 

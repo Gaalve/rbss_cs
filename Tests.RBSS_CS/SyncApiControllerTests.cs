@@ -175,6 +175,16 @@ namespace Tests.RBSS_CS
             return vs.IdFrom.Equals(idFrom) && vs.IdTo.Equals(idTo);
         }
 
+        private bool checkInsertStep(Step step, string idFrom, string idTo, ICollection<string> candidates, bool handled)
+        {
+            if (step.CurrentStep.Step.GetType() != typeof(InsertStep)) return false;
+            var ins = (InsertStep)step.CurrentStep.Step;
+            if (!(ins.IdFrom.Equals(idFrom) && ins.IdTo.Equals(idTo))) return false;
+            if (ins.DataToInsert.Count != candidates.Count) return false;
+            if (ins.Handled != handled) return false;
+            return ins.DataToInsert.TrueForAll((o => candidates.Contains(o.Id)));
+        }
+
         [Fact]
         public void PostRequestFullRangeNotInSet()
         {
@@ -186,6 +196,13 @@ namespace Tests.RBSS_CS
                 new(new SimpleDataObject("eel", "")),
                 new(new SimpleDataObject("fox", "")),
                 new(new SimpleDataObject("hog", "")),
+            };
+            var setInitiator = new SortedSet<SimpleObjectWrapper>()
+            {
+                new(new SimpleDataObject("ape", "")),
+                new(new SimpleDataObject("eel", "")),
+                new(new SimpleDataObject("fox", "")),
+                new(new SimpleDataObject("gnu", "")),
             };
             AddAllToLayer(setParticipant);
 
@@ -200,6 +217,24 @@ namespace Tests.RBSS_CS
                 checkValidateStep(step, "ape", "eel")));
             Assert.Contains(state.Steps, (step =>
                 checkValidateStep(step, "eel", "ape")));
+
+            Dispose();
+            AddAllToLayer(setInitiator);
+            result = _sync.SyncPut(state);
+            Assert.IsType<OkObjectResult>(result);
+            Assert.NotNull(((OkObjectResult)result).Value);
+            Assert.IsType<SyncState>(((OkObjectResult)result).Value);
+            state = (SyncState)((OkObjectResult)result).Value!;
+            Assert.NotNull(state);
+            Assert.NotEmpty(state!.Steps);
+            Assert.Equal(3, state.Steps.Count);
+            Assert.Contains(state.Steps, (step =>
+                checkInsertStep(step, "ape", "eel", new List<string>(){"ape"}, false)));
+            Assert.Contains(state.Steps, (step =>
+                checkValidateStep(step, "eel", "gnu")));
+            Assert.Contains(state.Steps, (step =>
+                checkInsertStep(step, "gnu", "ape", new List<string>(){"gnu"}, false)));
+
         }
 
 

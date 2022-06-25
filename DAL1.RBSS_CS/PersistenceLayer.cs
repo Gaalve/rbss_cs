@@ -42,7 +42,7 @@ namespace DAL1.RBSS_CS
         }
 
 
-        public int GetFingerprint(string lower, string upper)
+        public string GetFingerprint(string lower, string upper)
         {
             return _auxillaryDs.GetFingerprint(lower, upper);
         }

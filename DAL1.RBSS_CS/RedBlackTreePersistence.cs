@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Models.RBSS_CS;
+﻿using Models.RBSS_CS;
 
 namespace DAL1.RBSS_CS
 {
@@ -16,12 +11,11 @@ namespace DAL1.RBSS_CS
             _set = new RedBlackTree<SimpleObjectWrapper>();
         }
 
-        public int GetFingerprint(string lower, string upper)
+        public string GetFingerprint(string lower, string upper)
         {
             var lowerWrapper = new SimpleObjectWrapper(lower);
             var upperWrapper = new SimpleObjectWrapper(upper);
-
-            return _set.GetFingerprint(lowerWrapper, upperWrapper);
+            return Convert.ToBase64String(_set.GetFingerprint(lowerWrapper, upperWrapper));
         }
 
         public bool Insert(SimpleDataObject data)
@@ -44,17 +38,17 @@ namespace DAL1.RBSS_CS
             if (list.Count == 1)
             {
                 var tmidId = list[0].Data.Id;
-                ranges[0] = new RangeSet(idFrom, tmidId, GetFingerprint(idFrom, tmidId).ToString(), Array.Empty<SimpleDataObject>());
-                ranges[1] = new RangeSet(tmidId, idTo, GetFingerprint(tmidId, idTo).ToString(), new[]{list[0].Data});
+                ranges[0] = new RangeSet(idFrom, tmidId, GetFingerprint(idFrom, tmidId), Array.Empty<SimpleDataObject>());
+                ranges[1] = new RangeSet(tmidId, idTo, GetFingerprint(tmidId, idTo), new[]{list[0].Data});
                 return ranges;
             }
             var midCount = (list.Count + 1) / 2;
             var range1 = list.GetRange(0, midCount);
             var range2 = list.GetRange(midCount, list.Count - midCount);
             var midId = range2[0].Data.Id;
-            ranges[0] = new RangeSet(idFrom, midId, GetFingerprint(idFrom, midId).ToString(), 
+            ranges[0] = new RangeSet(idFrom, midId, GetFingerprint(idFrom, midId), 
                 range1.Select(s => s.Data).ToArray());
-            ranges[1] = new RangeSet(midId, idTo, GetFingerprint(midId, idTo).ToString(), 
+            ranges[1] = new RangeSet(midId, idTo, GetFingerprint(midId, idTo), 
                 range2.Select(s => s.Data).ToArray());
             return ranges;
 
@@ -80,9 +74,9 @@ namespace DAL1.RBSS_CS
         public RangeSet CreateRangeSet()
         {
             var list = _set.GetSortedList();
-            if (list.Count == 0) return new RangeSet("", "", "0");
+            if (list.Count == 0) return new RangeSet("", "", "AA==");
             var data = list[0];
-            return new RangeSet(data.Data.Id, data.Data.Id, GetFingerprint(data.Data.Id, data.Data.Id).ToString());
+            return new RangeSet(data.Data.Id, data.Data.Id, GetFingerprint(data.Data.Id, data.Data.Id));
         }
 
         public void Clear()

@@ -15,18 +15,18 @@ namespace DAL1.RBSS_CS
         {
             _set = new SortedSet<SimpleObjectWrapper>();
         }
-        public int GetFingerprint(string lower, string upper)
+        public string GetFingerprint(string lower, string upper)
         {
             //if (string.Compare(lower, upper, StringComparison.Ordinal) > 0) return 0;
-            int hash = 0;
+            PrecalculatedHash hash = new PrecalculatedHash();
             if (string.Compare(lower, upper, StringComparison.Ordinal) == 0)
             {
                 foreach (var v in _set)
                 {
-                    hash ^= v.Hash;
+                    hash = hash.Bifunctor(v.Hash);
                 }
-
-                return hash;
+                
+                return Convert.ToBase64String(hash.Hash);
             }
 
             var upperData = (string.Compare(lower, upper, StringComparison.Ordinal) > 0) ? _set.Last() : new SimpleObjectWrapper(upper);
@@ -36,13 +36,13 @@ namespace DAL1.RBSS_CS
             {
                 if (v.Data.Id != upper)
                 {
-                    Console.Write(v.Data.Id + "(" + v.Hash.ToString() + "),");
-                    hash ^= v.Hash;
+                    Console.Write(v.Data.Id + "(" + v.Hash + "),");
+                    hash = hash.Bifunctor(v.Hash);
                 }
                 
             }
-            Console.Write(") = "+hash.ToString() + "\n");
-            return hash;
+            Console.Write(") = "+hash.Hash + "\n");
+            return Convert.ToBase64String(hash.Hash);
         }
 
         public bool Insert(SimpleDataObject data)
@@ -68,8 +68,8 @@ namespace DAL1.RBSS_CS
             var range1 = _set.GetViewBetween(lower, mid);
             var range2 = _set.GetViewBetween(mid, upper);
             
-            ranges[0] = new RangeSet(id, midId, GetFingerprint(id, midId).ToString(), range1.Select(s => s.Data).Where(s => s.Id != midId).ToArray());
-            ranges[1] = new RangeSet(midId, id, GetFingerprint(midId, id).ToString(), range2.Select(s => s.Data).ToArray());
+            ranges[0] = new RangeSet(id, midId, GetFingerprint(id, midId), range1.Select(s => s.Data).Where(s => s.Id != midId).ToArray());
+            ranges[1] = new RangeSet(midId, id, GetFingerprint(midId, id), range2.Select(s => s.Data).ToArray());
             return ranges;
         }
 
@@ -91,14 +91,14 @@ namespace DAL1.RBSS_CS
             var range1 = subset.GetViewBetween(lower, mid);
             var range2 = subset.GetViewBetween(mid, upper);
 
-            ranges[0] = new RangeSet(idFrom, midId, GetFingerprint(idFrom, midId).ToString(), range1.Select(s => s.Data).Where(s => s.Id != midId).ToArray());
-            ranges[1] = new RangeSet(midId, idTo, GetFingerprint(midId, idTo).ToString(), range2.Select(s => s.Data).Where(s => s.Id != idTo).ToArray());
+            ranges[0] = new RangeSet(idFrom, midId, GetFingerprint(idFrom, midId), range1.Select(s => s.Data).Where(s => s.Id != midId).ToArray());
+            ranges[1] = new RangeSet(midId, idTo, GetFingerprint(midId, idTo), range2.Select(s => s.Data).Where(s => s.Id != idTo).ToArray());
             return ranges;
         }
 
         public RangeSet CreateRangeSet(string idFrom, string idTo)
         {
-            if (_set.Count == 0) return new RangeSet(idFrom, idTo, "0");
+            if (_set.Count == 0) return new RangeSet(idFrom, idTo, "AA==");
             if (idFrom == idTo)
                 return new RangeSet(idFrom, idTo, "null",
                     _set.Select(s => s.Data).ToArray());
@@ -109,7 +109,7 @@ namespace DAL1.RBSS_CS
 
         public RangeSet CreateRangeSet(string idFrom, string idTo, ICollection<SimpleDataObject> exclude)
         {
-            if (_set.Count == 0) return new RangeSet(idFrom, idTo, "0");
+            if (_set.Count == 0) return new RangeSet(idFrom, idTo, "AA==");
             if (idFrom == idTo)
                 return new RangeSet(idFrom, idTo, "null",
                     _set.Select(s => s.Data).Where(
@@ -123,10 +123,10 @@ namespace DAL1.RBSS_CS
 
         public RangeSet CreateRangeSet()
         {
-            if (_set.Count == 0) return new RangeSet("", "", "0");
+            if (_set.Count == 0) return new RangeSet("", "", "AA==");
             var data = _set.First();
 
-            return new RangeSet(data.Data.Id, data.Data.Id, GetFingerprint(data.Data.Id, data.Data.Id).ToString());
+            return new RangeSet(data.Data.Id, data.Data.Id, GetFingerprint(data.Data.Id, data.Data.Id));
         }
 
         public void Clear()

@@ -9,7 +9,7 @@ namespace DAL1.RBSS_CS
 {
     public interface IPersistenceLayer
     {
-        public int GetFingerprint(string lower, string upper);
+        public string GetFingerprint(string lower, string upper);
         public bool Insert(SimpleDataObject data);
         public SimpleDataObject[] GetDataObjects();
         public RangeSet[] SplitRange(string idFrom, string idTo);

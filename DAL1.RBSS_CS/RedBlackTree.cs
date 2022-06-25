@@ -265,26 +265,33 @@
         }
 
 
-        private static int GetFingerprint(TreeNode<T>? node, T x, T y, bool enableRightBoundCheck)
+        private static PrecalculatedHash GetFingerprint(TreeNode<T>? node, T x, T y, bool enableRightBoundCheck)
         {
-            while (node != null)
-            {
-                if (node.Data.CompareTo(x) < 0)
-                {
-                    node = node.RightChild;
-                    continue;
-                }
+            // while (node != null)
+            // {
+            //     if (node.Data.CompareTo(x) < 0)
+            //     {
+            //         node = node.RightChild;
+            //         continue;
+            //     }
+            //
+            //     if (enableRightBoundCheck && node.Data.CompareTo(y) >= 0)
+            //     {
+            //         node = node.LeftChild;
+            //         continue;
+            //     }
+            //
+            //     return node.Data.Bifunctor(GetFingerprint(node.LeftChild, x, y, enableRightBoundCheck)).Bifunctor(GetFingerprint(node.RightChild, x, y, enableRightBoundCheck));
+            // }
+            //
+            // return new PrecalculatedHash();
 
-                if (enableRightBoundCheck && node.Data.CompareTo(y) >= 0)
-                {
-                    node = node.LeftChild;
-                    continue;
-                }
 
-                return node.Data.Hash ^ GetFingerprint(node.LeftChild, x, y, enableRightBoundCheck) ^ GetFingerprint(node.RightChild, x, y, enableRightBoundCheck);
-            }
 
-            return 0;
+            if (node == null) return new PrecalculatedHash();
+            if (node.Data.CompareTo(x) < 0) return GetFingerprint(node.RightChild, x, y, enableRightBoundCheck);
+            if (enableRightBoundCheck && node.Data.CompareTo(y) >= 0) return GetFingerprint(node.LeftChild, x, y, enableRightBoundCheck);
+            return node.Data.Bifunctor(GetFingerprint(node.LeftChild, x, y, enableRightBoundCheck)).Bifunctor(GetFingerprint(node.RightChild, x, y, enableRightBoundCheck));
         }
 
         /// <summary>
@@ -293,11 +300,11 @@
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public int GetFingerprint(T x, T y)
+        public byte[] GetFingerprint(T x, T y)
         {
             var enableRightBoundCheck = x.CompareTo(y) < 0;
             TreeNode<T>? node = FindInitial(x, y, enableRightBoundCheck);
-            return GetFingerprint(node, x, y, enableRightBoundCheck);
+            return GetFingerprint(node, x, y, enableRightBoundCheck).Hash;
         }
         private static List<T> GetSortedListBetween(List<T> list, TreeNode<T>? node, T x, T y, bool enableRightBoundCheck)
         {

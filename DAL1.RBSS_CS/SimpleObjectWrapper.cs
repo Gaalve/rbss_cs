@@ -8,16 +8,14 @@ public class SimpleObjectWrapper : PrecalculatedHash, IComparable<SimpleObjectWr
 
     public int UnixTimestamp { get; private set; }
 
-    public SimpleObjectWrapper(SimpleDataObject sdo)
+    public SimpleObjectWrapper(SimpleDataObject sdo) : base(BitConverter.GetBytes(sdo.GetHashCode()))
     {
         Data = sdo;
-        Hash = sdo.GetHashCode();
     }
 
-    public SimpleObjectWrapper(string id)
+    public SimpleObjectWrapper(string id) : base(new byte[]{0})
     {
         Data = new SimpleDataObject(id, 0, "");
-        Hash = 0;
     }
 
     public int CompareTo(SimpleObjectWrapper? other)
@@ -26,4 +24,5 @@ public class SimpleObjectWrapper : PrecalculatedHash, IComparable<SimpleObjectWr
         if (ReferenceEquals(null, other)) return 1;
         return string.Compare(Data.Id, other.Data.Id, StringComparison.Ordinal);
     }
+
 }

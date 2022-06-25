@@ -26,6 +26,7 @@ namespace Models.RBSS_CS
         /// </summary>
         /// <param name="id">unique identifier.</param>
         /// <param name="additionalProperties">additionalProperties.</param>
+        [JsonConstructor]
         public SimpleDataObject(string id = default(string), Object additionalProperties = default(Object))
         {
             this.Id = id;
