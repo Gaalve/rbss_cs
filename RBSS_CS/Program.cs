@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using DAL1.RBSS_CS;
+﻿using DAL1.RBSS_CS;
 using RBSS_CS.Controllers;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -19,7 +18,9 @@ namespace RBSS_CS
         {
             var yamlDeserializer = new DeserializerBuilder().WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
             var settingsStr = System.IO.File.Exists("settings.yml") ? System.IO.File.ReadAllText("settings.yml") : null;
-            var settings = settingsStr != null ? yamlDeserializer.Deserialize<ServerSettings>(settingsStr) : null;
+            if (settingsStr == null) throw new NullReferenceException("settings file does not exist");
+            var settings = yamlDeserializer.Deserialize<ServerSettings>(settingsStr);
+            if (settings == null) throw new NullReferenceException("settings file could not be loaded");
             var hostB = CreateHostBuilder(args, settings);
             var host = hostB.Build();
             if (settings is not { TestingMode: true, TestingModeInitiator: true }) host.Run();
@@ -66,10 +67,6 @@ namespace RBSS_CS
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-
-                    
-
-
                     webBuilder.ConfigureServices((services) =>
                     {
                         var auxDsType = GetByName(serverSettings.AuxillaryDS);

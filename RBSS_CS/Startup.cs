@@ -48,7 +48,7 @@ namespace RBSS_CS
                 // Don't need the full MVC stack for an API, see https://andrewlock.net/comparing-startup-between-the-asp-net-core-3-templates/
                 .AddControllers(options => {
                     options.InputFormatters.Insert(0, new InputFormatterStream());
-                })
+                }).AddControllersAsServices()
                 .AddNewtonsoftJson(opts =>
                 {
                     opts.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
@@ -57,7 +57,6 @@ namespace RBSS_CS
                         NamingStrategy = new CamelCaseNamingStrategy()
                     });
                 });
-            services.AddMvc().AddControllersAsServices();
             
             services
                 .AddSwaggerGen(c =>
@@ -128,7 +127,7 @@ namespace RBSS_CS
                     // c.SwaggerEndpoint("/openapi-original.json", "Range-Based Set Synchronization Framework Original");
                 });
             app.UseRouting();
-            app.UseAuthorization();
+            // app.UseAuthorization();
             app.UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers();
