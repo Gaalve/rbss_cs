@@ -8,15 +8,17 @@ namespace RBSS_CS.Controllers
     [ApiController]
     public class DebugApi : ControllerBase
     {
+        private readonly ServerSettings _settings;
         private readonly ModifyApi _modifyApi;
         private readonly SyncApi _syncApi;
         private readonly IPersistenceLayerSingleton _persistenceLayer;
 
-        public DebugApi(ModifyApi modifyApi, SyncApi syncApi, IPersistenceLayerSingleton persistence)
+        public DebugApi(ModifyApi modifyApi, SyncApi syncApi, IPersistenceLayerSingleton persistence, ServerSettings settings)
         {
             _modifyApi = modifyApi;
             _syncApi = syncApi;
             _persistenceLayer = persistence;
+            _settings = settings;
         }
 
 
@@ -27,6 +29,7 @@ namespace RBSS_CS.Controllers
         [ProducesResponseType(statusCode: 200, type: typeof(SimpleDataObject[]))]
         public IActionResult DebugGetSet()
         {
+            if (!_settings.TestingMode) return Forbid();
             return Ok(_persistenceLayer.GetDataObjects());
         }
 
@@ -36,6 +39,7 @@ namespace RBSS_CS.Controllers
         [ValidateModelState]
         public async Task<IActionResult> DebugConnect(string inetAddress)
         {
+            if (!_settings.TestingMode) return Forbid();
             Console.WriteLine("Debug Start");
             var remoteClient = new Client(inetAddress);
             var range = _persistenceLayer.CreateRangeSet();
@@ -85,6 +89,7 @@ namespace RBSS_CS.Controllers
         [ValidateModelState]
         public async Task<IActionResult> DebugCreateSet(bool isX0)
         {
+            if (!_settings.TestingMode) return Forbid();
             if (isX0)
             {
                 _modifyApi.InsertPost(new SimpleDataObject("bee", "string"));
@@ -104,6 +109,30 @@ namespace RBSS_CS.Controllers
             
 
             return Ok();
+        }
+
+        [HttpPost]
+        [Route("/debugClear")]
+        [Consumes("application/json")]
+        [ValidateModelState]
+        public async Task<IActionResult> DebugClearSet()
+        {
+            if (!_settings.TestingMode) return Forbid();
+            _persistenceLayer.Clear();
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("/debugSearch")]
+        [Consumes("application/json")]
+        [ValidateModelState]
+        [ProducesResponseType(statusCode: 200, type: typeof(SimpleDataObject))]
+        public async Task<IActionResult> DebugSearch(string key)
+        {
+            if (!_settings.TestingMode) return Forbid();
+            var item = _persistenceLayer.Search(key);
+            if (item == null) return BadRequest();
+            return Ok(item);
         }
     }
 }

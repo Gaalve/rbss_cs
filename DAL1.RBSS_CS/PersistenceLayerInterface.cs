@@ -16,6 +16,9 @@ namespace DAL1.RBSS_CS
         public RangeSet CreateRangeSet(string idFrom, string idTo);
         public RangeSet CreateRangeSet(string idFrom, string idTo, ICollection<SimpleDataObject> exclude);
         public RangeSet CreateRangeSet();
+
+        public SimpleDataObject? Search(string key);
+
         public void Clear();
     }
 

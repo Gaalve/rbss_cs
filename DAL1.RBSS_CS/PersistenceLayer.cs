@@ -77,6 +77,11 @@ namespace DAL1.RBSS_CS
             return _auxillaryDs.CreateRangeSet();
         }
 
+        public SimpleDataObject? Search(string key)
+        {
+            return _auxillaryDs.Search(key);
+        }
+
         public void Clear()
         {
             _auxillaryDs.Clear();

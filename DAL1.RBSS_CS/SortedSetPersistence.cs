@@ -129,6 +129,12 @@ namespace DAL1.RBSS_CS
             return new RangeSet(data.Data.Id, data.Data.Id, GetFingerprint(data.Data.Id, data.Data.Id));
         }
 
+        public SimpleDataObject? Search(string key)
+        {
+            var sow = new SimpleObjectWrapper(key);
+            return _set.TryGetValue(sow, out sow) ? sow.Data : null;
+        }
+
         public void Clear()
         {
             _set.Clear();
