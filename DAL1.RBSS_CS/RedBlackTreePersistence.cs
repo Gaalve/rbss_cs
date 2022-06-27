@@ -18,6 +18,11 @@ namespace DAL1.RBSS_CS
             return Convert.ToBase64String(_set.GetFingerprint(lowerWrapper, upperWrapper));
         }
 
+        public string GetFingerprint(List<SimpleObjectWrapper> sow)
+        {
+            return Convert.ToBase64String(_set.GetFingerprint(sow));
+        }
+
         public bool Insert(SimpleDataObject data)
         {
             return _set.Insert(new SimpleObjectWrapper(data));
@@ -38,18 +43,18 @@ namespace DAL1.RBSS_CS
             if (list.Count == 1)
             {
                 var tmidId = list[0].Data.Id;
-                ranges[0] = new RangeSet(idFrom, tmidId, GetFingerprint(idFrom, tmidId), Array.Empty<SimpleDataObject>()); 
+                ranges[0] = new RangeSet(idFrom, tmidId, "AA==", Array.Empty<SimpleDataObject>()); 
                 //ranges[0] will be ignored
-                ranges[1] = new RangeSet(idFrom, idTo, GetFingerprint(tmidId, idTo), new[]{list[0].Data});
+                ranges[1] = new RangeSet(idFrom, idTo, GetFingerprint(list), new[]{list[0].Data});
                 return ranges;
             }
             var midCount = (list.Count + 1) / 2;
             var range1 = list.GetRange(0, midCount);
             var range2 = list.GetRange(midCount, list.Count - midCount);
             var midId = range2[0].Data.Id;
-            ranges[0] = new RangeSet(idFrom, midId, GetFingerprint(idFrom, midId), 
+            ranges[0] = new RangeSet(idFrom, midId, GetFingerprint(range1), 
                 range1.Select(s => s.Data).ToArray());
-            ranges[1] = new RangeSet(midId, idTo, GetFingerprint(midId, idTo), 
+            ranges[1] = new RangeSet(midId, idTo, GetFingerprint(range2), 
                 range2.Select(s => s.Data).ToArray());
             return ranges;
 
@@ -77,7 +82,7 @@ namespace DAL1.RBSS_CS
             var list = _set.GetSortedList();
             if (list.Count == 0) return new RangeSet("", "", "AA==");
             var data = list[0];
-            return new RangeSet(data.Data.Id, data.Data.Id, GetFingerprint(data.Data.Id, data.Data.Id));
+            return new RangeSet(data.Data.Id, data.Data.Id, GetFingerprint(list));
         }
 
         public SimpleDataObject? Search(string key)

@@ -281,6 +281,78 @@ namespace Tests.RBSS_CS
         }
 
         [Fact]
+        public void PostRequestInsertStepOverbounds()
+        {
+            var setRemote = new SortedSet<SimpleObjectWrapper>()
+            {
+                new(new SimpleDataObject("appreciated", "")),
+                new(new SimpleDataObject("connectivity", "")),
+                new(new SimpleDataObject("grad", "")),
+                new(new SimpleDataObject("greetings", "")),
+                new(new SimpleDataObject("industry", "")),
+                new(new SimpleDataObject("sense", "")),
+            };
+            var setHost = new SortedSet<SimpleObjectWrapper>()
+            {
+                new(new SimpleDataObject("ace", "")),
+                new(new SimpleDataObject("appreciated", "")),
+                new(new SimpleDataObject("connectivity", "")),
+                new(new SimpleDataObject("grad", "")),
+                new(new SimpleDataObject("industry", "")),
+                new(new SimpleDataObject("theme", "")),
+            };
+            AddAllToLayer(setHost);
+            var result = _sync.SyncPut(new SyncState(0,
+                new List<Step>()
+                {
+                    new Step(0, new OneOfValidateStepInsertStep(new ValidateStep("industry", "appreciated", "fp")))
+                }));
+            Assert.IsType<OkObjectResult>(result);
+            Assert.NotNull(((OkObjectResult)result).Value);
+            Assert.IsType<SyncState>(((OkObjectResult)result).Value);
+            var state = (SyncState)((OkObjectResult)result).Value!;
+            Assert.False(equalFP(state));
+            Assert.NotEmpty(state.Steps);
+            Assert.Equal(2, state.Steps.Count);
+            Assert.Contains(state.Steps, (step =>
+                checkValidateStep(step, "industry", "ace")));
+            Assert.Contains(state.Steps, (step =>
+                checkInsertStep(step, "ace", "appreciated", new List<string>(){"ace"}, false)));
+        }
+
+        [Fact]
+        public void PostRequestInsertStep()
+        {
+            var setHost = new SortedSet<SimpleObjectWrapper>()
+            {
+                new(new SimpleDataObject("peace", "")),
+                new(new SimpleDataObject("poverty", "")),
+                new(new SimpleDataObject("scotland", "")),
+                new(new SimpleDataObject("spa", "")),
+                new(new SimpleDataObject("te", "")),
+            };
+            AddAllToLayer(setHost);
+            _persistenceLayer.Insert(new SimpleDataObject("te", ""));
+            _persistenceLayer.Insert(new SimpleDataObject("failure", ""));
+            _persistenceLayer.Insert(new SimpleDataObject("full", ""));
+            // _persistenceLayer.Insert(new SimpleDataObject("failure", ""));
+            var result = _sync.SyncPut(new SyncState(0,
+                new List<Step>()
+                {
+                    new Step(0, new OneOfValidateStepInsertStep(new InsertStep("observations", new List<string>(), "scotland", new List<SimpleDataObject>(){new SimpleDataObject("observations", "")}, false)))
+                }));
+            Assert.IsType<OkObjectResult>(result);
+            Assert.NotNull(((OkObjectResult)result).Value);
+            Assert.IsType<SyncState>(((OkObjectResult)result).Value);
+            var state = (SyncState)((OkObjectResult)result).Value!;
+            Assert.False(equalFP(state));
+            Assert.NotEmpty(state.Steps);
+            Assert.Equal(1, state.Steps.Count);
+            Assert.Contains(state.Steps, (step =>
+                checkInsertStep(step, "observations", "scotland", new List<string>(){"peace", "poverty"}, true)));
+        }
+
+        [Fact]
         public void PutRequestElemInsertStep()
         {
             var setRemote = new SortedSet<SimpleObjectWrapper>()

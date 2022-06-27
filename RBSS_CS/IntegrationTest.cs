@@ -4,6 +4,7 @@ using System.Reflection;
 using DAL1.RBSS_CS;
 using Microsoft.AspNetCore.Mvc;
 using Models.RBSS_CS;
+using Org.OpenAPITools.Client;
 using RBSS_CS.Controllers;
 using Xunit;
 using Xunit.Sdk;
@@ -38,15 +39,22 @@ namespace RBSS_CS
             _remoteClient.ModifyApi.DeletePost(new SimpleDataObject("", ""));
         }
 
-        private void AddToRemote(SortedSet<SimpleObjectWrapper> set)
+        private void AddToRemote(IEnumerable<SimpleObjectWrapper> set)
         {
             foreach (var e in set)
             {
-                _remoteClient.ModifyApi.InsertPost(e.Data);
+                try
+                {
+                    _remoteClient.ModifyApi.InsertPost(e.Data);
+                }
+                catch (Org.OpenAPITools.Client.ApiException ex)
+                {
+                    if (ex.ErrorCode != 409) throw; // Error Code 409 is expected when duplicate items are added
+                }
             }
         }
 
-        private void AddToHost(SortedSet<SimpleObjectWrapper> set)
+        private void AddToHost(IEnumerable<SimpleObjectWrapper> set)
         {
             foreach (var e in set)
             {
@@ -121,6 +129,7 @@ namespace RBSS_CS
                 {
                     try
                     {
+                        GC.Collect();
                         Cleanup();
                         m.Invoke(this, null);
                         Console.WriteLine("############################");
@@ -498,7 +507,134 @@ namespace RBSS_CS
             Assert.True(SetsSynchronized());
         }
 
+        [IntegrationTestMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
+        // ReSharper disable once UnusedMember.Local
+        private void TestNToN()
+        {
+            var setInitiator = new SortedSet<SimpleObjectWrapper>()
+            {
+                new(new SimpleDataObject("failure", "")),
+                new(new SimpleDataObject("full", "")),
+                new(new SimpleDataObject("observations", "")),
+                new(new SimpleDataObject("scotland", "")),
+                new(new SimpleDataObject("te", "")),
+            };
+            var setParticipant = new SortedSet<SimpleObjectWrapper>()
+            {
+                new(new SimpleDataObject("peace", "")),
+                new(new SimpleDataObject("poverty", "")),
+                new(new SimpleDataObject("scotland", "")),
+                new(new SimpleDataObject("spa", "")),
+                new(new SimpleDataObject("te", "")),
+            };
 
+            AddToRemote(setParticipant);
+            AddToHost(setInitiator);
+
+            Synchronize();
+
+            var union = setInitiator.Union(setParticipant);
+            // var controlSetInitiatorAction = _debugApi.DebugGetSet();
+            // Assert.IsType<OkObjectResult>(controlSetInitiatorAction.GetType());
+            // var controlSetInitiatorResult = ((OkObjectResult)controlSetInitiatorAction).Value;
+            // Assert.NotNull(controlSetInitiatorResult);
+            // Assert.IsType<SimpleDataObject[]>(controlSetInitiatorResult!.GetType());
+            // var controlSetInitiator = (SimpleDataObject[])controlSetInitiatorResult!;
+
+            var controlSetInitiator = _persistenceLayer.GetDataObjects();
+
+            var controlSetParticipant =
+                _remoteClient.SyncApi.Client.Get<SimpleDataObject[]>("/getset", new RequestOptions()).Data;
+
+            Console.WriteLine("Initiator: ");
+            foreach (var v in controlSetInitiator)
+            {
+                Console.WriteLine("\t" + v.Id);
+            }
+            Console.WriteLine("Participant: ");
+            foreach (var v in controlSetParticipant)
+            {
+                Console.WriteLine("\t" + v.Id);
+            }
+
+
+            Assert.True(SetsSynchronized());
+        }
+
+                /// <summary>
+        /// Tests for equal Fp after synchronization when the participant has exactly one element in the set and the initiator has none
+        /// </summary>
+        [IntegrationTestMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
+        // ReSharper disable once UnusedMember.Local
+        private void TestRandom10()
+        {
+            using var client = new HttpClient();
+            var downloadedString =
+                client.GetStringAsync(
+                    "https://www.mit.edu/~ecprice/wordlist.10000").Result;
+            string[] randomWords = downloadedString.Split('\n');
+
+            var setParticipant = new SortedSet<SimpleObjectWrapper>()
+            {
+            };
+            var setInitiator = new SortedSet<SimpleObjectWrapper>()
+            {
+            };
+
+            for (int i = 0; i < 4; i++)
+            {
+                setParticipant.Add(
+                    new SimpleObjectWrapper(new SimpleDataObject(randomWords[Random.Shared.Next(randomWords.Length)], "")));
+                setInitiator.Add(
+                    new SimpleObjectWrapper(new SimpleDataObject(randomWords[Random.Shared.Next(randomWords.Length)], "")));
+            }
+            for (int i = 0; i < Random.Shared.Next(4); i++)
+            {
+                setParticipant.Add(setInitiator.ElementAt(Random.Shared.Next(setInitiator.Count)));
+                setInitiator.Add(setParticipant.ElementAt(Random.Shared.Next(setParticipant.Count)));
+            }
+
+            Console.WriteLine("### Elements in Initiator: ");
+            foreach (var swo in setInitiator)
+            {
+                Console.WriteLine(swo.Data.Id);
+            }
+
+            Console.WriteLine("### Elements in Participant: ");
+            foreach (var swo in setParticipant)
+            {
+                Console.WriteLine(swo.Data.Id);
+            }
+
+            var n = setInitiator.Union(setParticipant).Count();
+            var nDelta = n - setInitiator.Intersect(setParticipant).Count();
+        
+
+
+            int comRoundsUpper = (int)Math.Log2(n);
+            int comComplexUpper = (int)Math.Min(nDelta * Math.Log2(n), 2 * n - 1);
+
+            AddToRemote(setParticipant);
+            AddToHost(setInitiator);
+
+            //var co = Console.Out;
+            //Console.SetOut(new System.IO.StreamWriter(System.IO.Stream.Null));
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+            var (r, c) = Synchronize();
+            watch.Stop();
+            //Console.SetOut(co);
+
+            Console.WriteLine("### Time (ms) needed for synchronization: " + watch.ElapsedMilliseconds);
+            Console.WriteLine("### Communication rounds needed " + r + " <= " + comRoundsUpper);
+            Console.WriteLine("### Communication complexity needed " + c + " <= " + comComplexUpper);
+            Console.WriteLine("### Elements in Union: " + n);
+            Console.WriteLine("### Elements missing: " + nDelta);
+
+            Assert.True(SetsSynchronized());
+        }
 
         /// <summary>
         /// Tests for equal Fp after synchronization when the participant has exactly one element in the set and the initiator has none
@@ -536,8 +672,7 @@ namespace RBSS_CS
 
             var n = setInitiator.Union(setParticipant).Count();
             var nDelta = n - setInitiator.Intersect(setParticipant).Count();
-            Console.WriteLine("### Elements in Union: " + n);
-            Console.WriteLine("### Elements missing: " + nDelta);
+            
 
 
             int comRoundsUpper = (int)Math.Log2(n);
@@ -557,12 +692,13 @@ namespace RBSS_CS
             Console.WriteLine("### Time (ms) needed for synchronization: " + watch.ElapsedMilliseconds);
             Console.WriteLine("### Communication rounds needed " + r + " <= " + comRoundsUpper);
             Console.WriteLine("### Communication complexity needed " + c + " <= " + comComplexUpper);
-
+            Console.WriteLine("### Elements in Union: " + n);
+            Console.WriteLine("### Elements missing: " + nDelta);
 
             Assert.True(SetsSynchronized());
         }
 
-                /// <summary>
+        /// <summary>
         /// Tests for equal Fp after synchronization when the participant has exactly one element in the set and the initiator has none
         /// </summary>
         [IntegrationTestMethod]
@@ -570,16 +706,17 @@ namespace RBSS_CS
         // ReSharper disable once UnusedMember.Local
         private void TestRandom1000()
         {
+            Cleanup();
             using var client = new HttpClient();
             var downloadedString =
                 client.GetStringAsync(
                     "https://www.mit.edu/~ecprice/wordlist.10000").Result;
             string[] randomWords = downloadedString.Split('\n');
 
-            var setParticipant = new SortedSet<SimpleObjectWrapper>()
+            var setParticipant = new HashSet<SimpleObjectWrapper>()
             {
             };
-            var setInitiator = new SortedSet<SimpleObjectWrapper>()
+            var setInitiator = new HashSet<SimpleObjectWrapper>()
             {
             };
 
@@ -590,7 +727,7 @@ namespace RBSS_CS
                 setInitiator.Add(
                     new SimpleObjectWrapper(new SimpleDataObject(randomWords[Random.Shared.Next(randomWords.Length)], "")));
             }
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < 100; i++)
             {
                 setParticipant.Add(setInitiator.ElementAt(Random.Shared.Next(setInitiator.Count)));
                 setInitiator.Add(setParticipant.ElementAt(Random.Shared.Next(setParticipant.Count)));
@@ -598,8 +735,7 @@ namespace RBSS_CS
 
             var n = setInitiator.Union(setParticipant).Count();
             var nDelta = n - setInitiator.Intersect(setParticipant).Count();
-            Console.WriteLine("### Elements in Union: " + n);
-            Console.WriteLine("### Elements missing: " + nDelta);
+            
 
             int comRoundsUpper = (int)Math.Log2(n);
             int comComplexUpper = (int)Math.Min(nDelta * Math.Log2(n), 2 * n - 1);
@@ -618,7 +754,70 @@ namespace RBSS_CS
             Console.WriteLine("### Time (ms) needed for synchronization: " + watch.ElapsedMilliseconds);
             Console.WriteLine("### Communication rounds needed " + r + " <= " + comRoundsUpper);
             Console.WriteLine("### Communication complexity needed " + c + " <= " + comComplexUpper);
+            Console.WriteLine("### Elements in Union: " + n);
+            Console.WriteLine("### Elements missing: " + nDelta);
 
+            Assert.True(SetsSynchronized());
+        }
+
+        /// <summary>
+        /// Tests for equal Fp after synchronization when the participant has exactly one element in the set and the initiator has none
+        /// </summary>
+        [IntegrationTestMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
+        // ReSharper disable once UnusedMember.Local
+        private void TestRandom1000BigIntersection()
+        {
+            Cleanup();
+            using var client = new HttpClient();
+            var downloadedString =
+                client.GetStringAsync(
+                    "https://www.mit.edu/~ecprice/wordlist.10000").Result;
+            string[] randomWords = downloadedString.Split('\n');
+
+            var setParticipant = new HashSet<SimpleObjectWrapper>()
+            {
+            };
+            var setInitiator = new HashSet<SimpleObjectWrapper>()
+            {
+            };
+
+            for (int i = 0; i < 500; i++)
+            {
+                setParticipant.Add(
+                    new SimpleObjectWrapper(new SimpleDataObject(randomWords[Random.Shared.Next(randomWords.Length)], "")));
+                setInitiator.Add(
+                    new SimpleObjectWrapper(new SimpleDataObject(randomWords[Random.Shared.Next(randomWords.Length)], "")));
+            }
+            for (int i = 0; i < 750; i++)
+            {
+                setParticipant.Add(setInitiator.ElementAt(Random.Shared.Next(setInitiator.Count)));
+                setInitiator.Add(setParticipant.ElementAt(Random.Shared.Next(setParticipant.Count)));
+            }
+
+            var n = setInitiator.Union(setParticipant).Count();
+            var nDelta = n - setInitiator.Intersect(setParticipant).Count();
+            
+
+            int comRoundsUpper = (int)Math.Log2(n);
+            int comComplexUpper = (int)Math.Min(nDelta * Math.Log2(n), 2 * n - 1);
+
+            AddToRemote(setParticipant);
+            AddToHost(setInitiator);
+
+            var co = Console.Out;
+            Console.SetOut(new System.IO.StreamWriter(System.IO.Stream.Null));
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+            var (r, c) = Synchronize();
+            watch.Stop();
+            Console.SetOut(co);
+
+            Console.WriteLine("### Time (ms) needed for synchronization: " + watch.ElapsedMilliseconds);
+            Console.WriteLine("### Communication rounds needed " + r + " <= " + comRoundsUpper);
+            Console.WriteLine("### Communication complexity needed " + c + " <= " + comComplexUpper);
+            Console.WriteLine("### Elements in Union: " + n);
+            Console.WriteLine("### Elements missing: " + nDelta);
 
             Assert.True(SetsSynchronized());
         }

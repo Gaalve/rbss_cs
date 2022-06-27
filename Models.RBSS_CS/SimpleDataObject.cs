@@ -67,6 +67,7 @@ namespace Models.RBSS_CS
             sb.Append("class SimpleDataObject {\n");
             sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  AdditionalProperties: ").Append(AdditionalProperties).Append("\n");
+            sb.Append("  Timestamp: ").Append(Timestamp).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }

@@ -17,6 +17,7 @@ namespace DAL1.RBSS_CS
         }
         public string GetFingerprint(string lower, string upper)
         {
+            if (_set.Count == 0) return "AA==";
             //if (string.Compare(lower, upper, StringComparison.Ordinal) > 0) return 0;
             PrecalculatedHash hash = new PrecalculatedHash();
             if (string.Compare(lower, upper, StringComparison.Ordinal) == 0)
@@ -82,14 +83,25 @@ namespace DAL1.RBSS_CS
             var lastExceeded = string.Compare(idFrom, idTo, StringComparison.Ordinal) > 0;
             var upper = lastExceeded ? _set.Last() : new SimpleObjectWrapper(idTo);
             RangeSet[] ranges = new RangeSet[2];
-            var subset = _set.GetViewBetween(lower, upper);
+            var subset = _set.GetViewBetween(lower, upper).Where(s => s.Data.Id != idTo).ToList();
+            if (lastExceeded) subset.AddRange(_set.GetViewBetween(new SimpleObjectWrapper(""), new SimpleObjectWrapper(idTo)).Where(s => s.Data.Id != idTo));
+            
             if (subset.Count == 0) return ranges;
+            if (subset.Count == 1)
+            {
+                var tmidId = subset.First().Data.Id;
+                ranges[0] = new RangeSet(idFrom, tmidId, "AA==", Array.Empty<SimpleDataObject>()); 
+                //ranges[0] will be ignored
+                ranges[1] = new RangeSet(idFrom, idTo, GetFingerprint(idFrom, idTo), new[]{subset.First().Data});
+                return ranges;
+            }
+            var midCount = (subset.Count + 1) / 2;
             var offset = subset.Last().Data.Id.Equals(upper.Data.Id) && !lastExceeded? 0 : 1;
-            var midId = subset.Count == 1 ? subset.First().Data.Id : subset.Select(s => s.Data.Id).ToArray()[(subset.Count + offset) / 2];
+            var midId = subset[midCount].Data.Id;
             var mid = new SimpleObjectWrapper(midId);
 
-            var range1 = subset.GetViewBetween(lower, mid);
-            var range2 = subset.GetViewBetween(mid, upper);
+            var range1 = subset.GetRange(0, midCount);
+            var range2 = subset.GetRange(midCount, subset.Count - midCount);
 
             ranges[0] = new RangeSet(idFrom, midId, GetFingerprint(idFrom, midId), range1.Select(s => s.Data).Where(s => s.Id != midId).ToArray());
             ranges[1] = new RangeSet(midId, idTo, GetFingerprint(midId, idTo), range2.Select(s => s.Data).Where(s => s.Id != idTo).ToArray());
@@ -113,7 +125,7 @@ namespace DAL1.RBSS_CS
             if (idFrom == idTo)
                 return new RangeSet(idFrom, idTo, "null",
                     _set.Select(s => s.Data).Where(
-                        s => s.Id != idTo && !exclude.Contains(s)).ToArray());
+                        s => !exclude.Contains(s)).ToArray());
             return new RangeSet(idFrom, idTo, "null", _set.GetViewBetween(new SimpleObjectWrapper(idFrom),
                 string.Compare(idFrom, idTo, StringComparison.Ordinal) > 0 ? _set.Last() : 
                     new SimpleObjectWrapper(idTo)).Select(s => s.Data).Where(

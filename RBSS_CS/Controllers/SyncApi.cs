@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Models.RBSS_CS;
 using Org.OpenAPIToolsServer.Controllers;
+using Xunit;
 
 namespace RBSS_CS.Controllers
 {
@@ -37,7 +38,7 @@ namespace RBSS_CS.Controllers
             if (step1 != null) state.Steps.Add(new Step(0, new OneOfValidateStepInsertStep(step1)));
             if (step2 != null) state.Steps.Add(new Step(0, new OneOfValidateStepInsertStep(step2)));
             if (step1 == null && step2 == null) state.Steps.Add(new Step(0, new OneOfValidateStepInsertStep(
-                new InsertStep("", new List<string>(), "", new List<SimpleDataObject>(), false))));
+                new InsertStep(validateStep.IdFrom, new List<string>(), validateStep.IdTo, new List<SimpleDataObject>(), false))));
         }
 
         private void HandleInsertStep(InsertStep insertStep, SyncState state)
