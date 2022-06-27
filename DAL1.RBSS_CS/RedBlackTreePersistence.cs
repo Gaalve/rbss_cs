@@ -38,8 +38,9 @@ namespace DAL1.RBSS_CS
             if (list.Count == 1)
             {
                 var tmidId = list[0].Data.Id;
-                ranges[0] = new RangeSet(idFrom, tmidId, GetFingerprint(idFrom, tmidId), Array.Empty<SimpleDataObject>());
-                ranges[1] = new RangeSet(tmidId, idTo, GetFingerprint(tmidId, idTo), new[]{list[0].Data});
+                ranges[0] = new RangeSet(idFrom, tmidId, GetFingerprint(idFrom, tmidId), Array.Empty<SimpleDataObject>()); 
+                //ranges[0] will be ignored
+                ranges[1] = new RangeSet(idFrom, idTo, GetFingerprint(tmidId, idTo), new[]{list[0].Data});
                 return ranges;
             }
             var midCount = (list.Count + 1) / 2;
