@@ -1,23 +1,28 @@
 ﻿using Org.OpenAPITools.Api;
 using Org.OpenAPITools.Client;
+using Xunit.Sdk;
 
 namespace RBSS_CS;
 
 public class Client
 {
-    private readonly Configuration _configuration;
+    public Configuration Configuration { get;  }
 
     public ModifyApi ModifyApi { get; }
     public SyncApi SyncApi { get; }
 
+    public PeerNetworkApi PeerNetworkApi { get; }
 
     public Client(string inetAddress)
     {
-        _configuration = new Configuration
+        Configuration = new Configuration
         {
             BasePath = inetAddress
         };
-        ModifyApi = new ModifyApi(_configuration);
-        SyncApi = new SyncApi(_configuration);
+        ModifyApi = new ModifyApi(Configuration);
+        SyncApi = new SyncApi(Configuration);
+        PeerNetworkApi = new PeerNetworkApi(Configuration);
     }
+
+    
 }

@@ -1,5 +1,9 @@
-﻿using DAL1.RBSS_CS;
+﻿using System.Net;
+using DAL1.RBSS_CS;
+using Microsoft.AspNetCore.HttpOverrides;
+using Models.RBSS_CS;
 using RBSS_CS.Controllers;
+using Xunit.Sdk;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -23,6 +27,21 @@ namespace RBSS_CS
             if (settings == null) throw new NullReferenceException("settings file could not be loaded");
             var hostB = CreateHostBuilder(args, settings);
             var host = hostB.Build();
+            var connection = Environment.GetEnvironmentVariable("RBSS_CONNECTION");
+            if (connection != null)
+            {
+                Console.WriteLine("Connecting to: "+ connection);
+                var cm = ClientMap.Instance;
+                cm.SuccessorClient = new Client(connection);
+                cm.PredecessorClient = new Client(connection);
+                var successor = cm.PredecessorClient.PeerNetworkApi.JoinPost(
+                    new Joining(cm.SelfClient!.Configuration.BasePath));
+                Console.WriteLine("Connecting to: "+ successor.SuccessorIP);
+                if (successor == null) throw new Exception("Could not join network. Exiting...");
+                cm.SuccessorClient = new Client(successor.SuccessorIP);
+                cm.SuccessorClient.PeerNetworkApi.NotifyPost(new Predecessor(cm.SelfClient.Configuration.BasePath));
+
+            }
             if (settings is not { TestingMode: true, TestingModeInitiator: true }) host.Run();
             else
             {
@@ -82,8 +101,9 @@ namespace RBSS_CS
                     });
 
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseUrls("http://0.0.0.0:7042/");
-                    webBuilder.UseUrls("http://0.0.0.0:80/");
+                    webBuilder.UseUrls("http://0.0.0.0:7042/", "http://0.0.0.0:80/");
+                    
+                    ClientMap.Instance.SelfClient = new Client("http://" + Dns.GetHostName() + ":7042/"); //TODO
                 });
     }
 }

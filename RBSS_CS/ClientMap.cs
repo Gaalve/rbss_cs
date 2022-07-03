@@ -5,7 +5,9 @@ public sealed class ClientMap
     private static volatile ClientMap? _instance;
     private static readonly object SyncRoot = new();
 
-    public Client PeerClient;
+    public Client? SelfClient;
+    public Client? SuccessorClient;
+    public Client? PredecessorClient;
 
     private ClientMap() {}
 

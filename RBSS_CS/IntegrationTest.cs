@@ -29,7 +29,8 @@ namespace RBSS_CS
             _debugApi = dbgApi;
             _syncApi = syncApi;
             _modifyApi = modifyApi;
-            _remoteClient = new Client("http://host.docker.internal:5634");
+            // _remoteClient = new Client("http://host.docker.internal:5634");
+            _remoteClient = ClientMap.Instance.SuccessorClient!;
             _persistenceLayer = persistenceLayer;
         }
 
