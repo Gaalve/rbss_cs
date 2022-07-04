@@ -10,10 +10,12 @@ namespace DAL1.RBSS_CS
     public class SortedSetPersistence: IPersistenceLayer
     {
         private readonly SortedSet<SimpleObjectWrapper> _set;
+        private IDatabase _db;
 
         public SortedSetPersistence()
         {
             _set = new SortedSet<SimpleObjectWrapper>();
+            _db = new DatabaseStub();
         }
         public string GetFingerprint(string lower, string upper)
         {
@@ -48,7 +50,9 @@ namespace DAL1.RBSS_CS
 
         public bool Insert(SimpleDataObject data)
         {
-            return _set.Add(new SimpleObjectWrapper(data));
+            if (!_set.Add(new SimpleObjectWrapper(data))) return false;
+            _db.Insert(data);
+            return true;
         }
 
 
@@ -96,9 +100,7 @@ namespace DAL1.RBSS_CS
                 return ranges;
             }
             var midCount = (subset.Count + 1) / 2;
-            var offset = subset.Last().Data.Id.Equals(upper.Data.Id) && !lastExceeded? 0 : 1;
             var midId = subset[midCount].Data.Id;
-            var mid = new SimpleObjectWrapper(midId);
 
             var range1 = subset.GetRange(0, midCount);
             var range2 = subset.GetRange(midCount, subset.Count - midCount);
@@ -150,6 +152,30 @@ namespace DAL1.RBSS_CS
         public void Clear()
         {
             _set.Clear();
+        }
+
+        public void SetDb(IDatabase db)
+        {
+            _db = db;
+        }
+
+        public void SetHashFunction()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetBifunctor()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Initialize()
+        {
+            var objs = _db.GetAllDataObjects();
+            foreach (var o in objs)
+            {
+                Insert(o);
+            }
         }
     }
 }

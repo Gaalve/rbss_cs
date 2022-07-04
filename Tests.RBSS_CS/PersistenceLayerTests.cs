@@ -174,14 +174,14 @@ namespace Tests.RBSS_CS
 
     public class SortedSetPersitenceTests : PersistenceLayerTests
     {
-        public SortedSetPersitenceTests(): base(PersistenceLayer<SortedSetPersistence>.Instance)
+        public SortedSetPersitenceTests(): base(new PersistenceLayer<SortedSetPersistence>(new DatabaseStub()))
         {
         }
     }
 
     public class RedBlackTreePersistenceTests : PersistenceLayerTests
     {
-        public RedBlackTreePersistenceTests(): base(PersistenceLayer<RedBlackTreePersistence>.Instance)
+        public RedBlackTreePersistenceTests(): base(new PersistenceLayer<SortedSetPersistence>(new DatabaseStub()))
         {
         }
     }

@@ -414,14 +414,14 @@ namespace Tests.RBSS_CS
 
     public class SortedSetSyncControllerTests : SyncApiControllerTests
     {
-        public SortedSetSyncControllerTests(): base(PersistenceLayer<SortedSetPersistence>.Instance)
+        public SortedSetSyncControllerTests(): base(new PersistenceLayer<SortedSetPersistence>(new DatabaseStub()))
         {
         }
     }
 
     public class RedBlackTreeSyncControllerTests : SyncApiControllerTests
     {
-        public RedBlackTreeSyncControllerTests(): base(PersistenceLayer<RedBlackTreePersistence>.Instance)
+        public RedBlackTreeSyncControllerTests(): base(new PersistenceLayer<SortedSetPersistence>(new DatabaseStub()))
         {
         }
     }

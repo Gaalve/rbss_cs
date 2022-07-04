@@ -93,9 +93,13 @@ namespace RBSS_CS
                             throw new TypeAccessException("Type not found: " + serverSettings.AuxillaryDS);
 
                         var genric = typeof(PersistenceLayer<>).MakeGenericType(auxDsType);
-                        if (Activator.CreateInstance(genric, true) is not IPersistenceLayerSingleton instance) 
-                            throw new TypeAccessException("Type is not assignable as auxillaryDS: " + serverSettings.AuxillaryDS);
 
+                        // services.AddDbContext<LocalDb>(o => o.Use)
+
+
+                        if (Activator.CreateInstance(genric, new LocalDb()) is not IPersistenceLayerSingleton instance) 
+                            throw new TypeAccessException("Type is not assignable as auxillaryDS: " + serverSettings.AuxillaryDS);
+                        instance.Initialize();
                         services.AddSingleton<ServerSettings>(serverSettings ?? new ServerSettings());
                         services.AddSingleton<IPersistenceLayerSingleton>(instance);
                     });

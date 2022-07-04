@@ -5,10 +5,12 @@ namespace DAL1.RBSS_CS
     public class RedBlackTreePersistence : IPersistenceLayer
     {
         private readonly RedBlackTree<SimpleObjectWrapper> _set;
+        private IDatabase _db;
 
         public RedBlackTreePersistence()
         {
             _set = new RedBlackTree<SimpleObjectWrapper>();
+            _db = new DatabaseStub();
         }
 
         public string GetFingerprint(string lower, string upper)
@@ -25,7 +27,9 @@ namespace DAL1.RBSS_CS
 
         public bool Insert(SimpleDataObject data)
         {
-            return _set.Insert(new SimpleObjectWrapper(data));
+            if (!_set.Insert(new SimpleObjectWrapper(data))) return false;
+            _db.Insert(data);
+            return true;
         }
 
         public SimpleDataObject[] GetDataObjects()
@@ -93,6 +97,30 @@ namespace DAL1.RBSS_CS
         public void Clear()
         {
             _set.Clear();
+        }
+
+        public void SetDb(IDatabase db)
+        {
+            _db = db;
+        }
+
+        public void SetHashFunction()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetBifunctor()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Initialize()
+        {
+            var objs = _db.GetAllDataObjects();
+            foreach (var o in objs)
+            {
+                Insert(o);
+            }
         }
     }
 }

@@ -2,43 +2,16 @@
 
 namespace DAL1.RBSS_CS
 {
-    public sealed class PersistenceLayer<T> : IPersistenceLayerSingleton where T : IPersistenceLayer, new()
+    public class PersistenceLayer<T> : IPersistenceLayerSingleton where T : IPersistenceLayer, new()
     {
-        // private static readonly Lazy<PersistenceLayer> Lazy = new(() => new PersistenceLayer());
-        // public static PersistenceLayer Instance => Lazy.Value;
-        // private readonly SortedSet<SimpleObjectWrapper> _set;
-        //
-        // private PersistenceLayer()
-        // {
-        //     _set = new SortedSet<SimpleObjectWrapper>();
-        // }
 
-        private static volatile PersistenceLayer<T>? _instance;
-        private static readonly object SyncRoot = new();
         private readonly IPersistenceLayer _auxillaryDs;
-        
 
-        private PersistenceLayer()
+
+        public PersistenceLayer(IDatabase database)
         {
             _auxillaryDs = new T();
-        }
-
-        public static PersistenceLayer<T> Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    lock (SyncRoot)
-                    {
-                        if (_instance == null)
-                        {
-                            _instance = new PersistenceLayer<T>();
-                        }
-                    }
-                }
-                return _instance;
-            }
+            _auxillaryDs.SetDb(database);
         }
 
 
@@ -85,6 +58,11 @@ namespace DAL1.RBSS_CS
         public void Clear()
         {
             _auxillaryDs.Clear();
+        }
+
+        public void Initialize()
+        {
+            _auxillaryDs.Initialize();
         }
     }
 
