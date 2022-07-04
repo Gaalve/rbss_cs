@@ -1,3 +1,4 @@
 ﻿testingMode: true
 testingModeInitiator: true
 auxillaryDS: DAL1.RBSS_CS.RedBlackTreePersistence
+dbKind: none

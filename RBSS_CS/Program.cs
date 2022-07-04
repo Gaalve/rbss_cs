@@ -94,10 +94,13 @@ namespace RBSS_CS
 
                         var genric = typeof(PersistenceLayer<>).MakeGenericType(auxDsType);
 
-                        // services.AddDbContext<LocalDb>(o => o.Use)
+                        var persDbType = serverSettings.DBKind == "none" ? typeof(DatabaseStub) : GetByName(serverSettings.DBKind);
+                        if (persDbType == null)
+                            throw new TypeAccessException("Type not found: " + serverSettings.DBKind);
 
+                        var persDb = Activator.CreateInstance(persDbType);
 
-                        if (Activator.CreateInstance(genric, new LocalDb()) is not IPersistenceLayerSingleton instance) 
+                        if (Activator.CreateInstance(genric, persDb) is not IPersistenceLayerSingleton instance) 
                             throw new TypeAccessException("Type is not assignable as auxillaryDS: " + serverSettings.AuxillaryDS);
                         instance.Initialize();
                         services.AddSingleton<ServerSettings>(serverSettings ?? new ServerSettings());
