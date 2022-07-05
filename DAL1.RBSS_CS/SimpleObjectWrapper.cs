@@ -1,4 +1,5 @@
-﻿using Models.RBSS_CS;
+﻿using DAL1.RBSS_CS.Hashfunction;
+using Models.RBSS_CS;
 
 namespace DAL1.RBSS_CS;
 
@@ -8,7 +9,7 @@ public class SimpleObjectWrapper : PrecalculatedHash, IComparable<SimpleObjectWr
 
     public int UnixTimestamp { get; private set; }
 
-    public SimpleObjectWrapper(SimpleDataObject sdo) : base(BitConverter.GetBytes(sdo.GetHashCode()))
+    public SimpleObjectWrapper(SimpleDataObject sdo, IHashFunction hashFunction) : base(hashFunction.Hash(sdo))
     {
         Data = sdo;
     }

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL1.RBSS_CS;
+using DAL1.RBSS_CS.Datastructures;
+using DAL1.RBSS_CS.Hashfunction;
 using Models.RBSS_CS;
 using Xunit;
 
@@ -11,6 +13,7 @@ namespace Tests.RBSS_CS
 {
     public class RedBlackTreeTests : IDisposable
     {
+        private readonly StableHash _hash = new StableHash();
         public void Dispose()
         {
         }
@@ -29,14 +32,14 @@ namespace Tests.RBSS_CS
         {
             var list = new List<SimpleObjectWrapper>()
             {
-                new(new SimpleDataObject("eel", "")),
-                new(new SimpleDataObject("fox", "")),
-                new(new SimpleDataObject("doe", "")),
-                new(new SimpleDataObject("gnu", "")),
-                new(new SimpleDataObject("ape", "")),
-                new(new SimpleDataObject("hog", "")),
-                new(new SimpleDataObject("bee", "")),
-                new(new SimpleDataObject("cat", "")),
+                new(new SimpleDataObject("eel", ""), _hash),
+                new(new SimpleDataObject("fox", ""), _hash),
+                new(new SimpleDataObject("doe", ""), _hash),
+                new(new SimpleDataObject("gnu", ""), _hash),
+                new(new SimpleDataObject("ape", ""), _hash),
+                new(new SimpleDataObject("hog", ""), _hash),
+                new(new SimpleDataObject("bee", ""), _hash),
+                new(new SimpleDataObject("cat", ""), _hash),
             };
             
             RedBlackTree<SimpleObjectWrapper> rbt = new();
@@ -61,14 +64,14 @@ namespace Tests.RBSS_CS
         {
             var list = new List<SimpleObjectWrapper>()
             {
-                new(new SimpleDataObject("ape", "")),
-                new(new SimpleDataObject("bee", "")),
-                new(new SimpleDataObject("cat", "")),
-                new(new SimpleDataObject("doe", "")),
-                new(new SimpleDataObject("eel", "")),
-                new(new SimpleDataObject("fox", "")),
-                new(new SimpleDataObject("gnu", "")),
-                new(new SimpleDataObject("hog", "")),
+                new(new SimpleDataObject("ape", ""), _hash),
+                new(new SimpleDataObject("bee", ""), _hash),
+                new(new SimpleDataObject("cat", ""), _hash),
+                new(new SimpleDataObject("doe", ""), _hash),
+                new(new SimpleDataObject("eel", ""), _hash),
+                new(new SimpleDataObject("fox", ""), _hash),
+                new(new SimpleDataObject("gnu", ""), _hash),
+                new(new SimpleDataObject("hog", ""), _hash),
             };
             
             RedBlackTree<SimpleObjectWrapper> rbt = new();
@@ -90,12 +93,12 @@ namespace Tests.RBSS_CS
         {
             var list = new List<SimpleObjectWrapper>()
             {
-                new(new SimpleDataObject("bee", "")),
-                new(new SimpleDataObject("cat", "")),
-                new(new SimpleDataObject("doe", "")),
-                new(new SimpleDataObject("eel", "")),
-                new(new SimpleDataObject("fox", "")),
-                new(new SimpleDataObject("hog", "")),
+                new(new SimpleDataObject("bee", ""), _hash),
+                new(new SimpleDataObject("cat", ""), _hash),
+                new(new SimpleDataObject("doe", ""), _hash),
+                new(new SimpleDataObject("eel", ""), _hash),
+                new(new SimpleDataObject("fox", ""), _hash),
+                new(new SimpleDataObject("hog", ""), _hash),
             };
             
             RedBlackTree<SimpleObjectWrapper> rbt = new();

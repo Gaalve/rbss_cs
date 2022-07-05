@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 using Models.RBSS_CS;
 using Newtonsoft.Json;
 
-namespace DAL1.RBSS_CS
+namespace DAL1.RBSS_CS.Databse
 {
     public class SimpleDataObjectPDS
     {

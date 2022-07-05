@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using DAL1.RBSS_CS.Datastructures;
 
 namespace RBSS_CS
 {
@@ -26,7 +27,7 @@ namespace RBSS_CS
         /// DAL1.RBSS_CS.RedBlackTreePersistence
         /// DAL1.RBSS_CS.SortedSetPersistence
         /// </summary>
-        public string AuxillaryDS { get; set; } = typeof(DAL1.RBSS_CS.RedBlackTreePersistence).FullName!;
+        public string AuxillaryDS { get; set; } = typeof(RedBlackTreePersistence).FullName!;
 
         /// <summary>
         /// The minimum required elements to send an InsertStep. Has to bigger than 0.
@@ -77,7 +78,7 @@ namespace RBSS_CS
         /// The value "none" disables data persistence.
         /// Default is "none".
         /// </summary>
-        public string DBKind { get; set; } = "none";
+        public string DbKind { get; set; } = "none";
 
         /// <summary>
         /// The config path of database. The config structure is defined by the databse implementation

@@ -40,13 +40,13 @@ namespace RBSS_CS
             _remoteClient.ModifyApi.DeletePost(new SimpleDataObject("", ""));
         }
 
-        private void AddToRemote(IEnumerable<SimpleObjectWrapper> set)
+        private void AddToRemote(IEnumerable<SimpleDataObject> set)
         {
             foreach (var e in set)
             {
                 try
                 {
-                    _remoteClient.ModifyApi.InsertPost(e.Data);
+                    _remoteClient.ModifyApi.InsertPost(e);
                 }
                 catch (Org.OpenAPITools.Client.ApiException ex)
                 {
@@ -55,11 +55,11 @@ namespace RBSS_CS
             }
         }
 
-        private void AddToHost(IEnumerable<SimpleObjectWrapper> set)
+        private void AddToHost(IEnumerable<SimpleDataObject> set)
         {
             foreach (var e in set)
             {
-                _modifyApi.InsertPost(e.Data);
+                _modifyApi.InsertPost(e);
             }
         }
 
@@ -179,21 +179,21 @@ namespace RBSS_CS
         // ReSharper disable once UnusedMember.Local
         private void TestExampleRun1()
         {
-            var setParticipant = new SortedSet<SimpleObjectWrapper>()
+            var setParticipant = new List<SimpleDataObject>()
             {
-                new(new SimpleDataObject("bee", "")),
-                new(new SimpleDataObject("cat", "")),
-                new(new SimpleDataObject("doe", "")),
-                new(new SimpleDataObject("eel", "")),
-                new(new SimpleDataObject("fox", "")),
-                new(new SimpleDataObject("hog", "")),
+                (new SimpleDataObject("bee", "")),
+                (new SimpleDataObject("cat", "")),
+                (new SimpleDataObject("doe", "")),
+                (new SimpleDataObject("eel", "")),
+                (new SimpleDataObject("fox", "")),
+                (new SimpleDataObject("hog", "")),
             };
-            var setInitiator = new SortedSet<SimpleObjectWrapper>()
+            var setInitiator = new List<SimpleDataObject>()
             {
-                new(new SimpleDataObject("ape", "")),
-                new(new SimpleDataObject("eel", "")),
-                new(new SimpleDataObject("fox", "")),
-                new(new SimpleDataObject("gnu", "")),
+                (new SimpleDataObject("ape", "")),
+                (new SimpleDataObject("eel", "")),
+                (new SimpleDataObject("fox", "")),
+                (new SimpleDataObject("gnu", "")),
             };
             AddToRemote(setParticipant);
             AddToHost(setInitiator);
@@ -239,26 +239,26 @@ namespace RBSS_CS
         // ReSharper disable once UnusedMember.Local
         private void TestExampleRun2()
         {
-            var setParticipant = new SortedSet<SimpleObjectWrapper>()
+            var setParticipant = new List<SimpleDataObject>()
             {
-                new(new SimpleDataObject("ape", "")),
-                new(new SimpleDataObject("bee", "")),
-                new(new SimpleDataObject("cat", "")),
-                new(new SimpleDataObject("doe", "")),
-                new(new SimpleDataObject("eel", "")),
-                new(new SimpleDataObject("gnu", "")),
-                new(new SimpleDataObject("hog", "")),
+                (new SimpleDataObject("ape", "")),
+                (new SimpleDataObject("bee", "")),
+                (new SimpleDataObject("cat", "")),
+                (new SimpleDataObject("doe", "")),
+                (new SimpleDataObject("eel", "")),
+                (new SimpleDataObject("gnu", "")),
+                (new SimpleDataObject("hog", "")),
             };
-            var setInitiator = new SortedSet<SimpleObjectWrapper>()
+            var setInitiator = new List<SimpleDataObject>()
             {
-                new(new SimpleDataObject("ape", "")),
-                new(new SimpleDataObject("bee", "")),
-                new(new SimpleDataObject("cat", "")),
-                new(new SimpleDataObject("doe", "")),
-                new(new SimpleDataObject("eel", "")),
-                new(new SimpleDataObject("fox", "")),
-                new(new SimpleDataObject("gnu", "")),
-                new(new SimpleDataObject("hog", "")),
+                (new SimpleDataObject("ape", "")),
+                (new SimpleDataObject("bee", "")),
+                (new SimpleDataObject("cat", "")),
+                (new SimpleDataObject("doe", "")),
+                (new SimpleDataObject("eel", "")),
+                (new SimpleDataObject("fox", "")),
+                (new SimpleDataObject("gnu", "")),
+                (new SimpleDataObject("hog", "")),
             };
             AddToRemote(setParticipant);
             AddToHost(setInitiator);
@@ -306,23 +306,23 @@ namespace RBSS_CS
         // ReSharper disable once UnusedMember.Local
         private void TestExampleRun3()
         {
-            var setParticipant = new SortedSet<SimpleObjectWrapper>()
+            var setParticipant = new List<SimpleDataObject>()
             {
-                new(new SimpleDataObject("ape", "")),
-                new(new SimpleDataObject("cat", "")),
-                new(new SimpleDataObject("eel", "")),
-                new(new SimpleDataObject("gnu", "")),
+                (new SimpleDataObject("ape", "")),
+                (new SimpleDataObject("cat", "")),
+                (new SimpleDataObject("eel", "")),
+                (new SimpleDataObject("gnu", "")),
             };
-            var setInitiator = new SortedSet<SimpleObjectWrapper>()
+            var setInitiator = new List<SimpleDataObject>()
             {
-                new(new SimpleDataObject("ape", "")),
-                new(new SimpleDataObject("bee", "")),
-                new(new SimpleDataObject("cat", "")),
-                new(new SimpleDataObject("doe", "")),
-                new(new SimpleDataObject("eel", "")),
-                new(new SimpleDataObject("fox", "")),
-                new(new SimpleDataObject("gnu", "")),
-                new(new SimpleDataObject("hog", "")),
+                (new SimpleDataObject("ape", "")),
+                (new SimpleDataObject("bee", "")),
+                (new SimpleDataObject("cat", "")),
+                (new SimpleDataObject("doe", "")),
+                (new SimpleDataObject("eel", "")),
+                (new SimpleDataObject("fox", "")),
+                (new SimpleDataObject("gnu", "")),
+                (new SimpleDataObject("hog", "")),
             };
             AddToRemote(setParticipant);
             AddToHost(setInitiator);
@@ -386,10 +386,10 @@ namespace RBSS_CS
         // ReSharper disable once UnusedMember.Local
         private void Test0To0()
         {
-            var setParticipant = new SortedSet<SimpleObjectWrapper>()
+            var setParticipant = new List<SimpleDataObject>()
             {
             };
-            var setInitiator = new SortedSet<SimpleObjectWrapper>()
+            var setInitiator = new List<SimpleDataObject>()
             {
             };
             AddToRemote(setParticipant);
@@ -408,11 +408,11 @@ namespace RBSS_CS
         // ReSharper disable once UnusedMember.Local
         private void Test0To1()
         {
-            var setParticipant = new SortedSet<SimpleObjectWrapper>()
+            var setParticipant = new List<SimpleDataObject>()
             {
-                new(new SimpleDataObject("ape", "")),
+                (new SimpleDataObject("ape", "")),
             };
-            var setInitiator = new SortedSet<SimpleObjectWrapper>()
+            var setInitiator = new List<SimpleDataObject>()
             {
             };
             AddToRemote(setParticipant);
@@ -432,12 +432,12 @@ namespace RBSS_CS
         // ReSharper disable once UnusedMember.Local
         private void Test1To0()
         {
-            var setParticipant = new SortedSet<SimpleObjectWrapper>()
+            var setParticipant = new List<SimpleDataObject>()
             {
             };
-            var setInitiator = new SortedSet<SimpleObjectWrapper>()
+            var setInitiator = new List<SimpleDataObject>()
             {
-                new(new SimpleDataObject("ape", "")),
+                (new SimpleDataObject("ape", "")),
             };
             AddToRemote(setParticipant);
             AddToHost(setInitiator);
@@ -455,19 +455,19 @@ namespace RBSS_CS
         // ReSharper disable once UnusedMember.Local
         private void TestNTo0()
         {
-            var setParticipant = new SortedSet<SimpleObjectWrapper>()
+            var setParticipant = new List<SimpleDataObject>()
             {
             };
-            var setInitiator = new SortedSet<SimpleObjectWrapper>()
+            var setInitiator = new List<SimpleDataObject>()
             {
-                new(new SimpleDataObject("ape", "")),
-                new(new SimpleDataObject("bee", "")),
-                new(new SimpleDataObject("cat", "")),
-                new(new SimpleDataObject("doe", "")),
-                new(new SimpleDataObject("eel", "")),
-                new(new SimpleDataObject("fox", "")),
-                new(new SimpleDataObject("gnu", "")),
-                new(new SimpleDataObject("hog", "")),
+                (new SimpleDataObject("ape", "")),
+                (new SimpleDataObject("bee", "")),
+                (new SimpleDataObject("cat", "")),
+                (new SimpleDataObject("doe", "")),
+                (new SimpleDataObject("eel", "")),
+                (new SimpleDataObject("fox", "")),
+                (new SimpleDataObject("gnu", "")),
+                (new SimpleDataObject("hog", "")),
             };
             AddToRemote(setParticipant);
             AddToHost(setInitiator);
@@ -485,18 +485,18 @@ namespace RBSS_CS
         // ReSharper disable once UnusedMember.Local
         private void Test0ToN()
         {
-            var setParticipant = new SortedSet<SimpleObjectWrapper>()
+            var setParticipant = new List<SimpleDataObject>()
             {
-                new(new SimpleDataObject("ape", "")),
-                new(new SimpleDataObject("bee", "")),
-                new(new SimpleDataObject("cat", "")),
-                new(new SimpleDataObject("doe", "")),
-                new(new SimpleDataObject("eel", "")),
-                new(new SimpleDataObject("fox", "")),
-                new(new SimpleDataObject("gnu", "")),
-                new(new SimpleDataObject("hog", "")),
+                (new SimpleDataObject("ape", "")),
+                (new SimpleDataObject("bee", "")),
+                (new SimpleDataObject("cat", "")),
+                (new SimpleDataObject("doe", "")),
+                (new SimpleDataObject("eel", "")),
+                (new SimpleDataObject("fox", "")),
+                (new SimpleDataObject("gnu", "")),
+                (new SimpleDataObject("hog", "")),
             };
-            var setInitiator = new SortedSet<SimpleObjectWrapper>()
+            var setInitiator = new List<SimpleDataObject>()
             {
             };
             AddToRemote(setParticipant);
@@ -513,21 +513,21 @@ namespace RBSS_CS
         // ReSharper disable once UnusedMember.Local
         private void TestNToN()
         {
-            var setInitiator = new SortedSet<SimpleObjectWrapper>()
+            var setInitiator = new List<SimpleDataObject>()
             {
-                new(new SimpleDataObject("failure", "")),
-                new(new SimpleDataObject("full", "")),
-                new(new SimpleDataObject("observations", "")),
-                new(new SimpleDataObject("scotland", "")),
-                new(new SimpleDataObject("te", "")),
+                (new SimpleDataObject("failure", "")),
+                (new SimpleDataObject("full", "")),
+                (new SimpleDataObject("observations", "")),
+                (new SimpleDataObject("scotland", "")),
+                (new SimpleDataObject("te", "")),
             };
-            var setParticipant = new SortedSet<SimpleObjectWrapper>()
+            var setParticipant = new List<SimpleDataObject>()
             {
-                new(new SimpleDataObject("peace", "")),
-                new(new SimpleDataObject("poverty", "")),
-                new(new SimpleDataObject("scotland", "")),
-                new(new SimpleDataObject("spa", "")),
-                new(new SimpleDataObject("te", "")),
+                (new SimpleDataObject("peace", "")),
+                (new SimpleDataObject("poverty", "")),
+                (new SimpleDataObject("scotland", "")),
+                (new SimpleDataObject("spa", "")),
+                (new SimpleDataObject("te", "")),
             };
 
             AddToRemote(setParticipant);
@@ -577,19 +577,19 @@ namespace RBSS_CS
                     "https://www.mit.edu/~ecprice/wordlist.10000").Result;
             string[] randomWords = downloadedString.Split('\n');
 
-            var setParticipant = new SortedSet<SimpleObjectWrapper>()
+            var setParticipant = new List<SimpleDataObject>()
             {
             };
-            var setInitiator = new SortedSet<SimpleObjectWrapper>()
+            var setInitiator = new List<SimpleDataObject>()
             {
             };
 
             for (int i = 0; i < 4; i++)
             {
                 setParticipant.Add(
-                    new SimpleObjectWrapper(new SimpleDataObject(randomWords[Random.Shared.Next(randomWords.Length)], "")));
+                    (new SimpleDataObject(randomWords[Random.Shared.Next(randomWords.Length)], "")));
                 setInitiator.Add(
-                    new SimpleObjectWrapper(new SimpleDataObject(randomWords[Random.Shared.Next(randomWords.Length)], "")));
+                    (new SimpleDataObject(randomWords[Random.Shared.Next(randomWords.Length)], "")));
             }
             for (int i = 0; i < Random.Shared.Next(4); i++)
             {
@@ -600,13 +600,13 @@ namespace RBSS_CS
             Console.WriteLine("### Elements in Initiator: ");
             foreach (var swo in setInitiator)
             {
-                Console.WriteLine(swo.Data.Id);
+                Console.WriteLine(swo.Id);
             }
 
             Console.WriteLine("### Elements in Participant: ");
             foreach (var swo in setParticipant)
             {
-                Console.WriteLine(swo.Data.Id);
+                Console.WriteLine(swo.Id);
             }
 
             var n = setInitiator.Union(setParticipant).Count();
@@ -651,19 +651,19 @@ namespace RBSS_CS
                     "https://www.mit.edu/~ecprice/wordlist.10000").Result;
             string[] randomWords = downloadedString.Split('\n');
 
-            var setParticipant = new SortedSet<SimpleObjectWrapper>()
+            var setParticipant = new List<SimpleDataObject>()
             {
             };
-            var setInitiator = new SortedSet<SimpleObjectWrapper>()
+            var setInitiator = new List<SimpleDataObject>()
             {
             };
 
             for (int i = 0; i < 50; i++)
             {
                 setParticipant.Add(
-                    new SimpleObjectWrapper(new SimpleDataObject(randomWords[Random.Shared.Next(randomWords.Length)], "")));
+                    (new SimpleDataObject(randomWords[Random.Shared.Next(randomWords.Length)], "")));
                 setInitiator.Add(
-                    new SimpleObjectWrapper(new SimpleDataObject(randomWords[Random.Shared.Next(randomWords.Length)], "")));
+                    (new SimpleDataObject(randomWords[Random.Shared.Next(randomWords.Length)], "")));
             }
             for (int i = 0; i < 10; i++)
             {
@@ -714,19 +714,19 @@ namespace RBSS_CS
                     "https://www.mit.edu/~ecprice/wordlist.10000").Result;
             string[] randomWords = downloadedString.Split('\n');
 
-            var setParticipant = new HashSet<SimpleObjectWrapper>()
+            var setParticipant = new List<SimpleDataObject>()
             {
             };
-            var setInitiator = new HashSet<SimpleObjectWrapper>()
+            var setInitiator = new List<SimpleDataObject>()
             {
             };
 
             for (int i = 0; i < 500; i++)
             {
                 setParticipant.Add(
-                    new SimpleObjectWrapper(new SimpleDataObject(randomWords[Random.Shared.Next(randomWords.Length)], "")));
+                    (new SimpleDataObject(randomWords[Random.Shared.Next(randomWords.Length)], "")));
                 setInitiator.Add(
-                    new SimpleObjectWrapper(new SimpleDataObject(randomWords[Random.Shared.Next(randomWords.Length)], "")));
+                    (new SimpleDataObject(randomWords[Random.Shared.Next(randomWords.Length)], "")));
             }
             for (int i = 0; i < 100; i++)
             {
@@ -776,19 +776,19 @@ namespace RBSS_CS
                     "https://www.mit.edu/~ecprice/wordlist.10000").Result;
             string[] randomWords = downloadedString.Split('\n');
 
-            var setParticipant = new HashSet<SimpleObjectWrapper>()
+            var setParticipant = new List<SimpleDataObject>()
             {
             };
-            var setInitiator = new HashSet<SimpleObjectWrapper>()
+            var setInitiator = new List<SimpleDataObject>()
             {
             };
 
             for (int i = 0; i < 500; i++)
             {
                 setParticipant.Add(
-                    new SimpleObjectWrapper(new SimpleDataObject(randomWords[Random.Shared.Next(randomWords.Length)], "")));
+                    (new SimpleDataObject(randomWords[Random.Shared.Next(randomWords.Length)], "")));
                 setInitiator.Add(
-                    new SimpleObjectWrapper(new SimpleDataObject(randomWords[Random.Shared.Next(randomWords.Length)], "")));
+                    (new SimpleDataObject(randomWords[Random.Shared.Next(randomWords.Length)], "")));
             }
             for (int i = 0; i < 750; i++)
             {

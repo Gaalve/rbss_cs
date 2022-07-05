@@ -1,5 +1,6 @@
 ﻿using DAL1.RBSS_CS.Bifunctors;
 using DAL1.RBSS_CS.Databse;
+using DAL1.RBSS_CS.Hashfunction;
 using Models.RBSS_CS;
 
 namespace DAL1.RBSS_CS
@@ -10,11 +11,12 @@ namespace DAL1.RBSS_CS
         private readonly IPersistenceLayer _auxillaryDs;
 
 
-        public PersistenceLayer(IDatabase database, IBifunctor bifunctor)
+        public PersistenceLayer(IDatabase database, IBifunctor bifunctor, IHashFunction hashFunction)
         {
             _auxillaryDs = new T();
             _auxillaryDs.SetDb(database);
             _auxillaryDs.SetBifunctor(bifunctor);
+            _auxillaryDs.SetHashFunction(hashFunction);
         }
 
 

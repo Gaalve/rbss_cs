@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DAL1.RBSS_CS.Bifunctors;
 using DAL1.RBSS_CS.Databse;
+using DAL1.RBSS_CS.Hashfunction;
 using Models.RBSS_CS;
 
 namespace DAL1.RBSS_CS
@@ -21,7 +22,7 @@ namespace DAL1.RBSS_CS
         public SimpleDataObject? Search(string key);
         public void Clear();
         public void SetDb(IDatabase db);
-        public void SetHashFunction(); // TODO
+        public void SetHashFunction(IHashFunction hashFunction);
         public void SetBifunctor(IBifunctor bifunctor); 
         public void Initialize();
     }

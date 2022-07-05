@@ -1,4 +1,6 @@
 ﻿testingMode: true
 testingModeInitiator: false
-auxillaryDS: DAL1.RBSS_CS.RedBlackTreePersistence
+auxillaryDS: DAL1.RBSS_CS.Datastructures.RedBlackTreePersistence
 dbKind: none
+hashFunc: DAL1.RBSS_CS.Hashfunction.StableHash
+bifunctor: DAL1.RBSS_CS.Bifunctors.XorBifunctor

@@ -1,20 +1,23 @@
 ﻿using DAL1.RBSS_CS.Bifunctors;
 using DAL1.RBSS_CS.Databse;
+using DAL1.RBSS_CS.Hashfunction;
 using Models.RBSS_CS;
 
-namespace DAL1.RBSS_CS
+namespace DAL1.RBSS_CS.Datastructures
 {
     public class RedBlackTreePersistence : IPersistenceLayer
     {
         private readonly RedBlackTree<SimpleObjectWrapper> _set;
         private IDatabase _db;
         private IBifunctor _bifunctor;
+        private IHashFunction _hashFunction;
 
         public RedBlackTreePersistence()
         {
             _set = new RedBlackTree<SimpleObjectWrapper>();
             _db = new DatabaseStub();
             _bifunctor = new XorBifunctor();
+            _hashFunction = new StableHash();
         }
 
         public string GetFingerprint(string lower, string upper)
@@ -38,7 +41,7 @@ namespace DAL1.RBSS_CS
 
         public bool Insert(SimpleDataObject data)
         {
-            if (!_set.Insert(new SimpleObjectWrapper(data))) return false;
+            if (!_set.Insert(new SimpleObjectWrapper(data, _hashFunction))) return false;
             _db.Insert(data);
             return true;
         }
@@ -115,9 +118,9 @@ namespace DAL1.RBSS_CS
             _db = db;
         }
 
-        public void SetHashFunction()
+        public void SetHashFunction(IHashFunction hashFunction)
         {
-            throw new NotImplementedException();
+            _hashFunction = hashFunction;
         }
 
         public void SetBifunctor(IBifunctor bifunctor)

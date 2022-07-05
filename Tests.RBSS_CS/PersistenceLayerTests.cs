@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using DAL1.RBSS_CS;
 using DAL1.RBSS_CS.Bifunctors;
+using DAL1.RBSS_CS.Databse;
 using DAL1.RBSS_CS.Datastructures;
+using DAL1.RBSS_CS.Hashfunction;
 using Models.RBSS_CS;
 using Xunit;
 
@@ -16,11 +18,11 @@ namespace Tests.RBSS_CS
             _persistenceLayer = persistenceLayer;
         }
 
-        private void AddAllToLayer(SortedSet<SimpleObjectWrapper> set)
+        private void AddAllToLayer(List<SimpleDataObject> set)
         {
             foreach (var e in set)
             {
-                _persistenceLayer.Insert(e.Data);
+                _persistenceLayer.Insert(e);
             }
         }
 
@@ -35,16 +37,16 @@ namespace Tests.RBSS_CS
         [Fact]
         public void SplitRangesTest1()
         {
-            var set = new SortedSet<SimpleObjectWrapper>()
+            var set = new List<SimpleDataObject>()
             {
-                new(new SimpleDataObject("ape", "")),
-                new(new SimpleDataObject("bee", "")),
-                new(new SimpleDataObject("cat", "")),
-                new(new SimpleDataObject("doe", "")),
-                new(new SimpleDataObject("eel", "")),
-                new(new SimpleDataObject("fox", "")),
-                new(new SimpleDataObject("gnu", "")),
-                new(new SimpleDataObject("hog", "")),
+                (new SimpleDataObject("ape", "")),
+                (new SimpleDataObject("bee", "")),
+                (new SimpleDataObject("cat", "")),
+                (new SimpleDataObject("doe", "")),
+                (new SimpleDataObject("eel", "")),
+                (new SimpleDataObject("fox", "")),
+                (new SimpleDataObject("gnu", "")),
+                (new SimpleDataObject("hog", "")),
             };
             AddAllToLayer(set);
 
@@ -68,12 +70,12 @@ namespace Tests.RBSS_CS
         [Fact]
         public void SplitRangesTest2()
         {
-            var set = new SortedSet<SimpleObjectWrapper>()
+            var set = new List<SimpleDataObject>()
             {
-                new(new SimpleDataObject("ape", "")),
-                new(new SimpleDataObject("eel", "")),
-                new(new SimpleDataObject("fox", "")),
-                new(new SimpleDataObject("gnu", "")),
+                (new SimpleDataObject("ape", "")),
+                (new SimpleDataObject("eel", "")),
+                (new SimpleDataObject("fox", "")),
+                (new SimpleDataObject("gnu", "")),
             };
             AddAllToLayer(set);
 
@@ -96,12 +98,12 @@ namespace Tests.RBSS_CS
         [Fact]
         public void SplitRangesTest3()
         {
-            var set = new SortedSet<SimpleObjectWrapper>()
+            var set = new List<SimpleDataObject>()
             {
-                new(new SimpleDataObject("ape", "")),
-                new(new SimpleDataObject("cat", "")),
-                new(new SimpleDataObject("eel", "")),
-                new(new SimpleDataObject("gnu", "")),
+                (new SimpleDataObject("ape", "")),
+                (new SimpleDataObject("cat", "")),
+                (new SimpleDataObject("eel", "")),
+                (new SimpleDataObject("gnu", "")),
             };
             AddAllToLayer(set);
 
@@ -118,7 +120,7 @@ namespace Tests.RBSS_CS
         [Fact]
         public void SplitRangesTestEmptySetFullRange()
         {
-            var set = new SortedSet<SimpleObjectWrapper>()
+            var set = new List<SimpleDataObject>()
             {
             };
             AddAllToLayer(set);
@@ -129,7 +131,7 @@ namespace Tests.RBSS_CS
         [Fact]
         public void SplitRangesTestEmptySetSpecific()
         {
-            var set = new SortedSet<SimpleObjectWrapper>()
+            var set = new List<SimpleDataObject>()
             {
             };
             AddAllToLayer(set);
@@ -140,9 +142,9 @@ namespace Tests.RBSS_CS
         [Fact]
         public void SplitRangesTestOneElementSetFullRange()
         {
-            var set = new SortedSet<SimpleObjectWrapper>()
+            var set = new List<SimpleDataObject>()
             {
-                new(new SimpleDataObject("cat", "")),
+                (new SimpleDataObject("cat", "")),
             };
             AddAllToLayer(set);
 
@@ -152,9 +154,9 @@ namespace Tests.RBSS_CS
         [Fact]
         public void SplitRangesTestOneElementSetSpecificRangeIn()
         {
-            var set = new SortedSet<SimpleObjectWrapper>()
+            var set = new List<SimpleDataObject>()
             {
-                new(new SimpleDataObject("cat", "")),
+                (new SimpleDataObject("cat", "")),
             };
             AddAllToLayer(set);
 
@@ -164,9 +166,9 @@ namespace Tests.RBSS_CS
         [Fact]
         public void SplitRangesTestOneElementSetSpecificRangeOut()
         {
-            var set = new SortedSet<SimpleObjectWrapper>()
+            var set = new List<SimpleDataObject>()
             {
-                new(new SimpleDataObject("cat", "")),
+                (new SimpleDataObject("cat", "")),
             };
             AddAllToLayer(set);
 
@@ -176,21 +178,21 @@ namespace Tests.RBSS_CS
 
     public class SortedSetPersitenceTestsXor : PersistenceLayerTests
     {
-        public SortedSetPersitenceTestsXor(): base(new PersistenceLayer<SortedSetPersistence>(new DatabaseStub(), new XorBifunctor()))
+        public SortedSetPersitenceTestsXor(): base(new PersistenceLayer<SortedSetPersistence>(new DatabaseStub(), new XorBifunctor(), new StableHash()))
         {
         }
     }
 
     public class RedBlackTreePersistenceTestsXor : PersistenceLayerTests
     {
-        public RedBlackTreePersistenceTestsXor(): base(new PersistenceLayer<RedBlackTreePersistence>(new DatabaseStub(), new XorBifunctor()))
+        public RedBlackTreePersistenceTestsXor(): base(new PersistenceLayer<RedBlackTreePersistence>(new DatabaseStub(), new XorBifunctor(), new SHA256Hash()))
         {
         }
     }
 
     public class RedBlackTreePersistenceTestsAdd : PersistenceLayerTests
     {
-        public RedBlackTreePersistenceTestsAdd(): base(new PersistenceLayer<RedBlackTreePersistence>(new DatabaseStub(), new AddBifunctor()))
+        public RedBlackTreePersistenceTestsAdd(): base(new PersistenceLayer<RedBlackTreePersistence>(new DatabaseStub(), new AddBifunctor(), new SHA256Hash()))
         {
         }
     }

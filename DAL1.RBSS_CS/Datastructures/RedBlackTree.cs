@@ -1,4 +1,4 @@
-﻿namespace DAL1.RBSS_CS
+﻿namespace DAL1.RBSS_CS.Datastructures
 {
     
 

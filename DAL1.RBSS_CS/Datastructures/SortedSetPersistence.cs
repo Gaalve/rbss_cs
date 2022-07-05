@@ -1,5 +1,6 @@
 ﻿using DAL1.RBSS_CS.Bifunctors;
 using DAL1.RBSS_CS.Databse;
+using DAL1.RBSS_CS.Hashfunction;
 using Models.RBSS_CS;
 
 namespace DAL1.RBSS_CS.Datastructures
@@ -9,12 +10,14 @@ namespace DAL1.RBSS_CS.Datastructures
         private readonly SortedSet<SimpleObjectWrapper> _set;
         private IDatabase _db;
         private IBifunctor _bifunctor;
+        private IHashFunction _hashFunction;
 
         public SortedSetPersistence()
         {
             _set = new SortedSet<SimpleObjectWrapper>();
             _db = new DatabaseStub();
             _bifunctor = new XorBifunctor();
+            _hashFunction = new StableHash();
         }
         public string GetFingerprint(string lower, string upper)
         {
@@ -49,7 +52,7 @@ namespace DAL1.RBSS_CS.Datastructures
 
         public bool Insert(SimpleDataObject data)
         {
-            if (!_set.Add(new SimpleObjectWrapper(data))) return false;
+            if (!_set.Add(new SimpleObjectWrapper(data, _hashFunction))) return false;
             _db.Insert(data);
             return true;
         }
@@ -158,9 +161,9 @@ namespace DAL1.RBSS_CS.Datastructures
             _db = db;
         }
 
-        public void SetHashFunction()
+        public void SetHashFunction(IHashFunction hashFunction)
         {
-            throw new NotImplementedException();
+            _hashFunction = hashFunction;
         }
 
         public void SetBifunctor(IBifunctor bifunctor)

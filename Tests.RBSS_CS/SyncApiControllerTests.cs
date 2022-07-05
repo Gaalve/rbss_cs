@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using DAL1.RBSS_CS;
 using DAL1.RBSS_CS.Bifunctors;
+using DAL1.RBSS_CS.Databse;
 using DAL1.RBSS_CS.Datastructures;
+using DAL1.RBSS_CS.Hashfunction;
 using Microsoft.AspNetCore.Mvc;
 using Models.RBSS_CS;
 using RBSS_CS.Controllers;
@@ -28,15 +30,15 @@ namespace Tests.RBSS_CS
         {
             _persistenceLayer.Clear();
         }
-        private void AddAllToLayer(SortedSet<SimpleObjectWrapper> set)
+        private void AddAllToLayer(List<SimpleDataObject> set)
         {
             foreach (var e in set)
             {
-                _persistenceLayer.Insert(e.Data);
+                _persistenceLayer.Insert(e);
             }
         }
 
-        private RangeSet createRangeSet(SortedSet<SimpleObjectWrapper> set)
+        private RangeSet createRangeSet(List<SimpleDataObject> set)
         {
             AddAllToLayer(set);
             var range = _persistenceLayer.CreateRangeSet();
@@ -44,7 +46,7 @@ namespace Tests.RBSS_CS
             return range;
         }
 
-        private RangeSet createRangeSet(SortedSet<SimpleObjectWrapper> set, string idFrom, string idTo)
+        private RangeSet createRangeSet(List<SimpleDataObject> set, string idFrom, string idTo)
         {
             AddAllToLayer(set);
             var range = _persistenceLayer.CreateRangeSet(idFrom, idTo);
@@ -60,7 +62,7 @@ namespace Tests.RBSS_CS
         [Fact]
         public void PostRequestEmptySetEqualFp()
         {
-            var set = new SortedSet<SimpleObjectWrapper>()
+            var set = new List<SimpleDataObject>()
             {
             };
             var range = createRangeSet(set);
@@ -76,9 +78,9 @@ namespace Tests.RBSS_CS
         [Fact]
         public void PostRequestOneElementSetEqualFp()
         {
-            var set = new SortedSet<SimpleObjectWrapper>()
+            var set = new List<SimpleDataObject>()
             {
-                new(new SimpleDataObject("ape", "")),
+                (new SimpleDataObject("ape", "")),
             };
             var range = createRangeSet(set);
             AddAllToLayer(set); // simulated host and remote have the same set
@@ -94,16 +96,16 @@ namespace Tests.RBSS_CS
         [Fact]
         public void PostRequestSetEqualFp()
         {
-            var set = new SortedSet<SimpleObjectWrapper>()
+            var set = new List<SimpleDataObject>()
             {
-                new(new SimpleDataObject("ape", "")),
-                new(new SimpleDataObject("bee", "")),
-                new(new SimpleDataObject("cat", "")),
-                new(new SimpleDataObject("doe", "")),
-                new(new SimpleDataObject("eel", "")),
-                new(new SimpleDataObject("fox", "")),
-                new(new SimpleDataObject("gnu", "")),
-                new(new SimpleDataObject("hog", "")),
+                (new SimpleDataObject("ape", "")),
+                (new SimpleDataObject("bee", "")),
+                (new SimpleDataObject("cat", "")),
+                (new SimpleDataObject("doe", "")),
+                (new SimpleDataObject("eel", "")),
+                (new SimpleDataObject("fox", "")),
+                (new SimpleDataObject("gnu", "")),
+                (new SimpleDataObject("hog", "")),
             };
             var range = createRangeSet(set);
             AddAllToLayer(set); // simulated host and remote have the same set
@@ -119,12 +121,12 @@ namespace Tests.RBSS_CS
         [Fact]
         public void PostRequestSetHostEmptySet()
         {
-            var setRemote = new SortedSet<SimpleObjectWrapper>()
+            var setRemote = new List<SimpleDataObject>()
             {
-                new(new SimpleDataObject("ape", "")),
-                new(new SimpleDataObject("bee", "")),
+                (new SimpleDataObject("ape", "")),
+                (new SimpleDataObject("bee", "")),
             };
-            var setHost = new SortedSet<SimpleObjectWrapper>()
+            var setHost = new List<SimpleDataObject>()
             {
             };
             var range = createRangeSet(setRemote);
@@ -145,14 +147,14 @@ namespace Tests.RBSS_CS
         [Fact]
         public void PostRequestSetHostOneElementSet()
         {
-            var setRemote = new SortedSet<SimpleObjectWrapper>()
+            var setRemote = new List<SimpleDataObject>()
             {
-                new(new SimpleDataObject("ape", "")),
-                new(new SimpleDataObject("bee", "")),
+                (new SimpleDataObject("ape", "")),
+                (new SimpleDataObject("bee", "")),
             };
-            var setHost = new SortedSet<SimpleObjectWrapper>()
+            var setHost = new List<SimpleDataObject>()
             {
-                new(new SimpleDataObject("cat", "")),
+                (new SimpleDataObject("cat", "")),
             };
             var range = createRangeSet(setRemote);
             AddAllToLayer(setHost);
@@ -190,36 +192,25 @@ namespace Tests.RBSS_CS
         [Fact]
         public void PostRequestFullRangeNotInSet()
         {
-            var setParticipant = new SortedSet<SimpleObjectWrapper>()
+            var setParticipant = new List<SimpleDataObject>()
             {
-                new(new SimpleDataObject("bee", "")),
-                new(new SimpleDataObject("cat", "")),
-                new(new SimpleDataObject("doe", "")),
-                new(new SimpleDataObject("eel", "")),
-                new(new SimpleDataObject("fox", "")),
-                new(new SimpleDataObject("hog", "")),
+                (new SimpleDataObject("bee", "")),
+                (new SimpleDataObject("cat", "")),
+                (new SimpleDataObject("doe", "")),
+                (new SimpleDataObject("eel", "")),
+                (new SimpleDataObject("fox", "")),
+                (new SimpleDataObject("hog", "")),
             };
-            var setInitiator = new SortedSet<SimpleObjectWrapper>()
+            var setInitiator = new List<SimpleDataObject>()
             {
-                new(new SimpleDataObject("ape", "")),
-                new(new SimpleDataObject("eel", "")),
-                new(new SimpleDataObject("fox", "")),
-                new(new SimpleDataObject("gnu", "")),
+                (new SimpleDataObject("ape", "")),
+                (new SimpleDataObject("eel", "")),
+                (new SimpleDataObject("fox", "")),
+                (new SimpleDataObject("gnu", "")),
             };
             AddAllToLayer(setParticipant);
 
 
-            AddBifunctor bf1 = new AddBifunctor();
-            AddBifunctor bf2 = new AddBifunctor();
-            bf1.Apply(new SimpleObjectWrapper(new SimpleDataObject("eel", 0, "")).Hash);
-            bf1.Apply(new SimpleObjectWrapper(new SimpleDataObject("fox", 0, "")).Hash);
-            bf1.Apply(new SimpleObjectWrapper(new SimpleDataObject("hog", 0, "")).Hash);
-
-            bf2.Apply(new SimpleObjectWrapper(new SimpleDataObject("eel", 0, "")).Hash);
-            bf2.Apply(new SimpleObjectWrapper(new SimpleDataObject("fox", 0, "")).Hash);
-            bf2.Apply(new SimpleObjectWrapper(new SimpleDataObject("gnu", 0, "")).Hash);
-
-            Assert.NotEqual(Convert.ToBase64String(bf1.Hash), Convert.ToBase64String(bf2.Hash));
 
 
 
@@ -262,11 +253,11 @@ namespace Tests.RBSS_CS
         [Fact]
         public void PutRequest0ElemInsertStep()
         {
-            var setRemote = new SortedSet<SimpleObjectWrapper>()
+            var setRemote = new List<SimpleDataObject>()
             {
-                new(new SimpleDataObject("cat", "")),
+                (new SimpleDataObject("cat", "")),
             };
-            var setHost = new SortedSet<SimpleObjectWrapper>()
+            var setHost = new List<SimpleDataObject>()
             {
 
             };
@@ -304,23 +295,23 @@ namespace Tests.RBSS_CS
         [Fact]
         public void PostRequestInsertStepOverbounds()
         {
-            var setRemote = new SortedSet<SimpleObjectWrapper>()
+            var setRemote = new List<SimpleDataObject>()
             {
-                new(new SimpleDataObject("appreciated", "")),
-                new(new SimpleDataObject("connectivity", "")),
-                new(new SimpleDataObject("grad", "")),
-                new(new SimpleDataObject("greetings", "")),
-                new(new SimpleDataObject("industry", "")),
-                new(new SimpleDataObject("sense", "")),
+                (new SimpleDataObject("appreciated", "")),
+                (new SimpleDataObject("connectivity", "")),
+                (new SimpleDataObject("grad", "")),
+                (new SimpleDataObject("greetings", "")),
+                (new SimpleDataObject("industry", "")),
+                (new SimpleDataObject("sense", "")),
             };
-            var setHost = new SortedSet<SimpleObjectWrapper>()
+            var setHost = new List<SimpleDataObject>()
             {
-                new(new SimpleDataObject("ace", "")),
-                new(new SimpleDataObject("appreciated", "")),
-                new(new SimpleDataObject("connectivity", "")),
-                new(new SimpleDataObject("grad", "")),
-                new(new SimpleDataObject("industry", "")),
-                new(new SimpleDataObject("theme", "")),
+                (new SimpleDataObject("ace", "")),
+                (new SimpleDataObject("appreciated", "")),
+                (new SimpleDataObject("connectivity", "")),
+                (new SimpleDataObject("grad", "")),
+                (new SimpleDataObject("industry", "")),
+                (new SimpleDataObject("theme", "")),
             };
             AddAllToLayer(setHost);
             var result = _sync.SyncPut(new SyncState(0,
@@ -344,13 +335,13 @@ namespace Tests.RBSS_CS
         [Fact]
         public void PostRequestInsertStep()
         {
-            var setHost = new SortedSet<SimpleObjectWrapper>()
+            var setHost = new List<SimpleDataObject>()
             {
-                new(new SimpleDataObject("peace", "")),
-                new(new SimpleDataObject("poverty", "")),
-                new(new SimpleDataObject("scotland", "")),
-                new(new SimpleDataObject("spa", "")),
-                new(new SimpleDataObject("te", "")),
+                (new SimpleDataObject("peace", "")),
+                (new SimpleDataObject("poverty", "")),
+                (new SimpleDataObject("scotland", "")),
+                (new SimpleDataObject("spa", "")),
+                (new SimpleDataObject("te", "")),
             };
             AddAllToLayer(setHost);
             _persistenceLayer.Insert(new SimpleDataObject("te", ""));
@@ -376,21 +367,21 @@ namespace Tests.RBSS_CS
         [Fact]
         public void PutRequestElemInsertStep()
         {
-            var setRemote = new SortedSet<SimpleObjectWrapper>()
+            var setRemote = new List<SimpleDataObject>()
             {
-                new(new SimpleDataObject("bee", "")),
-                new(new SimpleDataObject("cat", "")),
-                new(new SimpleDataObject("doe", "")),
-                new(new SimpleDataObject("eel", "")),
-                new(new SimpleDataObject("fox", "")),
-                new(new SimpleDataObject("hog", "")),
+                (new SimpleDataObject("bee", "")),
+                (new SimpleDataObject("cat", "")),
+                (new SimpleDataObject("doe", "")),
+                (new SimpleDataObject("eel", "")),
+                (new SimpleDataObject("fox", "")),
+                (new SimpleDataObject("hog", "")),
             };
-            var setHost = new SortedSet<SimpleObjectWrapper>()
+            var setHost = new List<SimpleDataObject>()
             {
-                new(new SimpleDataObject("ape", "")),
-                new(new SimpleDataObject("eel", "")),
-                new(new SimpleDataObject("fox", "")),
-                new(new SimpleDataObject("gnu", "")),
+                (new SimpleDataObject("ape", "")),
+                (new SimpleDataObject("eel", "")),
+                (new SimpleDataObject("fox", "")),
+                (new SimpleDataObject("gnu", "")),
             };
             AddAllToLayer(setHost);
 
@@ -435,28 +426,28 @@ namespace Tests.RBSS_CS
 
     public class SortedSetSyncControllerTestsXor : SyncApiControllerTests
     {
-        public SortedSetSyncControllerTestsXor(): base(new PersistenceLayer<SortedSetPersistence>(new DatabaseStub(), new XorBifunctor()))
+        public SortedSetSyncControllerTestsXor(): base(new PersistenceLayer<SortedSetPersistence>(new DatabaseStub(), new XorBifunctor(), new StableHash()))
         {
         }
     }
 
     public class SortedSetSyncControllerTestsAdd : SyncApiControllerTests
     {
-        public SortedSetSyncControllerTestsAdd(): base(new PersistenceLayer<SortedSetPersistence>(new DatabaseStub(), new AddBifunctor()))
+        public SortedSetSyncControllerTestsAdd(): base(new PersistenceLayer<SortedSetPersistence>(new DatabaseStub(), new AddBifunctor(), new SHA256Hash()))
         {
         }
     }
 
     public class RedBlackTreeSyncControllerTestsXor : SyncApiControllerTests
     {
-        public RedBlackTreeSyncControllerTestsXor(): base(new PersistenceLayer<RedBlackTreePersistence>(new DatabaseStub(), new XorBifunctor()))
+        public RedBlackTreeSyncControllerTestsXor(): base(new PersistenceLayer<RedBlackTreePersistence>(new DatabaseStub(), new XorBifunctor(), new SHA256Hash()))
         {
         }
     }
 
     public class RedBlackTreeSyncControllerTestsAdd : SyncApiControllerTests
     {
-        public RedBlackTreeSyncControllerTestsAdd(): base(new PersistenceLayer<RedBlackTreePersistence>(new DatabaseStub(), new AddBifunctor()))
+        public RedBlackTreeSyncControllerTestsAdd(): base(new PersistenceLayer<RedBlackTreePersistence>(new DatabaseStub(), new AddBifunctor(), new StableHash()))
         {
         }
     }

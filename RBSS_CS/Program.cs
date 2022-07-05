@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using DAL1.RBSS_CS;
+using DAL1.RBSS_CS.Databse;
 using Microsoft.AspNetCore.HttpOverrides;
 using Models.RBSS_CS;
 using RBSS_CS.Controllers;
@@ -94,9 +95,9 @@ namespace RBSS_CS
 
                         var genric = typeof(PersistenceLayer<>).MakeGenericType(auxDsType);
 
-                        var persDbType = serverSettings.DBKind == "none" ? typeof(DatabaseStub) : GetByName(serverSettings.DBKind);
+                        var persDbType = serverSettings.DbKind == "none" ? typeof(DatabaseStub) : GetByName(serverSettings.DbKind);
                         if (persDbType == null)
-                            throw new TypeAccessException("Type not found: " + serverSettings.DBKind);
+                            throw new TypeAccessException("Type not found: " + serverSettings.DbKind);
 
                         var persDb = Activator.CreateInstance(persDbType);
 
@@ -105,7 +106,12 @@ namespace RBSS_CS
                             throw new TypeAccessException("Type not found: " + serverSettings.Bifunctor);
                         var bifunctor = Activator.CreateInstance(bifunctorType);
 
-                        if (Activator.CreateInstance(genric, persDb, bifunctor) is not IPersistenceLayerSingleton instance) 
+                        var hashType = GetByName(serverSettings.HashFunc);
+                        if (hashType == null)
+                            throw new TypeAccessException("Type not found: " + serverSettings.HashFunc);
+                        var hashFunction = Activator.CreateInstance(hashType);
+
+                        if (Activator.CreateInstance(genric, persDb, bifunctor, hashFunction) is not IPersistenceLayerSingleton instance) 
                             throw new TypeAccessException("Type is not assignable as auxillaryDS: " + serverSettings.AuxillaryDS);
                         instance.Initialize();
                         services.AddSingleton<ServerSettings>(serverSettings);
