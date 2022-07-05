@@ -280,22 +280,6 @@
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public byte[] GetFingerprint(T x, T y)
-        {
-            var list = GetSortedListBetween(x, y);
-            return GetFingerprint(list);
-        }
-
-        public byte[] GetFingerprint(List<T> list)
-        {
-            var pc = new PrecalculatedHash();
-            foreach (var v in list)
-            {
-                pc = pc.Bifunctor(v.Hash);
-            }
-
-            return pc.Hash;
-        }
         private static List<T> GetSortedListBetween(List<T> list, TreeNode<T>? node, T x, T y, bool enableLeftBoundCheck, bool enableRightBoundCheck)
         {
             if (node == null) return list;

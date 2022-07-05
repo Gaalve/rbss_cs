@@ -6,23 +6,32 @@ namespace DAL1.RBSS_CS
     {
         private readonly RedBlackTree<SimpleObjectWrapper> _set;
         private IDatabase _db;
+        private IBifunctor _bifunctor;
 
         public RedBlackTreePersistence()
         {
             _set = new RedBlackTree<SimpleObjectWrapper>();
             _db = new DatabaseStub();
+            _bifunctor = new XorBifunctor();
         }
 
         public string GetFingerprint(string lower, string upper)
         {
             var lowerWrapper = new SimpleObjectWrapper(lower);
             var upperWrapper = new SimpleObjectWrapper(upper);
-            return Convert.ToBase64String(_set.GetFingerprint(lowerWrapper, upperWrapper));
+            //return Convert.ToBase64String(_set.GetFingerprint(lowerWrapper, upperWrapper));
+            return GetFingerprint(_set.GetSortedListBetween(lowerWrapper, upperWrapper));
         }
 
-        public string GetFingerprint(List<SimpleObjectWrapper> sow)
+        private string GetFingerprint(List<SimpleObjectWrapper> list)
         {
-            return Convert.ToBase64String(_set.GetFingerprint(sow));
+            var pc = _bifunctor.GetNewEmpty();
+            foreach (var v in list)
+            {
+                pc.Apply(v.Hash);
+            }
+
+            return Convert.ToBase64String(pc.Hash);
         }
 
         public bool Insert(SimpleDataObject data)
@@ -109,9 +118,9 @@ namespace DAL1.RBSS_CS
             throw new NotImplementedException();
         }
 
-        public void SetBifunctor()
+        public void SetBifunctor(IBifunctor bifunctor)
         {
-            throw new NotImplementedException();
+            _bifunctor = bifunctor;
         }
 
         public void Initialize()

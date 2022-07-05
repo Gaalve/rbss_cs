@@ -206,6 +206,25 @@ namespace Tests.RBSS_CS
             };
             AddAllToLayer(setParticipant);
 
+
+            AddBifunctor bf1 = new AddBifunctor();
+            AddBifunctor bf2 = new AddBifunctor();
+            bf1.Apply(new SimpleObjectWrapper(new SimpleDataObject("eel", 0, "")).Hash);
+            bf1.Apply(new SimpleObjectWrapper(new SimpleDataObject("fox", 0, "")).Hash);
+            bf1.Apply(new SimpleObjectWrapper(new SimpleDataObject("hog", 0, "")).Hash);
+
+            bf2.Apply(new SimpleObjectWrapper(new SimpleDataObject("eel", 0, "")).Hash);
+            bf2.Apply(new SimpleObjectWrapper(new SimpleDataObject("fox", 0, "")).Hash);
+            bf2.Apply(new SimpleObjectWrapper(new SimpleDataObject("gnu", 0, "")).Hash);
+
+            Assert.NotEqual(Convert.ToBase64String(bf1.Hash), Convert.ToBase64String(bf2.Hash));
+
+
+
+
+
+
+
             var result = _sync.SyncPost(new ValidateStep("ape", "ape", "fp"));
             
             Assert.IsType<OkObjectResult>(result);
@@ -412,16 +431,30 @@ namespace Tests.RBSS_CS
     }
 
 
-    public class SortedSetSyncControllerTests : SyncApiControllerTests
+    public class SortedSetSyncControllerTestsXor : SyncApiControllerTests
     {
-        public SortedSetSyncControllerTests(): base(new PersistenceLayer<SortedSetPersistence>(new DatabaseStub()))
+        public SortedSetSyncControllerTestsXor(): base(new PersistenceLayer<SortedSetPersistence>(new DatabaseStub(), new XorBifunctor()))
         {
         }
     }
 
-    public class RedBlackTreeSyncControllerTests : SyncApiControllerTests
+    public class SortedSetSyncControllerTestsAdd : SyncApiControllerTests
     {
-        public RedBlackTreeSyncControllerTests(): base(new PersistenceLayer<SortedSetPersistence>(new DatabaseStub()))
+        public SortedSetSyncControllerTestsAdd(): base(new PersistenceLayer<SortedSetPersistence>(new DatabaseStub(), new AddBifunctor()))
+        {
+        }
+    }
+
+    public class RedBlackTreeSyncControllerTestsXor : SyncApiControllerTests
+    {
+        public RedBlackTreeSyncControllerTestsXor(): base(new PersistenceLayer<RedBlackTreePersistence>(new DatabaseStub(), new XorBifunctor()))
+        {
+        }
+    }
+
+    public class RedBlackTreeSyncControllerTestsAdd : SyncApiControllerTests
+    {
+        public RedBlackTreeSyncControllerTestsAdd(): base(new PersistenceLayer<RedBlackTreePersistence>(new DatabaseStub(), new AddBifunctor()))
         {
         }
     }

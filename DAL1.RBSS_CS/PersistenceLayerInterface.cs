@@ -19,8 +19,8 @@ namespace DAL1.RBSS_CS
         public SimpleDataObject? Search(string key);
         public void Clear();
         public void SetDb(IDatabase db);
-        public void SetHashFunction(); //TODO
-        public void SetBifunctor(); //TODO
+        public void SetHashFunction(); // TODO
+        public void SetBifunctor(IBifunctor bifunctor); 
         public void Initialize();
     }
 

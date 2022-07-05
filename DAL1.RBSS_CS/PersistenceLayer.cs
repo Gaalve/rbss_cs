@@ -8,10 +8,11 @@ namespace DAL1.RBSS_CS
         private readonly IPersistenceLayer _auxillaryDs;
 
 
-        public PersistenceLayer(IDatabase database)
+        public PersistenceLayer(IDatabase database, IBifunctor bifunctor)
         {
             _auxillaryDs = new T();
             _auxillaryDs.SetDb(database);
+            _auxillaryDs.SetBifunctor(bifunctor);
         }
 
 

@@ -11,22 +11,24 @@ namespace DAL1.RBSS_CS
     {
         private readonly SortedSet<SimpleObjectWrapper> _set;
         private IDatabase _db;
+        private IBifunctor _bifunctor;
 
         public SortedSetPersistence()
         {
             _set = new SortedSet<SimpleObjectWrapper>();
             _db = new DatabaseStub();
+            _bifunctor = new XorBifunctor();
         }
         public string GetFingerprint(string lower, string upper)
         {
             if (_set.Count == 0) return "AA==";
             //if (string.Compare(lower, upper, StringComparison.Ordinal) > 0) return 0;
-            PrecalculatedHash hash = new PrecalculatedHash();
+            IBifunctor hash = _bifunctor.GetNewEmpty();
             if (string.Compare(lower, upper, StringComparison.Ordinal) == 0)
             {
                 foreach (var v in _set)
                 {
-                    hash = hash.Bifunctor(v.Hash);
+                    hash.Apply(v.Hash);
                 }
                 
                 return Convert.ToBase64String(hash.Hash);
@@ -40,7 +42,7 @@ namespace DAL1.RBSS_CS
                 if (v.Data.Id != upper)
                 {
                     Console.Write(v.Data.Id + "(" + v.Hash + "),");
-                    hash = hash.Bifunctor(v.Hash);
+                    hash.Apply(v.Hash);
                 }
                 
             }
@@ -164,9 +166,9 @@ namespace DAL1.RBSS_CS
             throw new NotImplementedException();
         }
 
-        public void SetBifunctor()
+        public void SetBifunctor(IBifunctor bifunctor)
         {
-            throw new NotImplementedException();
+            _bifunctor = bifunctor;
         }
 
         public void Initialize()

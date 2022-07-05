@@ -100,10 +100,15 @@ namespace RBSS_CS
 
                         var persDb = Activator.CreateInstance(persDbType);
 
-                        if (Activator.CreateInstance(genric, persDb) is not IPersistenceLayerSingleton instance) 
+                        var bifunctorType = GetByName(serverSettings.Bifunctor);
+                        if (bifunctorType == null)
+                            throw new TypeAccessException("Type not found: " + serverSettings.Bifunctor);
+                        var bifunctor = Activator.CreateInstance(bifunctorType);
+
+                        if (Activator.CreateInstance(genric, persDb, bifunctor) is not IPersistenceLayerSingleton instance) 
                             throw new TypeAccessException("Type is not assignable as auxillaryDS: " + serverSettings.AuxillaryDS);
                         instance.Initialize();
-                        services.AddSingleton<ServerSettings>(serverSettings ?? new ServerSettings());
+                        services.AddSingleton<ServerSettings>(serverSettings);
                         services.AddSingleton<IPersistenceLayerSingleton>(instance);
                     });
 
