@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Models.RBSS_CS;
 using Newtonsoft.Json;
 using System.Data.Entity.Migrations;
+using DAL1.RBSS_CS.Databse;
+
 namespace DAL1.RBSS_CS
 {
     public sealed class LocalDb : DbContext, IDatabase

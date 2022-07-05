@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using DAL1.RBSS_CS;
+using DAL1.RBSS_CS.Bifunctors;
+using DAL1.RBSS_CS.Datastructures;
 using Models.RBSS_CS;
 using Xunit;
 
