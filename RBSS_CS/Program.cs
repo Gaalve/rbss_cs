@@ -15,7 +15,6 @@ namespace RBSS_CS
     /// </summary>
     public class Program
     {
-        static object runThreadLock = new object();
         /// <summary>
         /// Main
         /// </summary>
@@ -79,7 +78,7 @@ namespace RBSS_CS
                 if (debugAPI != null && syncAPI != null && modifyAPI != null)
                 {
                     var integrationTest = new IntegrationTest((DebugApi)debugAPI, (SyncApi)syncAPI, (ModifyApi)modifyAPI, 
-                        host.Services.GetService<IPersistenceLayerSingleton>()!);
+                        host.Services.GetService<IPersistenceLayerSingleton>()!, settings);
                     integrationTest.Run();
                 }
                 

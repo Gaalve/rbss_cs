@@ -23,15 +23,16 @@ namespace RBSS_CS
         private readonly ModifyApi _modifyApi;
         private readonly Client _remoteClient;
         private readonly IPersistenceLayerSingleton _persistenceLayer;
+        private readonly ServerSettings _settings;
 
-        public IntegrationTest(DebugApi dbgApi, SyncApi syncApi, ModifyApi modifyApi, IPersistenceLayerSingleton persistenceLayer)
+        public IntegrationTest(DebugApi dbgApi, SyncApi syncApi, ModifyApi modifyApi, IPersistenceLayerSingleton persistenceLayer, ServerSettings settings)
         {
             _debugApi = dbgApi;
             _syncApi = syncApi;
             _modifyApi = modifyApi;
-            // _remoteClient = new Client("http://host.docker.internal:5634");
             _remoteClient = ClientMap.Instance.SuccessorClient!;
             _persistenceLayer = persistenceLayer;
+            _settings = settings;
         }
 
         private void Cleanup()
@@ -179,6 +180,7 @@ namespace RBSS_CS
         // ReSharper disable once UnusedMember.Local
         private void TestExampleRun1()
         {
+            if (_settings.BranchingFactor != 2 || _settings.ItemSize != 1) return;
             var setParticipant = new List<SimpleDataObject>()
             {
                 (new SimpleDataObject("bee", "")),
@@ -239,6 +241,7 @@ namespace RBSS_CS
         // ReSharper disable once UnusedMember.Local
         private void TestExampleRun2()
         {
+            if (_settings.BranchingFactor != 2 || _settings.ItemSize != 1) return;
             var setParticipant = new List<SimpleDataObject>()
             {
                 (new SimpleDataObject("ape", "")),
@@ -306,6 +309,7 @@ namespace RBSS_CS
         // ReSharper disable once UnusedMember.Local
         private void TestExampleRun3()
         {
+            if (_settings.BranchingFactor != 2 || _settings.ItemSize != 1) return;
             var setParticipant = new List<SimpleDataObject>()
             {
                 (new SimpleDataObject("ape", "")),
