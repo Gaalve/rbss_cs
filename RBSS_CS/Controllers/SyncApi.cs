@@ -35,12 +35,18 @@ namespace RBSS_CS.Controllers
             if (equalFp) return;
             var ranges = _persistenceLayer.SplitRange(validateStep.IdFrom, validateStep.IdTo);
 
-            var step1 = createStep(ranges[0]);
-            var step2 = createStep(ranges[1]);
+            bool notNull = false;
 
-            if (step1 != null) state.Steps.Add(new Step(0, new OneOfValidateStepInsertStep(step1)));
-            if (step2 != null) state.Steps.Add(new Step(0, new OneOfValidateStepInsertStep(step2)));
-            if (step1 == null && step2 == null) state.Steps.Add(new Step(0, new OneOfValidateStepInsertStep(
+            foreach (var rangeSet in ranges)
+            {
+                var step = createStep(rangeSet);
+                if (step != null)
+                {
+                    state.Steps.Add(new Step(0, new OneOfValidateStepInsertStep(step)));
+                    notNull = true;
+                }
+            }
+            if (!notNull) state.Steps.Add(new Step(0, new OneOfValidateStepInsertStep(
                 new InsertStep(validateStep.IdFrom, new List<string>(), validateStep.IdTo, new List<SimpleDataObject>(), false))));
         }
 
