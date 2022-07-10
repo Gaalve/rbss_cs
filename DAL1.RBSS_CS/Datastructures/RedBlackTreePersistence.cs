@@ -11,6 +11,7 @@ namespace DAL1.RBSS_CS.Datastructures
         private IDatabase _db;
         private IBifunctor _bifunctor;
         private IHashFunction _hashFunction;
+        private int _branching;
 
         public RedBlackTreePersistence()
         {
@@ -18,6 +19,7 @@ namespace DAL1.RBSS_CS.Datastructures
             _db = new DatabaseStub();
             _bifunctor = new XorBifunctor();
             _hashFunction = new StableHash();
+            _branching = 2;
         }
 
         public string GetFingerprint(string lower, string upper)
@@ -56,26 +58,34 @@ namespace DAL1.RBSS_CS.Datastructures
             var lowerWrapper = new SimpleObjectWrapper(idFrom);
             var upperWrapper = new SimpleObjectWrapper(idTo);
             var list = _set.GetSortedListBetween(lowerWrapper, upperWrapper);
-            RangeSet[] ranges = new RangeSet[2];
-            if (list.Count == 0) return ranges;
-            if (list.Count == 1)
+            RangeSet[] ranges = new RangeSet[_branching];
+            var count = list.Count;
+            if (count == 0) return ranges;
+            var idx = 0;
+            string curId = idFrom;
+            // Split ranges into approximately equal parts
+            for (int i = 0; i < _branching; i++)
             {
-                var tmidId = list[0].Data.Id;
-                ranges[0] = new RangeSet(idFrom, tmidId, "AA==", Array.Empty<SimpleDataObject>()); 
-                //ranges[0] will be ignored
-                ranges[1] = new RangeSet(idFrom, idTo, GetFingerprint(list), new[]{list[0].Data});
-                return ranges;
+                var rem = _branching - i;
+                var nc = (count - idx + rem - 1) / rem; // integer ceiling of remaining items in list
+                var listRange = list.GetRange(idx, nc);
+                idx += nc;
+                if (idx < count)
+                {
+                    string nextId = list[idx].Data.Id;
+                    ranges[i] = new RangeSet(curId, nextId, GetFingerprint(listRange),
+                        listRange.Select(s => s.Data).ToArray());
+                    curId = nextId;
+                }
+                else
+                {
+                    ranges[i] = new RangeSet(curId, idTo, GetFingerprint(listRange),
+                        listRange.Select(s => s.Data).ToArray());
+                    break;
+                }
             }
-            var midCount = (list.Count + 1) / 2;
-            var range1 = list.GetRange(0, midCount);
-            var range2 = list.GetRange(midCount, list.Count - midCount);
-            var midId = range2[0].Data.Id;
-            ranges[0] = new RangeSet(idFrom, midId, GetFingerprint(range1), 
-                range1.Select(s => s.Data).ToArray());
-            ranges[1] = new RangeSet(midId, idTo, GetFingerprint(range2), 
-                range2.Select(s => s.Data).ToArray());
-            return ranges;
 
+            return ranges;
         }
 
         public RangeSet CreateRangeSet(string idFrom, string idTo)
@@ -126,6 +136,12 @@ namespace DAL1.RBSS_CS.Datastructures
         public void SetBifunctor(IBifunctor bifunctor)
         {
             _bifunctor = bifunctor;
+        }
+
+        public void SetBranchingFactor(int branchingFactor)
+        {
+            if (branchingFactor < 2) throw new Exception("Branching Factor is not supported: " + branchingFactor);
+            _branching = branchingFactor;
         }
 
         public void Initialize()

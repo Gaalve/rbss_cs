@@ -24,6 +24,7 @@ namespace DAL1.RBSS_CS
         public void SetDb(IDatabase db);
         public void SetHashFunction(IHashFunction hashFunction);
         public void SetBifunctor(IBifunctor bifunctor); 
+        public void SetBranchingFactor(int branchingFactor);
         public void Initialize();
     }
 

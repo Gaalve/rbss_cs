@@ -10,6 +10,7 @@ using DAL1.RBSS_CS.Datastructures;
 using DAL1.RBSS_CS.Hashfunction;
 using Microsoft.AspNetCore.Mvc;
 using Models.RBSS_CS;
+using RBSS_CS;
 using RBSS_CS.Controllers;
 using Xunit;
 
@@ -23,7 +24,7 @@ namespace Tests.RBSS_CS
         public SyncApiControllerTests(IPersistenceLayerSingleton persistenceLayer)
         {
             _persistenceLayer = persistenceLayer;
-            _sync = new SyncApi(_persistenceLayer);
+            _sync = new SyncApi(new ServerSettings(), _persistenceLayer);
         }
 
         public void Dispose()
@@ -426,28 +427,28 @@ namespace Tests.RBSS_CS
 
     public class SortedSetSyncControllerTestsXor : SyncApiControllerTests
     {
-        public SortedSetSyncControllerTestsXor(): base(new PersistenceLayer<SortedSetPersistence>(new DatabaseStub(), new XorBifunctor(), new StableHash()))
+        public SortedSetSyncControllerTestsXor(): base(new PersistenceLayer<SortedSetPersistence>(new DatabaseStub(), new XorBifunctor(), new StableHash(), 2))
         {
         }
     }
 
     public class SortedSetSyncControllerTestsAdd : SyncApiControllerTests
     {
-        public SortedSetSyncControllerTestsAdd(): base(new PersistenceLayer<SortedSetPersistence>(new DatabaseStub(), new AddBifunctor(), new SHA256Hash()))
+        public SortedSetSyncControllerTestsAdd(): base(new PersistenceLayer<SortedSetPersistence>(new DatabaseStub(), new AddBifunctor(), new SHA256Hash(), 2))
         {
         }
     }
 
     public class RedBlackTreeSyncControllerTestsXor : SyncApiControllerTests
     {
-        public RedBlackTreeSyncControllerTestsXor(): base(new PersistenceLayer<RedBlackTreePersistence>(new DatabaseStub(), new XorBifunctor(), new SHA256Hash()))
+        public RedBlackTreeSyncControllerTestsXor(): base(new PersistenceLayer<RedBlackTreePersistence>(new DatabaseStub(), new XorBifunctor(), new SHA256Hash(), 2))
         {
         }
     }
 
     public class RedBlackTreeSyncControllerTestsAdd : SyncApiControllerTests
     {
-        public RedBlackTreeSyncControllerTestsAdd(): base(new PersistenceLayer<RedBlackTreePersistence>(new DatabaseStub(), new AddBifunctor(), new StableHash()))
+        public RedBlackTreeSyncControllerTestsAdd(): base(new PersistenceLayer<RedBlackTreePersistence>(new DatabaseStub(), new AddBifunctor(), new StableHash(), 2))
         {
         }
     }

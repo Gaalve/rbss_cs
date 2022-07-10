@@ -9,16 +9,19 @@ namespace RBSS_CS.Controllers
     [ApiController]
     public class SyncApi : SyncApiController
     {
+        private readonly ServerSettings _settings;
         private readonly IPersistenceLayerSingleton _persistenceLayer;
+        
 
-        public SyncApi(IPersistenceLayerSingleton persistenceLayer)
+        public SyncApi(ServerSettings settings, IPersistenceLayerSingleton persistenceLayer)
         {
+            _settings = settings;
             _persistenceLayer = persistenceLayer;
         }
         private AbstractStep? createStep(RangeSet? set)
         {
             if (set?.Data == null || set.Data.Length == 0) return null;
-            else if (set.Data.Length == 1)
+            else if (set.Data.Length <= _settings.ItemSize)
                 return new InsertStep(set.IdFrom, new List<string>(), set.IdTo, new List<SimpleDataObject>(collection: set.Data), false);
 
             return new ValidateStep(set.IdFrom, set.IdTo, set.Fingerprint);

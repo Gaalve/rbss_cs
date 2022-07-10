@@ -111,7 +111,7 @@ namespace RBSS_CS
                             throw new TypeAccessException("Type not found: " + serverSettings.HashFunc);
                         var hashFunction = Activator.CreateInstance(hashType);
 
-                        if (Activator.CreateInstance(genric, persDb, bifunctor, hashFunction) is not IPersistenceLayerSingleton instance) 
+                        if (Activator.CreateInstance(genric, persDb, bifunctor, hashFunction, serverSettings.BranchingFactor) is not IPersistenceLayerSingleton instance) 
                             throw new TypeAccessException("Type is not assignable as auxillaryDS: " + serverSettings.AuxillaryDS);
                         instance.Initialize();
                         services.AddSingleton<ServerSettings>(serverSettings);

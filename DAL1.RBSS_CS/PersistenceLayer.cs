@@ -11,12 +11,13 @@ namespace DAL1.RBSS_CS
         private readonly IPersistenceLayer _auxillaryDs;
 
 
-        public PersistenceLayer(IDatabase database, IBifunctor bifunctor, IHashFunction hashFunction)
+        public PersistenceLayer(IDatabase database, IBifunctor bifunctor, IHashFunction hashFunction, int branchingFactor)
         {
             _auxillaryDs = new T();
             _auxillaryDs.SetDb(database);
             _auxillaryDs.SetBifunctor(bifunctor);
             _auxillaryDs.SetHashFunction(hashFunction);
+            _auxillaryDs.SetBranchingFactor(branchingFactor);
         }
 
 

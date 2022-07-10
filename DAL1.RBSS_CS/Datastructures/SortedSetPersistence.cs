@@ -11,6 +11,7 @@ namespace DAL1.RBSS_CS.Datastructures
         private IDatabase _db;
         private IBifunctor _bifunctor;
         private IHashFunction _hashFunction;
+        private int _branching;
 
         public SortedSetPersistence()
         {
@@ -18,36 +19,30 @@ namespace DAL1.RBSS_CS.Datastructures
             _db = new DatabaseStub();
             _bifunctor = new XorBifunctor();
             _hashFunction = new StableHash();
+            _branching = 2;
         }
-        public string GetFingerprint(string lower, string upper)
+        public string GetFingerprint(string idFrom, string idTo)
         {
             if (_set.Count == 0) return "AA==";
-            //if (string.Compare(lower, upper, StringComparison.Ordinal) > 0) return 0;
-            IBifunctor hash = _bifunctor.GetNewEmpty();
-            if (string.Compare(lower, upper, StringComparison.Ordinal) == 0)
+            if (idFrom == idTo) return GetFingerprint(_set);
+            var lower = new SimpleObjectWrapper(idFrom);
+            var lastExceeded = string.Compare(idFrom, idTo, StringComparison.Ordinal) > 0;
+            var upper = lastExceeded ? _set.Last() : new SimpleObjectWrapper(idTo);
+            RangeSet[] ranges = new RangeSet[2];
+            var list = _set.GetViewBetween(lower, upper).Where(s => s.Data.Id != idTo).ToList();
+            if (lastExceeded) list.AddRange(_set.GetViewBetween(new SimpleObjectWrapper(""), new SimpleObjectWrapper(idTo)).Where(s => s.Data.Id != idTo));
+            return GetFingerprint(list);
+        }
+
+        private string GetFingerprint(IEnumerable<SimpleObjectWrapper> list)
+        {
+            var pc = _bifunctor.GetNewEmpty();
+            foreach (var v in list)
             {
-                foreach (var v in _set)
-                {
-                    hash.Apply(v.Hash);
-                }
-                
-                return Convert.ToBase64String(hash.Hash);
+                pc.Apply(v.Hash);
             }
 
-            var upperData = (string.Compare(lower, upper, StringComparison.Ordinal) > 0) ? _set.Last() : new SimpleObjectWrapper(upper);
-            var subset = _set.GetViewBetween(new SimpleObjectWrapper(lower), upperData);
-            Console.Write("Fp[");
-            foreach (var v in subset)
-            {
-                if (v.Data.Id != upper)
-                {
-                    Console.Write(v.Data.Id + "(" + v.Hash + "),");
-                    hash.Apply(v.Hash);
-                }
-                
-            }
-            Console.Write(") = "+hash.Hash + "\n");
-            return Convert.ToBase64String(hash.Hash);
+            return Convert.ToBase64String(pc.Hash);
         }
 
         public bool Insert(SimpleDataObject data)
@@ -64,51 +59,43 @@ namespace DAL1.RBSS_CS.Datastructures
         }
 
 
-        private RangeSet[] SplitRange(string id)
-        {
-            RangeSet[] ranges = new RangeSet[2];
-            if (_set.Count == 0) return ranges;
-            var lower = new SimpleObjectWrapper(id);
-            var upper = _set.Last();
-            var midId = _set.Count == 1 ? upper.Data.Id : _set.Select(s => s.Data.Id).ToArray()[(1 + _set.Count) / 2];
-            var mid = new SimpleObjectWrapper(midId);
-            var range1 = _set.GetViewBetween(lower, mid);
-            var range2 = _set.GetViewBetween(mid, upper);
-            
-            ranges[0] = new RangeSet(id, midId, GetFingerprint(id, midId), range1.Select(s => s.Data).Where(s => s.Id != midId).ToArray());
-            ranges[1] = new RangeSet(midId, id, GetFingerprint(midId, id), range2.Select(s => s.Data).ToArray());
-            return ranges;
-        }
-
-
         public RangeSet[] SplitRange(string idFrom, string idTo)
         {
             if (_set.Count == 0) return new RangeSet[2];
-            if (idFrom == idTo) return SplitRange(idFrom);
+            // if (idFrom == idTo) return SplitRange(idFrom);
             var lower = new SimpleObjectWrapper(idFrom);
             var lastExceeded = string.Compare(idFrom, idTo, StringComparison.Ordinal) > 0;
             var upper = lastExceeded ? _set.Last() : new SimpleObjectWrapper(idTo);
             RangeSet[] ranges = new RangeSet[2];
-            var subset = _set.GetViewBetween(lower, upper).Where(s => s.Data.Id != idTo).ToList();
-            if (lastExceeded) subset.AddRange(_set.GetViewBetween(new SimpleObjectWrapper(""), new SimpleObjectWrapper(idTo)).Where(s => s.Data.Id != idTo));
+            var list = idFrom == idTo ? _set.ToList() : _set.GetViewBetween(lower, upper).Where(s => s.Data.Id != idTo).ToList();
+            if (lastExceeded) list.AddRange(_set.GetViewBetween(new SimpleObjectWrapper(""), new SimpleObjectWrapper(idTo)).Where(s => s.Data.Id != idTo));
             
-            if (subset.Count == 0) return ranges;
-            if (subset.Count == 1)
+            var count = list.Count;
+            if (count == 0) return ranges;
+            var idx = 0;
+            string curId = idFrom;
+            // Split ranges into approximately equal parts
+            for (int i = 0; i < _branching; i++)
             {
-                var tmidId = subset.First().Data.Id;
-                ranges[0] = new RangeSet(idFrom, tmidId, "AA==", Array.Empty<SimpleDataObject>()); 
-                //ranges[0] will be ignored
-                ranges[1] = new RangeSet(idFrom, idTo, GetFingerprint(idFrom, idTo), new[]{subset.First().Data});
-                return ranges;
+                var rem = _branching - i;
+                var nc = (count - idx + rem - 1) / rem; // integer ceiling of remaining items in list
+                var listRange = list.GetRange(idx, nc);
+                idx += nc;
+                if (idx < count)
+                {
+                    string nextId = list[idx].Data.Id;
+                    ranges[i] = new RangeSet(curId, nextId, GetFingerprint(listRange),
+                        listRange.Select(s => s.Data).ToArray());
+                    curId = nextId;
+                }
+                else
+                {
+                    ranges[i] = new RangeSet(curId, idTo, GetFingerprint(listRange),
+                        listRange.Select(s => s.Data).ToArray());
+                    break;
+                }
             }
-            var midCount = (subset.Count + 1) / 2;
-            var midId = subset[midCount].Data.Id;
 
-            var range1 = subset.GetRange(0, midCount);
-            var range2 = subset.GetRange(midCount, subset.Count - midCount);
-
-            ranges[0] = new RangeSet(idFrom, midId, GetFingerprint(idFrom, midId), range1.Select(s => s.Data).Where(s => s.Id != midId).ToArray());
-            ranges[1] = new RangeSet(midId, idTo, GetFingerprint(midId, idTo), range2.Select(s => s.Data).Where(s => s.Id != idTo).ToArray());
             return ranges;
         }
 
@@ -169,6 +156,12 @@ namespace DAL1.RBSS_CS.Datastructures
         public void SetBifunctor(IBifunctor bifunctor)
         {
             _bifunctor = bifunctor;
+        }
+
+        public void SetBranchingFactor(int branchingFactor)
+        {
+            if (branchingFactor < 2) throw new Exception("Branching Factor is not supported: " + branchingFactor);
+            _branching = branchingFactor;
         }
 
         public void Initialize()

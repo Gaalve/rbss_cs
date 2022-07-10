@@ -178,21 +178,21 @@ namespace Tests.RBSS_CS
 
     public class SortedSetPersitenceTestsXor : PersistenceLayerTests
     {
-        public SortedSetPersitenceTestsXor(): base(new PersistenceLayer<SortedSetPersistence>(new DatabaseStub(), new XorBifunctor(), new StableHash()))
+        public SortedSetPersitenceTestsXor(): base(new PersistenceLayer<SortedSetPersistence>(new DatabaseStub(), new XorBifunctor(), new StableHash(), 2))
         {
         }
     }
 
     public class RedBlackTreePersistenceTestsXor : PersistenceLayerTests
     {
-        public RedBlackTreePersistenceTestsXor(): base(new PersistenceLayer<RedBlackTreePersistence>(new DatabaseStub(), new XorBifunctor(), new SHA256Hash()))
+        public RedBlackTreePersistenceTestsXor(): base(new PersistenceLayer<RedBlackTreePersistence>(new DatabaseStub(), new XorBifunctor(), new SHA256Hash(), 2))
         {
         }
     }
 
     public class RedBlackTreePersistenceTestsAdd : PersistenceLayerTests
     {
-        public RedBlackTreePersistenceTestsAdd(): base(new PersistenceLayer<RedBlackTreePersistence>(new DatabaseStub(), new AddBifunctor(), new SHA256Hash()))
+        public RedBlackTreePersistenceTestsAdd(): base(new PersistenceLayer<RedBlackTreePersistence>(new DatabaseStub(), new AddBifunctor(), new SHA256Hash(), 2))
         {
         }
     }
