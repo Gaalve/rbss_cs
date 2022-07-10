@@ -68,7 +68,7 @@ namespace RBSS_CS
         /// The number of milliseconds after which a peer should sync items with connected peers.
         /// </summary>
         [Range(1, int.MaxValue)]
-        public int SyncIntervalMS { get; set; } = 1000;
+        public int SyncIntervalMs { get; set; } = 1000;
 
         /// <summary>
         /// The assembly name of the database used for data persistence.
@@ -85,14 +85,14 @@ namespace RBSS_CS
         ///
         /// This value is ignored if DBKind is set to "none"
         /// </summary>
-        public string DBConfigPath { get; set; } = "";
+        public string DbConfigPath { get; set; } = "";
 
         /// <summary>
         /// Denotes the P2PStructure.
         ///
         /// Only "Ring" is valid
         /// </summary>
-        public string P2PStructure { get; set; } = "Ring";
+        public string P2pStructure { get; set; } = "Ring";
 
 
     }

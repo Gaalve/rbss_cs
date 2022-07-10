@@ -9,10 +9,12 @@ namespace RBSS_CS.Controllers
     {
         private readonly ServerSettings _settings;
         private readonly IPersistenceLayerSingleton _persistenceLayer;
-        public ModifyApi(ServerSettings settings, IPersistenceLayerSingleton persistence)
+        private readonly SyncApi _syncApi;
+        public ModifyApi(ServerSettings settings, IPersistenceLayerSingleton persistence, SyncApi syncApi)
         {
             _settings = settings;
             _persistenceLayer = persistence;
+            _syncApi = syncApi;
         }
 
         public override IActionResult DeletePost(SimpleDataObject simpleDataObject)
@@ -30,7 +32,11 @@ namespace RBSS_CS.Controllers
 
         public override IActionResult InsertPost(SimpleDataObject simpleDataObject)
         {
-            if (_persistenceLayer.Insert(simpleDataObject)) return Ok();
+            if (_persistenceLayer.Insert(simpleDataObject))
+            {
+                if(!_settings.UseIntervalForSync)ClientMap.Instance.SuccessorClient?.Synchronize(_syncApi, _persistenceLayer);
+                return Ok();
+            }
             return Conflict();
         }
 

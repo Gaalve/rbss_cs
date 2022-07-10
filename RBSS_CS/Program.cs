@@ -15,6 +15,7 @@ namespace RBSS_CS
     /// </summary>
     public class Program
     {
+        static object runThreadLock = new object();
         /// <summary>
         /// Main
         /// </summary>
@@ -43,7 +44,27 @@ namespace RBSS_CS
                 cm.SuccessorClient.PeerNetworkApi.NotifyPost(new Predecessor(cm.SelfClient.Configuration.BasePath));
 
             }
-            if (settings is not { TestingMode: true, TestingModeInitiator: true }) host.Run();
+            if (settings is not { TestingMode: true, TestingModeInitiator: true })
+            {
+                var cts = new CancellationTokenSource();
+                var t = new Thread(() =>
+                {
+                    var interval = settings.SyncIntervalMs;
+                    var syncApi = host.Services.GetService<SyncApi>()!;
+                    var persitence = host.Services.GetService<IPersistenceLayerSingleton>()!;
+                    var ct = cts.Token;
+                    while (!ct.IsCancellationRequested)
+                    {
+                        Thread.Sleep(interval);
+                        ClientMap.Instance.SuccessorClient?.Synchronize(syncApi, persitence);
+                    }
+                });
+                if (settings.UseIntervalForSync && settings.SyncIntervalMs > 0) t.Start();
+                host.Run();
+                cts.Cancel();
+                t.Join();
+                cts.Dispose();
+            }
             else
             {
                 host.RunAsync();

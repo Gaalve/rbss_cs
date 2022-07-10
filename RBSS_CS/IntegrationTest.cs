@@ -620,13 +620,13 @@ namespace RBSS_CS
             AddToRemote(setParticipant);
             AddToHost(setInitiator);
 
-            //var co = Console.Out;
-            //Console.SetOut(new System.IO.StreamWriter(System.IO.Stream.Null));
+            var co = Console.Out;
+            Console.SetOut(new System.IO.StreamWriter(System.IO.Stream.Null));
             Stopwatch watch = new Stopwatch();
             watch.Start();
             var (r, c) = Synchronize();
             watch.Stop();
-            //Console.SetOut(co);
+            Console.SetOut(co);
 
             Console.WriteLine("### Time (ms) needed for synchronization: " + watch.ElapsedMilliseconds);
             Console.WriteLine("### Communication rounds needed " + r + " <= " + comRoundsUpper);
