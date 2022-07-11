@@ -25,6 +25,8 @@ namespace RBSS_CS
         private readonly IPersistenceLayerSingleton _persistenceLayer;
         private readonly ServerSettings _settings;
 
+        private SimpleDataObject[] _wordData;
+        private SimpleDataObject[] _wordBigData;
         public IntegrationTest(DebugApi dbgApi, SyncApi syncApi, ModifyApi modifyApi, IPersistenceLayerSingleton persistenceLayer, ServerSettings settings)
         {
             _debugApi = dbgApi;
@@ -33,6 +35,15 @@ namespace RBSS_CS
             _remoteClient = ClientMap.Instance.SuccessorClient!;
             _persistenceLayer = persistenceLayer;
             _settings = settings;
+            using var client = new HttpClient();
+            var downloadedString =
+                client.GetStringAsync(
+                    "https://www.mit.edu/~ecprice/wordlist.100000").Result;
+            string[] randomWords = downloadedString.Split('\n');
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            _wordData = randomWords.Select(s => new SimpleDataObject(s, 1, "")).ToArray();
+            _wordBigData = randomWords.Select(s => new SimpleDataObject(s, 1, new string(Enumerable.Repeat(
+                chars, 1024).Select(s => s[Random.Shared.Next(s.Length)]).ToArray()))).ToArray();
         }
 
         private void Cleanup()
@@ -112,9 +123,9 @@ namespace RBSS_CS
             {
                 var localSyncState = GetLocalResult(remoteResult);
                 Assert.NotNull(localSyncState);
-                comRounds += 1;
                 comTraffic += remoteResult.Steps.Count + localSyncState.Steps.Count;
                 if (localSyncState!.Steps.Count == 0) break;
+                comRounds += 1;
                 remoteResult = _remoteClient.SyncApi.SyncPut(localSyncState);
             }
             return (comRounds, comTraffic);
@@ -183,19 +194,19 @@ namespace RBSS_CS
             if (_settings.BranchingFactor != 2 || _settings.ItemSize != 1) return;
             var setParticipant = new List<SimpleDataObject>()
             {
-                (new SimpleDataObject("bee", "")),
-                (new SimpleDataObject("cat", "")),
-                (new SimpleDataObject("doe", "")),
-                (new SimpleDataObject("eel", "")),
-                (new SimpleDataObject("fox", "")),
-                (new SimpleDataObject("hog", "")),
+                (new SimpleDataObject("bee", 1, "")),
+                (new SimpleDataObject("cat", 1, "")),
+                (new SimpleDataObject("doe", 1, "")),
+                (new SimpleDataObject("eel", 1, "")),
+                (new SimpleDataObject("fox", 1, "")),
+                (new SimpleDataObject("hog", 1, "")),
             };
             var setInitiator = new List<SimpleDataObject>()
             {
-                (new SimpleDataObject("ape", "")),
-                (new SimpleDataObject("eel", "")),
-                (new SimpleDataObject("fox", "")),
-                (new SimpleDataObject("gnu", "")),
+                (new SimpleDataObject("ape", 1, "")),
+                (new SimpleDataObject("eel", 1, "")),
+                (new SimpleDataObject("fox", 1, "")),
+                (new SimpleDataObject("gnu", 1, "")),
             };
             AddToRemote(setParticipant);
             AddToHost(setInitiator);
@@ -244,24 +255,24 @@ namespace RBSS_CS
             if (_settings.BranchingFactor != 2 || _settings.ItemSize != 1) return;
             var setParticipant = new List<SimpleDataObject>()
             {
-                (new SimpleDataObject("ape", "")),
-                (new SimpleDataObject("bee", "")),
-                (new SimpleDataObject("cat", "")),
-                (new SimpleDataObject("doe", "")),
-                (new SimpleDataObject("eel", "")),
-                (new SimpleDataObject("gnu", "")),
-                (new SimpleDataObject("hog", "")),
+                (new SimpleDataObject("ape", 1, "")),
+                (new SimpleDataObject("bee", 1, "")),
+                (new SimpleDataObject("cat", 1, "")),
+                (new SimpleDataObject("doe", 1, "")),
+                (new SimpleDataObject("eel", 1, "")),
+                (new SimpleDataObject("gnu", 1, "")),
+                (new SimpleDataObject("hog", 1, "")),
             };
             var setInitiator = new List<SimpleDataObject>()
             {
-                (new SimpleDataObject("ape", "")),
-                (new SimpleDataObject("bee", "")),
-                (new SimpleDataObject("cat", "")),
-                (new SimpleDataObject("doe", "")),
-                (new SimpleDataObject("eel", "")),
-                (new SimpleDataObject("fox", "")),
-                (new SimpleDataObject("gnu", "")),
-                (new SimpleDataObject("hog", "")),
+                (new SimpleDataObject("ape", 1, "")),
+                (new SimpleDataObject("bee", 1, "")),
+                (new SimpleDataObject("cat", 1, "")),
+                (new SimpleDataObject("doe", 1, "")),
+                (new SimpleDataObject("eel", 1, "")),
+                (new SimpleDataObject("fox", 1, "")),
+                (new SimpleDataObject("gnu", 1, "")),
+                (new SimpleDataObject("hog", 1, "")),
             };
             AddToRemote(setParticipant);
             AddToHost(setInitiator);
@@ -312,21 +323,21 @@ namespace RBSS_CS
             if (_settings.BranchingFactor != 2 || _settings.ItemSize != 1) return;
             var setParticipant = new List<SimpleDataObject>()
             {
-                (new SimpleDataObject("ape", "")),
-                (new SimpleDataObject("cat", "")),
-                (new SimpleDataObject("eel", "")),
-                (new SimpleDataObject("gnu", "")),
+                (new SimpleDataObject("ape", 1, "")),
+                (new SimpleDataObject("cat", 1, "")),
+                (new SimpleDataObject("eel", 1,  "")),
+                (new SimpleDataObject("gnu", 1,  "")),
             };
             var setInitiator = new List<SimpleDataObject>()
             {
-                (new SimpleDataObject("ape", "")),
-                (new SimpleDataObject("bee", "")),
-                (new SimpleDataObject("cat", "")),
-                (new SimpleDataObject("doe", "")),
-                (new SimpleDataObject("eel", "")),
+                (new SimpleDataObject("ape", 1,  "")),
+                (new SimpleDataObject("bee", 1, "")),
+                (new SimpleDataObject("cat", 1,  "")),
+                (new SimpleDataObject("doe", 1,  "")),
+                (new SimpleDataObject("eel", 1, "")),
                 (new SimpleDataObject("fox", "")),
-                (new SimpleDataObject("gnu", "")),
-                (new SimpleDataObject("hog", "")),
+                (new SimpleDataObject("gnu", 1, "")),
+                (new SimpleDataObject("hog", 1, "")),
             };
             AddToRemote(setParticipant);
             AddToHost(setInitiator);
@@ -414,7 +425,7 @@ namespace RBSS_CS
         {
             var setParticipant = new List<SimpleDataObject>()
             {
-                (new SimpleDataObject("ape", "")),
+                (new SimpleDataObject("ape", 1, "")),
             };
             var setInitiator = new List<SimpleDataObject>()
             {
@@ -441,7 +452,7 @@ namespace RBSS_CS
             };
             var setInitiator = new List<SimpleDataObject>()
             {
-                (new SimpleDataObject("ape", "")),
+                (new SimpleDataObject("ape", 1, "")),
             };
             AddToRemote(setParticipant);
             AddToHost(setInitiator);
@@ -464,14 +475,14 @@ namespace RBSS_CS
             };
             var setInitiator = new List<SimpleDataObject>()
             {
-                (new SimpleDataObject("ape", "")),
-                (new SimpleDataObject("bee", "")),
-                (new SimpleDataObject("cat", "")),
-                (new SimpleDataObject("doe", "")),
-                (new SimpleDataObject("eel", "")),
-                (new SimpleDataObject("fox", "")),
-                (new SimpleDataObject("gnu", "")),
-                (new SimpleDataObject("hog", "")),
+                (new SimpleDataObject("ape", 1, "")),
+                (new SimpleDataObject("bee", 1, "")),
+                (new SimpleDataObject("cat", 1, "")),
+                (new SimpleDataObject("doe", 1, "")),
+                (new SimpleDataObject("eel", 1, "")),
+                (new SimpleDataObject("fox", 1, "")),
+                (new SimpleDataObject("gnu", 1, "")),
+                (new SimpleDataObject("hog", 1, "")),
             };
             AddToRemote(setParticipant);
             AddToHost(setInitiator);
@@ -491,14 +502,14 @@ namespace RBSS_CS
         {
             var setParticipant = new List<SimpleDataObject>()
             {
-                (new SimpleDataObject("ape", "")),
-                (new SimpleDataObject("bee", "")),
-                (new SimpleDataObject("cat", "")),
-                (new SimpleDataObject("doe", "")),
-                (new SimpleDataObject("eel", "")),
-                (new SimpleDataObject("fox", "")),
-                (new SimpleDataObject("gnu", "")),
-                (new SimpleDataObject("hog", "")),
+                (new SimpleDataObject("ape", 1, "")),
+                (new SimpleDataObject("bee", 1, "")),
+                (new SimpleDataObject("cat", 1, "")),
+                (new SimpleDataObject("doe", 1, "")),
+                (new SimpleDataObject("eel", 1, "")),
+                (new SimpleDataObject("fox", 1, "")),
+                (new SimpleDataObject("gnu", 1, "")),
+                (new SimpleDataObject("hog", 1, "")),
             };
             var setInitiator = new List<SimpleDataObject>()
             {
@@ -519,19 +530,19 @@ namespace RBSS_CS
         {
             var setInitiator = new List<SimpleDataObject>()
             {
-                (new SimpleDataObject("failure", "")),
-                (new SimpleDataObject("full", "")),
-                (new SimpleDataObject("observations", "")),
-                (new SimpleDataObject("scotland", "")),
-                (new SimpleDataObject("te", "")),
+                (new SimpleDataObject("failure", 1, "")),
+                (new SimpleDataObject("full", 1, "")),
+                (new SimpleDataObject("observations", 1, "")),
+                (new SimpleDataObject("scotland", 1, "")),
+                (new SimpleDataObject("te", 1, "")),
             };
             var setParticipant = new List<SimpleDataObject>()
             {
-                (new SimpleDataObject("peace", "")),
-                (new SimpleDataObject("poverty", "")),
-                (new SimpleDataObject("scotland", "")),
-                (new SimpleDataObject("spa", "")),
-                (new SimpleDataObject("te", "")),
+                (new SimpleDataObject("peace", 1, "")),
+                (new SimpleDataObject("poverty", 1, "")),
+                (new SimpleDataObject("scotland", 1, "")),
+                (new SimpleDataObject("spa", 1, "")),
+                (new SimpleDataObject("te", 1, "")),
             };
 
             AddToRemote(setParticipant);
@@ -567,264 +578,127 @@ namespace RBSS_CS
             Assert.True(SetsSynchronized());
         }
 
-                /// <summary>
-        /// Tests for equal Fp after synchronization when the participant has exactly one element in the set and the initiator has none
+        private void TestRandom(int length, float intersection, bool big)
+        {
+            Cleanup();
+            var setParticipant = new HashSet<SimpleDataObject>();
+            var setInitiator = new HashSet<SimpleDataObject>();
+
+            int l2 = length / 2;
+            SimpleDataObject[] arr = big ? _wordBigData : _wordData;
+            int al = arr.Length;
+            for (int i = 0; i < l2; i++)
+            {
+                int r1 = Random.Shared.Next(al);
+                int r2 = Random.Shared.Next(al);
+                setInitiator.Add(arr[r1]);
+                setParticipant.Add(arr[r2]);
+                if (Random.Shared.NextSingle() < intersection) setInitiator.Add(arr[r2]);
+                if (Random.Shared.NextSingle() < intersection) setParticipant.Add(arr[r1]);
+            }
+            var n = setInitiator.Union(setParticipant).Count();
+            var nDelta = n - setInitiator.Intersect(setParticipant).Count();
+
+            int comRoundsUpper = (int)Math.Ceiling(Math.Log(n, _settings.BranchingFactor));
+            int comComplexUpper = (int)Math.Min(nDelta * Math.Log(n, _settings.BranchingFactor), 2 * n - 1);
+
+            AddToRemote(setParticipant);
+            AddToHost(setInitiator);
+
+            var co = Console.Out;
+            Console.SetOut(new System.IO.StreamWriter(System.IO.Stream.Null));
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+            var (r, c) = Synchronize();
+            watch.Stop();
+            Console.SetOut(co);
+
+            Console.WriteLine("### Time (ms) needed for synchronization: " + watch.ElapsedMilliseconds);
+            Console.WriteLine("### Communication rounds needed " + r + " <= " + comRoundsUpper);
+            Console.WriteLine("### Communication complexity needed " + c + " <= " + comComplexUpper);
+            Console.WriteLine("### Elements in Union: " + n);
+            Console.WriteLine("### Elements missing: " + nDelta);
+
+            Assert.True(SetsSynchronized());
+
+        }
+
+        /// <summary>
+        /// Tests for equal Fp after synchronization
         /// </summary>
         [IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void TestRandom10()
         {
-            using var client = new HttpClient();
-            var downloadedString =
-                client.GetStringAsync(
-                    "https://www.mit.edu/~ecprice/wordlist.10000").Result;
-            string[] randomWords = downloadedString.Split('\n');
-
-            var setParticipant = new List<SimpleDataObject>()
-            {
-            };
-            var setInitiator = new List<SimpleDataObject>()
-            {
-            };
-
-            for (int i = 0; i < 4; i++)
-            {
-                setParticipant.Add(
-                    (new SimpleDataObject(randomWords[Random.Shared.Next(randomWords.Length)], "")));
-                setInitiator.Add(
-                    (new SimpleDataObject(randomWords[Random.Shared.Next(randomWords.Length)], "")));
-            }
-            for (int i = 0; i < Random.Shared.Next(4); i++)
-            {
-                setParticipant.Add(setInitiator.ElementAt(Random.Shared.Next(setInitiator.Count)));
-                setInitiator.Add(setParticipant.ElementAt(Random.Shared.Next(setParticipant.Count)));
-            }
-
-            Console.WriteLine("### Elements in Initiator: ");
-            foreach (var swo in setInitiator)
-            {
-                Console.WriteLine(swo.Id);
-            }
-
-            Console.WriteLine("### Elements in Participant: ");
-            foreach (var swo in setParticipant)
-            {
-                Console.WriteLine(swo.Id);
-            }
-
-            var n = setInitiator.Union(setParticipant).Count();
-            var nDelta = n - setInitiator.Intersect(setParticipant).Count();
-        
-
-
-            int comRoundsUpper = (int)Math.Log2(n);
-            int comComplexUpper = (int)Math.Min(nDelta * Math.Log2(n), 2 * n - 1);
-
-            AddToRemote(setParticipant);
-            AddToHost(setInitiator);
-
-            var co = Console.Out;
-            Console.SetOut(new System.IO.StreamWriter(System.IO.Stream.Null));
-            Stopwatch watch = new Stopwatch();
-            watch.Start();
-            var (r, c) = Synchronize();
-            watch.Stop();
-            Console.SetOut(co);
-
-            Console.WriteLine("### Time (ms) needed for synchronization: " + watch.ElapsedMilliseconds);
-            Console.WriteLine("### Communication rounds needed " + r + " <= " + comRoundsUpper);
-            Console.WriteLine("### Communication complexity needed " + c + " <= " + comComplexUpper);
-            Console.WriteLine("### Elements in Union: " + n);
-            Console.WriteLine("### Elements missing: " + nDelta);
-
-            Assert.True(SetsSynchronized());
+            TestRandom(10, 0.5f, false);
         }
 
         /// <summary>
-        /// Tests for equal Fp after synchronization when the participant has exactly one element in the set and the initiator has none
+        /// Tests for equal Fp after synchronization
         /// </summary>
         [IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void TestRandom100()
         {
-            using var client = new HttpClient();
-            var downloadedString =
-                client.GetStringAsync(
-                    "https://www.mit.edu/~ecprice/wordlist.10000").Result;
-            string[] randomWords = downloadedString.Split('\n');
-
-            var setParticipant = new List<SimpleDataObject>()
-            {
-            };
-            var setInitiator = new List<SimpleDataObject>()
-            {
-            };
-
-            for (int i = 0; i < 50; i++)
-            {
-                setParticipant.Add(
-                    (new SimpleDataObject(randomWords[Random.Shared.Next(randomWords.Length)], "")));
-                setInitiator.Add(
-                    (new SimpleDataObject(randomWords[Random.Shared.Next(randomWords.Length)], "")));
-            }
-            for (int i = 0; i < 10; i++)
-            {
-                setParticipant.Add(setInitiator.ElementAt(Random.Shared.Next(setInitiator.Count)));
-                setInitiator.Add(setParticipant.ElementAt(Random.Shared.Next(setParticipant.Count)));
-            }
-
-            var n = setInitiator.Union(setParticipant).Count();
-            var nDelta = n - setInitiator.Intersect(setParticipant).Count();
-            
-
-
-            int comRoundsUpper = (int)Math.Log2(n);
-            int comComplexUpper = (int)Math.Min(nDelta * Math.Log2(n), 2 * n - 1);
-
-            AddToRemote(setParticipant);
-            AddToHost(setInitiator);
-
-            var co = Console.Out;
-            Console.SetOut(new System.IO.StreamWriter(System.IO.Stream.Null));
-            Stopwatch watch = new Stopwatch();
-            watch.Start();
-            var (r, c) = Synchronize();
-            watch.Stop();
-            Console.SetOut(co);
-
-            Console.WriteLine("### Time (ms) needed for synchronization: " + watch.ElapsedMilliseconds);
-            Console.WriteLine("### Communication rounds needed " + r + " <= " + comRoundsUpper);
-            Console.WriteLine("### Communication complexity needed " + c + " <= " + comComplexUpper);
-            Console.WriteLine("### Elements in Union: " + n);
-            Console.WriteLine("### Elements missing: " + nDelta);
-
-            Assert.True(SetsSynchronized());
+            TestRandom(100, 0.5f, false);
         }
 
         /// <summary>
-        /// Tests for equal Fp after synchronization when the participant has exactly one element in the set and the initiator has none
+        /// Tests for equal Fp after synchronization
         /// </summary>
         [IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void TestRandom1000()
         {
-            Cleanup();
-            using var client = new HttpClient();
-            var downloadedString =
-                client.GetStringAsync(
-                    "https://www.mit.edu/~ecprice/wordlist.10000").Result;
-            string[] randomWords = downloadedString.Split('\n');
-
-            var setParticipant = new List<SimpleDataObject>()
-            {
-            };
-            var setInitiator = new List<SimpleDataObject>()
-            {
-            };
-
-            for (int i = 0; i < 500; i++)
-            {
-                setParticipant.Add(
-                    (new SimpleDataObject(randomWords[Random.Shared.Next(randomWords.Length)], "")));
-                setInitiator.Add(
-                    (new SimpleDataObject(randomWords[Random.Shared.Next(randomWords.Length)], "")));
-            }
-            for (int i = 0; i < 100; i++)
-            {
-                setParticipant.Add(setInitiator.ElementAt(Random.Shared.Next(setInitiator.Count)));
-                setInitiator.Add(setParticipant.ElementAt(Random.Shared.Next(setParticipant.Count)));
-            }
-
-            var n = setInitiator.Union(setParticipant).Count();
-            var nDelta = n - setInitiator.Intersect(setParticipant).Count();
-            
-
-            int comRoundsUpper = (int)Math.Log2(n);
-            int comComplexUpper = (int)Math.Min(nDelta * Math.Log2(n), 2 * n - 1);
-
-            AddToRemote(setParticipant);
-            AddToHost(setInitiator);
-
-            var co = Console.Out;
-            Console.SetOut(new System.IO.StreamWriter(System.IO.Stream.Null));
-            Stopwatch watch = new Stopwatch();
-            watch.Start();
-            var (r, c) = Synchronize();
-            watch.Stop();
-            Console.SetOut(co);
-
-            Console.WriteLine("### Time (ms) needed for synchronization: " + watch.ElapsedMilliseconds);
-            Console.WriteLine("### Communication rounds needed " + r + " <= " + comRoundsUpper);
-            Console.WriteLine("### Communication complexity needed " + c + " <= " + comComplexUpper);
-            Console.WriteLine("### Elements in Union: " + n);
-            Console.WriteLine("### Elements missing: " + nDelta);
-
-            Assert.True(SetsSynchronized());
+            TestRandom(1000, 0.5f, false);
         }
 
         /// <summary>
-        /// Tests for equal Fp after synchronization when the participant has exactly one element in the set and the initiator has none
+        /// Tests for equal Fp after synchronization
         /// </summary>
         [IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void TestRandom1000BigIntersection()
         {
-            Cleanup();
-            using var client = new HttpClient();
-            var downloadedString =
-                client.GetStringAsync(
-                    "https://www.mit.edu/~ecprice/wordlist.10000").Result;
-            string[] randomWords = downloadedString.Split('\n');
+            TestRandom(1000, 0.9f, false);
+        }
 
-            var setParticipant = new List<SimpleDataObject>()
-            {
-            };
-            var setInitiator = new List<SimpleDataObject>()
-            {
-            };
+        /// <summary>
+        /// Tests for equal Fp after synchronization
+        /// </summary>
+        [IntegrationTestMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
+        // ReSharper disable once UnusedMember.Local
+        private void TestRandom10000BigIntersection()
+        {
+            TestRandom(10000, 0.9f, false);
+        }
 
-            for (int i = 0; i < 500; i++)
-            {
-                setParticipant.Add(
-                    (new SimpleDataObject(randomWords[Random.Shared.Next(randomWords.Length)], "")));
-                setInitiator.Add(
-                    (new SimpleDataObject(randomWords[Random.Shared.Next(randomWords.Length)], "")));
-            }
-            for (int i = 0; i < 750; i++)
-            {
-                setParticipant.Add(setInitiator.ElementAt(Random.Shared.Next(setInitiator.Count)));
-                setInitiator.Add(setParticipant.ElementAt(Random.Shared.Next(setParticipant.Count)));
-            }
 
-            var n = setInitiator.Union(setParticipant).Count();
-            var nDelta = n - setInitiator.Intersect(setParticipant).Count();
-            
+        /// <summary>
+        /// Tests for equal Fp after synchronization
+        /// </summary>
+        [IntegrationTestMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
+        // ReSharper disable once UnusedMember.Local
+        private void TestRandom10000BigData()
+        {
+            TestRandom(10000, 0.5f, true);
+        }
 
-            int comRoundsUpper = (int)Math.Log2(n);
-            int comComplexUpper = (int)Math.Min(nDelta * Math.Log2(n), 2 * n - 1);
-
-            AddToRemote(setParticipant);
-            AddToHost(setInitiator);
-
-            var co = Console.Out;
-            Console.SetOut(new System.IO.StreamWriter(System.IO.Stream.Null));
-            Stopwatch watch = new Stopwatch();
-            watch.Start();
-            var (r, c) = Synchronize();
-            watch.Stop();
-            Console.SetOut(co);
-
-            Console.WriteLine("### Time (ms) needed for synchronization: " + watch.ElapsedMilliseconds);
-            Console.WriteLine("### Communication rounds needed " + r + " <= " + comRoundsUpper);
-            Console.WriteLine("### Communication complexity needed " + c + " <= " + comComplexUpper);
-            Console.WriteLine("### Elements in Union: " + n);
-            Console.WriteLine("### Elements missing: " + nDelta);
-
-            Assert.True(SetsSynchronized());
+        /// <summary>
+        /// Tests for equal Fp after synchronization
+        /// </summary>
+        [IntegrationTestMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
+        // ReSharper disable once UnusedMember.Local
+        private void TestRandom10000BigIntersectionBigData()
+        {
+            TestRandom(10000, 0.9f, true);
         }
     }
 }
