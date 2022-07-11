@@ -123,12 +123,33 @@ namespace RBSS_CS
             {
                 var localSyncState = GetLocalResult(remoteResult);
                 Assert.NotNull(localSyncState);
-                comTraffic += remoteResult.Steps.Count + localSyncState.Steps.Count;
+                comTraffic += remoteResult.Steps.Count + localSyncState!.Steps.Count;
                 if (localSyncState!.Steps.Count == 0) break;
                 comRounds += 1;
                 remoteResult = _remoteClient.SyncApi.SyncPut(localSyncState);
             }
             return (comRounds, comTraffic);
+        }
+
+        private (int, int) SynchronizeMeasureBytes()
+        {
+            var bytesSent = 0;
+            var bytesReceived = 0;
+            var range = _persistenceLayer.CreateRangeSet();
+            var step = new ValidateStep(range.IdFrom, range.IdTo, range.Fingerprint);
+            bytesSent += step.ToJson().Length;
+            var remoteResult = _remoteClient.SyncApi.SyncPost(step);
+            while (remoteResult.Steps is { Count: > 0 })
+            {
+                bytesReceived += remoteResult.ToJson().Length;
+                var localSyncState = GetLocalResult(remoteResult);
+                Assert.NotNull(localSyncState);
+                if (localSyncState!.Steps.Count == 0) break;
+                bytesSent += localSyncState.ToJson().Length;
+                remoteResult = _remoteClient.SyncApi.SyncPut(localSyncState);
+            }
+            bytesReceived += remoteResult.ToJson().Length;
+            return (bytesSent, bytesReceived);
         }
 
         public void Run()
@@ -578,6 +599,14 @@ namespace RBSS_CS
             Assert.True(SetsSynchronized());
         }
 
+        private static readonly string[] ByteSuffix = { "B", "KB", "MB", "GB" };
+        private static string GetByteString(int value)
+        {
+            var magnitute = (int)Math.Max(0, Math.Log(value, 1024));
+            var adjSize = Math.Round(value / Math.Pow(1024, magnitute));
+            return $"{adjSize} {ByteSuffix[magnitute]}";
+        }
+
         private void TestRandom(int length, float intersection, bool big)
         {
             Cleanup();
@@ -611,6 +640,12 @@ namespace RBSS_CS
             watch.Start();
             var (r, c) = Synchronize();
             watch.Stop();
+            
+
+            Cleanup();
+            AddToRemote(setParticipant);
+            AddToHost(setInitiator);
+            var (bytesSent, bytesReceived) = SynchronizeMeasureBytes();
             Console.SetOut(co);
 
             Console.WriteLine("### Time (ms) needed for synchronization: " + watch.ElapsedMilliseconds);
@@ -618,6 +653,10 @@ namespace RBSS_CS
             Console.WriteLine("### Communication complexity needed " + c + " <= " + comComplexUpper);
             Console.WriteLine("### Elements in Union: " + n);
             Console.WriteLine("### Elements missing: " + nDelta);
+
+            Console.WriteLine("### Bytes Sent: " + GetByteString(bytesSent));
+            Console.WriteLine("### Bytes Received: " + GetByteString(bytesReceived));
+            Console.WriteLine("### Bytes Total: " + GetByteString(bytesSent + bytesReceived));
 
             Assert.True(SetsSynchronized());
 
