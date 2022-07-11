@@ -30,7 +30,7 @@ namespace Models.RBSS_CS
         public SimpleDataObject(string id = default(string), Object additionalProperties = default(Object))
         {
             this.Id = id;
-            this.Timestamp = DateTimeOffset.UnixEpoch.ToUnixTimeSeconds();
+            this.Timestamp = 0;
             this.AdditionalProperties = additionalProperties;
         }
 

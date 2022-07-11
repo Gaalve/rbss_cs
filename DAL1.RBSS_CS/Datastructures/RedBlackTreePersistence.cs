@@ -43,9 +43,19 @@ namespace DAL1.RBSS_CS.Datastructures
 
         public bool Insert(SimpleDataObject data)
         {
-            if (!_set.Insert(new SimpleObjectWrapper(data, _hashFunction))) return false;
+            var curElement = _set.Search(new SimpleObjectWrapper(data.Id));
+            if (curElement == null)
+            {
+                if (!_set.Insert(new SimpleObjectWrapper(data, _hashFunction))) return false;
+                _db.Insert(data);
+                return true;
+            }
+            if (curElement.Data.Timestamp >= data.Timestamp) return false;
+            curElement.Data = data;
+            curElement.Hash = _hashFunction.Hash(data); // recalculate hash of object
             _db.Insert(data);
             return true;
+
         }
 
         public SimpleDataObject[] GetDataObjects()

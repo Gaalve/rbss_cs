@@ -98,33 +98,6 @@ namespace RBSS_CS.Controllers
             return Ok();
         }
 
-        [HttpPost]
-        [Route("/debugSet")]
-        [Consumes("application/json")]
-        [ValidateModelState]
-        public async Task<IActionResult> DebugCreateSet(bool isX0)
-        {
-            if (!_settings.TestingMode) return Forbid();
-            if (isX0)
-            {
-                _modifyApi.InsertPost(new SimpleDataObject("bee", "string"));
-                _modifyApi.InsertPost(new SimpleDataObject("cat", "string"));
-                _modifyApi.InsertPost(new SimpleDataObject("doe", "string"));
-                _modifyApi.InsertPost(new SimpleDataObject("eel", "string"));
-                _modifyApi.InsertPost(new SimpleDataObject("fox", "string"));
-                _modifyApi.InsertPost(new SimpleDataObject("hog", "string"));
-            }
-            else
-            {
-                _modifyApi.InsertPost(new SimpleDataObject("ape", "string"));
-                _modifyApi.InsertPost(new SimpleDataObject("eel", "string"));
-                _modifyApi.InsertPost(new SimpleDataObject("fox", "string"));
-                _modifyApi.InsertPost(new SimpleDataObject("gnu", "string"));
-            }
-            
-
-            return Ok();
-        }
 
         [HttpPost]
         [Route("/debugClear")]

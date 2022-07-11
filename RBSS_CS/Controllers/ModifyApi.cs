@@ -32,6 +32,7 @@ namespace RBSS_CS.Controllers
 
         public override IActionResult InsertPost(SimpleDataObject simpleDataObject)
         {
+            simpleDataObject.Timestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
             if (_persistenceLayer.Insert(simpleDataObject))
             {
                 if(!_settings.UseIntervalForSync)ClientMap.Instance.SuccessorClient?.Synchronize(_syncApi, _persistenceLayer);

@@ -52,30 +52,22 @@ namespace RBSS_CS
             _modifyApi.DeletePost(new SimpleDataObject("", ""));
             _remoteClient.ModifyApi.DeletePost(new SimpleDataObject("", ""));
         }
-
-        private void AddToRemote(IEnumerable<SimpleDataObject> set)
+        private void AddToRemote(SimpleDataObject sdo)
         {
-            foreach (var e in set)
+            try
             {
-                try
-                {
-                    _remoteClient.ModifyApi.InsertPost(e);
-                }
-                catch (Org.OpenAPITools.Client.ApiException ex)
-                {
-                    if (ex.ErrorCode != 409) throw; // Error Code 409 is expected when duplicate items are added
-                }
+                _remoteClient.ModifyApi.InsertPost(sdo);
+            }
+            catch (Org.OpenAPITools.Client.ApiException ex)
+            {
+                if (ex.ErrorCode != 409) throw; // Error Code 409 is expected when duplicate items are added
             }
         }
 
-        private void AddToHost(IEnumerable<SimpleDataObject> set)
+        private void AddToHost(SimpleDataObject sdo)
         {
-            foreach (var e in set)
-            {
-                _modifyApi.InsertPost(e);
-            }
+            _modifyApi.InsertPost(sdo);
         }
-
         private void AddToHostBatch(IEnumerable<SimpleDataObject> set)
         {
             _debugApi.DebugBatchInsert(set.Select(s => 
@@ -264,8 +256,8 @@ namespace RBSS_CS
                 (new SimpleDataObject("fox", 1, "")),
                 (new SimpleDataObject("gnu", 1, "")),
             };
-            AddToRemote(setParticipant);
-            AddToHost(setInitiator);
+            AddToRemoteBatch(setParticipant);
+            AddToHostBatch(setInitiator);
             
             var remoteResult = InitiateSync();
             Assert.Equal(2, remoteResult.Steps.Count);
@@ -330,8 +322,8 @@ namespace RBSS_CS
                 (new SimpleDataObject("gnu", 1, "")),
                 (new SimpleDataObject("hog", 1, "")),
             };
-            AddToRemote(setParticipant);
-            AddToHost(setInitiator);
+            AddToRemoteBatch(setParticipant);
+            AddToHostBatch(setInitiator);
             
             var remoteResult = InitiateSync();
             Assert.Equal(2, remoteResult.Steps.Count);
@@ -395,8 +387,8 @@ namespace RBSS_CS
                 (new SimpleDataObject("gnu", 1, "")),
                 (new SimpleDataObject("hog", 1, "")),
             };
-            AddToRemote(setParticipant);
-            AddToHost(setInitiator);
+            AddToRemoteBatch(setParticipant);
+            AddToHostBatch(setInitiator);
             
             var remoteResult = InitiateSync();
             Assert.Equal(2, remoteResult.Steps.Count);
@@ -463,8 +455,8 @@ namespace RBSS_CS
             var setInitiator = new List<SimpleDataObject>()
             {
             };
-            AddToRemote(setParticipant);
-            AddToHost(setInitiator);
+            AddToRemoteBatch(setParticipant);
+            AddToHostBatch(setInitiator);
 
             Synchronize();
 
@@ -486,8 +478,8 @@ namespace RBSS_CS
             var setInitiator = new List<SimpleDataObject>()
             {
             };
-            AddToRemote(setParticipant);
-            AddToHost(setInitiator);
+            AddToRemoteBatch(setParticipant);
+            AddToHostBatch(setInitiator);
 
             Synchronize();
 
@@ -510,8 +502,8 @@ namespace RBSS_CS
             {
                 (new SimpleDataObject("ape", 1, "")),
             };
-            AddToRemote(setParticipant);
-            AddToHost(setInitiator);
+            AddToRemoteBatch(setParticipant);
+            AddToHostBatch(setInitiator);
 
             Synchronize();
 
@@ -540,8 +532,8 @@ namespace RBSS_CS
                 (new SimpleDataObject("gnu", 1, "")),
                 (new SimpleDataObject("hog", 1, "")),
             };
-            AddToRemote(setParticipant);
-            AddToHost(setInitiator);
+            AddToRemoteBatch(setParticipant);
+            AddToHostBatch(setInitiator);
 
             Synchronize();
 
@@ -570,8 +562,8 @@ namespace RBSS_CS
             var setInitiator = new List<SimpleDataObject>()
             {
             };
-            AddToRemote(setParticipant);
-            AddToHost(setInitiator);
+            AddToRemoteBatch(setParticipant);
+            AddToHostBatch(setInitiator);
 
             Synchronize();
 
@@ -601,8 +593,8 @@ namespace RBSS_CS
                 (new SimpleDataObject("te", 1, "")),
             };
 
-            AddToRemote(setParticipant);
-            AddToHost(setInitiator);
+            AddToRemoteBatch(setParticipant);
+            AddToHostBatch(setInitiator);
 
             Synchronize();
 
@@ -673,7 +665,7 @@ namespace RBSS_CS
             AddToHostBatch(setInitiator);
 
             var co = Console.Out;
-            Console.SetOut(new System.IO.StreamWriter(System.IO.Stream.Null));
+            Console.SetOut(StreamWriter.Null);
             Stopwatch watch = new Stopwatch();
             watch.Start();
             var (r, c) = Synchronize();
@@ -704,6 +696,50 @@ namespace RBSS_CS
 
             Assert.True(SetsSynchronized());
 
+        }
+
+
+        private void TestRandomUpdate(int length, float intersection, float updateAmount)
+        {
+            Cleanup();
+            var setParticipant = new HashSet<SimpleDataObject>();
+            var setInitiator = new HashSet<SimpleDataObject>();
+
+            int l2 = length / 2;
+            SimpleDataObject[] arr = _wordData;
+            int al = arr.Length;
+            for (int i = 0; i < l2; i++)
+            {
+                int r1 = Random.Shared.Next(al);
+                int r2 = Random.Shared.Next(al);
+                setInitiator.Add(arr[r1]);
+                setParticipant.Add(arr[r2]);
+                if (Random.Shared.NextSingle() < intersection) setInitiator.Add(arr[r2]);
+                if (Random.Shared.NextSingle() < intersection) setParticipant.Add(arr[r1]);
+            }
+            AddToRemoteBatch(setParticipant);
+            AddToHostBatch(setInitiator);
+
+            var co = Console.Out;
+            Console.SetOut(StreamWriter.Null);
+            Synchronize();
+            Console.SetOut(co);
+            Assert.True(SetsSynchronized());
+            for (int i = 0; i < length * updateAmount; i++)
+            {
+                var e_in = setInitiator.ElementAt(Random.Shared.Next(setInitiator.Count));
+                e_in.AdditionalProperties = "updated";
+                AddToHost(e_in);
+                var e_pa = setParticipant.ElementAt(Random.Shared.Next(setParticipant.Count));
+                e_pa.AdditionalProperties = "updated";
+                AddToRemote(e_pa);
+            }
+            Assert.False(SetsSynchronized());
+            Console.SetOut(StreamWriter.Null);
+            Synchronize();
+            Console.SetOut(co);
+            Assert.True(SetsSynchronized());
+            
         }
 
         /// <summary>
@@ -782,6 +818,17 @@ namespace RBSS_CS
         private void TestRandom10000BigIntersectionBigData()
         {
             TestRandom(10000, 0.9f, true);
+        }
+
+        /// <summary>
+        /// Tests for equal Fp after synchronization
+        /// </summary>
+        [IntegrationTestMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
+        // ReSharper disable once UnusedMember.Local
+        private void TestRandom1000Update()
+        {
+            TestRandomUpdate(1000, 0.5f, 0.2f);
         }
     }
 }
