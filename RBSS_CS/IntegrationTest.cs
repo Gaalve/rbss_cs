@@ -4,6 +4,7 @@ using System.Reflection;
 using DAL1.RBSS_CS;
 using Microsoft.AspNetCore.Mvc;
 using Models.RBSS_CS;
+using Newtonsoft.Json;
 using Org.OpenAPITools.Client;
 using RBSS_CS.Controllers;
 using Xunit;
@@ -73,6 +74,39 @@ namespace RBSS_CS
             {
                 _modifyApi.InsertPost(e);
             }
+        }
+
+        private void AddToHostBatch(IEnumerable<SimpleDataObject> set)
+        {
+            _debugApi.DebugBatchInsert(set.ToArray());
+        }
+
+        private void AddToRemoteBatch(IEnumerable<SimpleDataObject> set)
+        {
+            Org.OpenAPITools.Client.RequestOptions localVarRequestOptions = new Org.OpenAPITools.Client.RequestOptions();
+            string[] _contentTypes = new string[] {
+                "application/json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+            };
+
+            var localVarContentType = Org.OpenAPITools.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null)
+            {
+                localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+            }
+
+            var localVarAccept = Org.OpenAPITools.Client.ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null)
+            {
+                localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+            }
+
+            localVarRequestOptions.Data = set.ToArray();
+
+            _remoteClient.ModifyApi.Client.Post<IActionResult>("/batchInsert", localVarRequestOptions);
         }
 
         private SyncState InitiateSync()
@@ -631,8 +665,8 @@ namespace RBSS_CS
             int comRoundsUpper = (int)Math.Ceiling(Math.Log(n, _settings.BranchingFactor));
             int comComplexUpper = (int)Math.Min(nDelta * Math.Log(n, _settings.BranchingFactor), 2 * n - 1);
 
-            AddToRemote(setParticipant);
-            AddToHost(setInitiator);
+            AddToRemoteBatch(setParticipant);
+            AddToHostBatch(setInitiator);
 
             var co = Console.Out;
             Console.SetOut(new System.IO.StreamWriter(System.IO.Stream.Null));
@@ -643,8 +677,8 @@ namespace RBSS_CS
             
 
             Cleanup();
-            AddToRemote(setParticipant);
-            AddToHost(setInitiator);
+            AddToRemoteBatch(setParticipant);
+            AddToHostBatch(setInitiator);
             var (bytesSent, bytesReceived) = SynchronizeMeasureBytes();
             Console.SetOut(co);
 

@@ -34,6 +34,21 @@ namespace RBSS_CS.Controllers
         }
 
         [HttpPost]
+        [Route("/batchInsert")]
+        [Consumes("application/json")]
+        [ValidateModelState]
+        [ProducesResponseType(statusCode: 200, type: typeof(SimpleDataObject[]))]
+        public IActionResult DebugBatchInsert(SimpleDataObject[] data)
+        {
+            if (!_settings.TestingMode) return Forbid();
+            foreach (var d in data)
+            {
+                _persistenceLayer.Insert(d);
+            }
+            return Ok();
+        }
+
+        [HttpPost]
         [Route("/connect")]
         [Consumes("application/json")]
         [ValidateModelState]
