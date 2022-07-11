@@ -78,7 +78,8 @@ namespace RBSS_CS
 
         private void AddToHostBatch(IEnumerable<SimpleDataObject> set)
         {
-            _debugApi.DebugBatchInsert(set.ToArray());
+            _debugApi.DebugBatchInsert(set.Select(s => 
+                (SimpleDataObject) JsonConvert.DeserializeObject(s.ToJson(), typeof(SimpleDataObject))! ).ToArray());
         }
 
         private void AddToRemoteBatch(IEnumerable<SimpleDataObject> set)
@@ -634,10 +635,11 @@ namespace RBSS_CS
         }
 
         private static readonly string[] ByteSuffix = { "B", "KB", "MB", "GB" };
-        private static string GetByteString(int value)
+        private static string GetByteString(long value)
         {
+            if (value < 0) return $"{value} B";
             var magnitute = (int)Math.Max(0, Math.Log(value, 1024));
-            var adjSize = Math.Round(value / Math.Pow(1024, magnitute));
+            var adjSize = Math.Round(value / Math.Pow(1024, magnitute), 2);
             return $"{adjSize} {ByteSuffix[magnitute]}";
         }
 
@@ -665,6 +667,8 @@ namespace RBSS_CS
             int comRoundsUpper = (int)Math.Ceiling(Math.Log(n, _settings.BranchingFactor));
             int comComplexUpper = (int)Math.Min(nDelta * Math.Log(n, _settings.BranchingFactor), 2 * n - 1);
 
+            GC.Collect();
+            var memoryBefore = GC.GetTotalMemory(true);
             AddToRemoteBatch(setParticipant);
             AddToHostBatch(setInitiator);
 
@@ -674,7 +678,9 @@ namespace RBSS_CS
             watch.Start();
             var (r, c) = Synchronize();
             watch.Stop();
-            
+            GC.Collect();
+            var memoryNow = GC.GetTotalMemory(true);
+            Assert.True(SetsSynchronized());
 
             Cleanup();
             AddToRemoteBatch(setParticipant);
@@ -691,6 +697,10 @@ namespace RBSS_CS
             Console.WriteLine("### Bytes Sent: " + GetByteString(bytesSent));
             Console.WriteLine("### Bytes Received: " + GetByteString(bytesReceived));
             Console.WriteLine("### Bytes Total: " + GetByteString(bytesSent + bytesReceived));
+
+            Console.WriteLine("### Memory Before: " + GetByteString(memoryBefore));
+            Console.WriteLine("### Memory Now: " + GetByteString(memoryNow));
+            Console.WriteLine("### Memory Usage: " + GetByteString(memoryNow - memoryBefore));
 
             Assert.True(SetsSynchronized());
 
