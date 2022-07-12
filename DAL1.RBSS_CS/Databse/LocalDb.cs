@@ -21,8 +21,15 @@ namespace DAL1.RBSS_CS.Databse
         public void Insert(SimpleDataObject data)
         {
             Console.WriteLine("Adding element: " + data);
-            if (ObjectSet.Find(data.Id) == null)
+            var pds = ObjectSet.Find(data.Id);
+            if (pds == null)
                 ObjectSet.Add(new SimpleDataObjectPDS(data));
+            else
+            {
+                pds.Timestamp = data.Timestamp;
+                pds.JsonData = JsonConvert.SerializeObject(data.AdditionalProperties, Formatting.Indented);
+                ObjectSet.Update(pds);
+            }
             SaveChanges();
         }
 
