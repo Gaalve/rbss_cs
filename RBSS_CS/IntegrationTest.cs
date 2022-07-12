@@ -143,11 +143,12 @@ namespace RBSS_CS
 
         private (int, int) Synchronize()
         {
-            var comRounds = 1;
+            var comRounds = 2; // Verification Step + Response
             var comTraffic = 0;
             var remoteResult = InitiateSync();
             while (remoteResult.Steps is { Count: > 0 })
             {
+                comRounds += 1;
                 var localSyncState = GetLocalResult(remoteResult);
                 Assert.NotNull(localSyncState);
                 comTraffic += remoteResult.Steps.Count + localSyncState!.Steps.Count;
@@ -655,9 +656,15 @@ namespace RBSS_CS
             }
             var n = setInitiator.Union(setParticipant).Count();
             var nDelta = n - setInitiator.Intersect(setParticipant).Count();
+            var nMin = Math.Min(setInitiator.Count, setParticipant.Count);
 
-            int comRoundsUpper = (int)Math.Ceiling(Math.Log(n, _settings.BranchingFactor));
-            int comComplexUpper = (int)Math.Min(nDelta * Math.Log(n, _settings.BranchingFactor), 2 * n - 1);
+            // int comRoundsUpper = (int)Math.Ceiling(Math.Log(n, _settings.BranchingFactor));
+            // int comComplexUpper = (int)Math.Min(nDelta * Math.Log(n, _settings.BranchingFactor), 2 * n - 1);
+
+            var b = _settings.BranchingFactor;
+            var t = _settings.ItemSize;
+            int comRoundsUpper = (int)Math.Ceiling(2 + 2 * Math.Log(nMin, b) - Math.Log(t, b));
+            int comComplexUpper = (int)Math.Min(Math.Ceiling(nDelta * (2 + 2 * Math.Log(nMin, b) - Math.Log(t, b))), 2 * n);
 
             GC.Collect();
             var memoryBefore = GC.GetTotalMemory(true);
