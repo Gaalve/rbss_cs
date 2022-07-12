@@ -59,7 +59,7 @@ namespace DAL1.RBSS_CS.Datastructures
             if (curElement.Data.Timestamp > data.Timestamp) return false;
             var tempHash = _hashFunction.Hash(data);
             if (curElement.Data.Timestamp == data.Timestamp &&
-                ByteArrayComparator(curElement.Hash, tempHash) <= 0) return false;
+                ByteArrayComparator(curElement.Hash, tempHash) >= 0) return false;
             curElement.Data = data;
             curElement.Hash = tempHash; // assign recalculated hash of object
             _db.Insert(data);

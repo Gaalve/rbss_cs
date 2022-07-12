@@ -104,13 +104,16 @@ namespace Models.RBSS_CS
             return 
                 (
                     this.Id == input.Id ||
-                    (this.Id != null &&
-                    this.Id.Equals(input.Id))
+                    (this.Id.Equals(input.Id))
                 ) && 
                 (
                     this.AdditionalProperties == input.AdditionalProperties ||
-                    (this.AdditionalProperties != null &&
-                    this.AdditionalProperties.Equals(input.AdditionalProperties))
+                    (this.AdditionalProperties.Equals(input.AdditionalProperties))
+                )
+                && 
+                (
+                    this.Timestamp == input.Timestamp ||
+                    (this.Timestamp.Equals(input.Timestamp))
                 );
         }
 
