@@ -66,8 +66,9 @@ namespace RBSS_CS
 
         private void AddToHost(SimpleDataObject sdo)
         {
-            _modifyApi.InsertPost(sdo);
+            _modifyApi.InsertPost((SimpleDataObject) JsonConvert.DeserializeObject(sdo.ToJson(), typeof(SimpleDataObject))!);
         }
+
         private void AddToHostBatch(IEnumerable<SimpleDataObject> set)
         {
             _debugApi.DebugBatchInsert(set.Select(s => 
