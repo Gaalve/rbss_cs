@@ -22,11 +22,17 @@ namespace DAL1.RBSS_CS.Datastructures
             _branching = 2;
         }
 
+        private static int ByteArrayComparator(byte[] arr1, byte[] arr2)
+        {
+            var s1 = Convert.ToBase64String(arr1);
+            var s2 = Convert.ToBase64String(arr2);
+            return string.Compare(s1, s2, StringComparison.Ordinal);
+        }
+
         public string GetFingerprint(string lower, string upper)
         {
             var lowerWrapper = new SimpleObjectWrapper(lower);
             var upperWrapper = new SimpleObjectWrapper(upper);
-            //return Convert.ToBase64String(_set.GetFingerprint(lowerWrapper, upperWrapper));
             return GetFingerprint(_set.GetSortedListBetween(lowerWrapper, upperWrapper));
         }
 
@@ -50,9 +56,12 @@ namespace DAL1.RBSS_CS.Datastructures
                 _db.Insert(data);
                 return true;
             }
-            if (curElement.Data.Timestamp >= data.Timestamp) return false;
+            if (curElement.Data.Timestamp > data.Timestamp) return false;
+            var tempHash = _hashFunction.Hash(data);
+            if (curElement.Data.Timestamp == data.Timestamp &&
+                ByteArrayComparator(curElement.Hash, tempHash) <= 0) return false;
             curElement.Data = data;
-            curElement.Hash = _hashFunction.Hash(data); // recalculate hash of object
+            curElement.Hash = tempHash; // assign recalculated hash of object
             _db.Insert(data);
             return true;
 

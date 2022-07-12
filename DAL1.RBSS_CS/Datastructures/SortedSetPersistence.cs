@@ -45,6 +45,13 @@ namespace DAL1.RBSS_CS.Datastructures
             return Convert.ToBase64String(pc.Hash);
         }
 
+        private static int ByteArrayComparator(byte[] arr1, byte[] arr2)
+        {
+            var s1 = Convert.ToBase64String(arr1);
+            var s2 = Convert.ToBase64String(arr2);
+            return string.Compare(s1, s2, StringComparison.Ordinal);
+        }
+
         public bool Insert(SimpleDataObject data)
         {
             SimpleObjectWrapper? curElement;
@@ -55,9 +62,11 @@ namespace DAL1.RBSS_CS.Datastructures
                 _db.Insert(data);
                 return true;
             }
-            if (curElement.Data.Timestamp >= data.Timestamp) return false;
+            var tempHash = _hashFunction.Hash(data);
+            if (curElement.Data.Timestamp == data.Timestamp &&
+                ByteArrayComparator(curElement.Hash, tempHash) <= 0) return false;
             curElement.Data = data;
-            curElement.Hash = _hashFunction.Hash(data); // recalculate hash of object
+            curElement.Hash = tempHash; // assign recalculated hash of object
             _db.Insert(data);
             return true;
 
