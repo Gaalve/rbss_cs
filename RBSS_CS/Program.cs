@@ -31,6 +31,7 @@ namespace RBSS_CS
             var connection = Environment.GetEnvironmentVariable("RBSS_CONNECTION");
             if (connection != null)
             {
+                Thread.Sleep(1000);
                 Console.WriteLine("Connecting to: "+ connection);
                 var cm = ClientMap.Instance;
                 cm.SuccessorClient = new Client(connection);
@@ -73,7 +74,7 @@ namespace RBSS_CS
                 var syncAPI = host.Services.GetService(typeof(SyncApi));
                 var debugAPI = host.Services.GetService(typeof(DebugApi));
                 var modifyAPI = host.Services.GetService(typeof(ModifyApi));
-                Thread.Sleep(1000);
+                
 
                 if (debugAPI != null && syncAPI != null && modifyAPI != null)
                 {
