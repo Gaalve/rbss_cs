@@ -7,23 +7,23 @@ using Newtonsoft.Json;
 namespace Models.RBSS_CS
 {
     /// <summary>
-    /// InlineResponse
+    /// DebugInsert
     /// </summary>
     [DataContract]
-    public partial class InlineResponse :  IEquatable<InlineResponse>, IValidatableObject
+    public partial class DebugInsert :  IEquatable<DebugInsert>, IValidatableObject
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="InlineResponse" /> class.
+        /// Initializes a new instance of the <see cref="DebugInsert" /> class.
         /// </summary>
         [JsonConstructor]
-        public InlineResponse(SyncState state)
+        public DebugInsert(SimpleDataObject[] dataSet)
         {
-            Syncstate = state;
+            DataSet = dataSet;
         }
 
 
-        [DataMember(Name="syncstate", EmitDefaultValue=false)]
-        public SyncState Syncstate { get; set; }
+        [DataMember(Name="dataSet", EmitDefaultValue=false)]
+        public SimpleDataObject[] DataSet { get; set; }
         
 
         /// <summary>
@@ -33,8 +33,7 @@ namespace Models.RBSS_CS
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class InlineResponse {\n");
-            sb.Append("syncstate: ").Append(Syncstate);
+            sb.Append("class DebugInsert {\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -55,20 +54,20 @@ namespace Models.RBSS_CS
         /// <returns>Boolean</returns>
         public override bool Equals(object input)
         {
-            return this.Equals(input as InlineResponse);
+            return this.Equals(input as DebugInsert);
         }
 
         /// <summary>
-        /// Returns true if InlineResponse instances are equal
+        /// Returns true if DebugInsert instances are equal
         /// </summary>
-        /// <param name="input">Instance of InlineResponse to be compared</param>
+        /// <param name="input">Instance of DebugInsert to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(InlineResponse input)
+        public bool Equals(DebugInsert input)
         {
             if (input == null)
                 return false;
 
-            return this.Syncstate == input.Syncstate;
+            return this.DataSet == input.DataSet;
         }
 
 
@@ -82,7 +81,7 @@ namespace Models.RBSS_CS
             unchecked // Overflow is fine, just wrap
             {
                 int hashCode = 41;
-                hashCode = hashCode * 59 + this.Syncstate.GetHashCode();
+                hashCode = hashCode * 59 + this.DataSet.GetHashCode();
                 return hashCode;
 
             }
