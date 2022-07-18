@@ -422,7 +422,70 @@ namespace Tests.RBSS_CS
 
             Assert.Equal(3, insert.DataToInsert.Count);
         }
+
+        [Fact]
+        public void PutUpdateInsert()
+        {
+            var setRemote = new List<SimpleDataObject>()
+            {
+                (new SimpleDataObject("bee", 1, "")),
+                (new SimpleDataObject("cat", 500,"")),
+                (new SimpleDataObject("doe", 1,"")),
+            };
+            var setHost = new List<SimpleDataObject>()
+            {
+                (new SimpleDataObject("bee", 1, "")),
+                (new SimpleDataObject("cat", 1,"")),
+                (new SimpleDataObject("doe", 1,"")),
+            };
+            AddAllToLayer(setRemote);
+            var validate = _persistenceLayer.CreateRangeSet();
+            Dispose();
+            AddAllToLayer(setHost);
+
+            var result = _sync.SyncPost(new ValidateStep(validate.IdFrom, validate.IdTo, validate.Fingerprint));
+            
+            Assert.IsType<OkObjectResult>(result);
+            Assert.NotNull(((OkObjectResult)result).Value);
+            Assert.IsType<SyncState>(((OkObjectResult)result).Value);
+            var state = (SyncState)((OkObjectResult)result).Value!;
+            Assert.False(equalFP(state));
+            Assert.NotEmpty(state.Steps);
+
+            result = _sync.SyncPut(new SyncState(0, new List<Step>()
+            {
+                new Step(0, new OneOfValidateStepInsertStep(new InsertStep(
+                    "cat", new List<string>(), "doe",
+                    new List<SimpleDataObject>() { new SimpleDataObject("cat", 500, "") }, false
+                )))
+            }));
+            Assert.IsType<OkObjectResult>(result);
+            Assert.NotNull(((OkObjectResult)result).Value);
+            Assert.IsType<SyncState>(((OkObjectResult)result).Value);
+            var state2 = (SyncState)((OkObjectResult)result).Value!;
+
+            result = _sync.SyncPost(new ValidateStep(validate.IdFrom, validate.IdTo, validate.Fingerprint));
+            Assert.IsType<OkObjectResult>(result);
+            Assert.NotNull(((OkObjectResult)result).Value);
+            Assert.IsType<SyncState>(((OkObjectResult)result).Value);
+            state = (SyncState)((OkObjectResult)result).Value!;
+            Assert.True(equalFP(state));
+            _sync.SyncPut(new SyncState(0, new List<Step>()
+            {
+                new Step(0, new OneOfValidateStepInsertStep(new InsertStep(
+                    "cat", new List<string>(), "doe",
+                    new List<SimpleDataObject>() { new SimpleDataObject("cat", 1, "") }, false
+                )))
+            }));
+            result = _sync.SyncPost(new ValidateStep(validate.IdFrom, validate.IdTo, validate.Fingerprint));
+            Assert.IsType<OkObjectResult>(result);
+            Assert.NotNull(((OkObjectResult)result).Value);
+            Assert.IsType<SyncState>(((OkObjectResult)result).Value);
+            state = (SyncState)((OkObjectResult)result).Value!;
+            Assert.True(equalFP(state));
+        }
     }
+
 
 
     public class SortedSetSyncControllerTestsXor : SyncApiControllerTests

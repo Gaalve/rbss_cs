@@ -28,8 +28,11 @@ namespace DAL1.RBSS_CS.Datastructures
             var lower = new SimpleObjectWrapper(idFrom);
             var lastExceeded = string.Compare(idFrom, idTo, StringComparison.Ordinal) > 0;
             var upper = lastExceeded ? _set.Last() : new SimpleObjectWrapper(idTo);
-            RangeSet[] ranges = new RangeSet[2];
-            var list = _set.GetViewBetween(lower, upper).Where(s => s.Data.Id != idTo).ToList();
+            var outOfRange = lastExceeded && string.Compare(idFrom, upper.Data.Id, StringComparison.Ordinal) > 0;
+            var list = idFrom == idTo
+                ? _set.ToList()
+                : (outOfRange ? new List<SimpleObjectWrapper>() 
+                    : _set.GetViewBetween(lower, upper).Where(s => s.Data.Id != idTo).ToList());
             if (lastExceeded) list.AddRange(_set.GetViewBetween(new SimpleObjectWrapper(""), new SimpleObjectWrapper(idTo)).Where(s => s.Data.Id != idTo));
             return GetFingerprint(list);
         }
@@ -54,14 +57,14 @@ namespace DAL1.RBSS_CS.Datastructures
 
         public bool Insert(SimpleDataObject data)
         {
-            SimpleObjectWrapper? curElement;
-            _set.TryGetValue(new SimpleObjectWrapper(data.Id), out curElement);
+            _set.TryGetValue(new SimpleObjectWrapper(data.Id), out var curElement);
             if (curElement == null)
             {
                 if (!_set.Add(new SimpleObjectWrapper(data, _hashFunction))) return false;
                 _db.Insert(data);
                 return true;
             }
+            if (curElement.Data.Timestamp > data.Timestamp) return false;
             var tempHash = _hashFunction.Hash(data);
             if (curElement.Data.Timestamp == data.Timestamp &&
                 ByteArrayComparator(curElement.Hash, tempHash) >= 0) return false;
@@ -86,8 +89,12 @@ namespace DAL1.RBSS_CS.Datastructures
             var lower = new SimpleObjectWrapper(idFrom);
             var lastExceeded = string.Compare(idFrom, idTo, StringComparison.Ordinal) > 0;
             var upper = lastExceeded ? _set.Last() : new SimpleObjectWrapper(idTo);
+            var outOfRange = lastExceeded && string.Compare(idFrom, upper.Data.Id, StringComparison.Ordinal) > 0;
             RangeSet[] ranges = new RangeSet[2];
-            var list = idFrom == idTo ? _set.ToList() : _set.GetViewBetween(lower, upper).Where(s => s.Data.Id != idTo).ToList();
+            var list = idFrom == idTo
+                ? _set.ToList()
+                : (outOfRange ? new List<SimpleObjectWrapper>() 
+                    : _set.GetViewBetween(lower, upper).Where(s => s.Data.Id != idTo).ToList());
             if (lastExceeded) list.AddRange(_set.GetViewBetween(new SimpleObjectWrapper(""), new SimpleObjectWrapper(idTo)).Where(s => s.Data.Id != idTo));
             
             var count = list.Count;
@@ -122,25 +129,40 @@ namespace DAL1.RBSS_CS.Datastructures
         public RangeSet CreateRangeSet(string idFrom, string idTo)
         {
             if (_set.Count == 0) return new RangeSet(idFrom, idTo, "AA==");
-            if (idFrom == idTo)
-                return new RangeSet(idFrom, idTo, "null",
-                    _set.Select(s => s.Data).ToArray());
-            return new RangeSet(idFrom, idTo, "null", _set.GetViewBetween(new SimpleObjectWrapper(idFrom),
-                string.Compare(idFrom, idTo, StringComparison.Ordinal) > 0 ? _set.Last() : 
-                    new SimpleObjectWrapper(idTo)).Select(s => s.Data).Where(s => s.Id != idTo).ToArray());
+
+            var lower = new SimpleObjectWrapper(idFrom);
+            var lastExceeded = string.Compare(idFrom, idTo, StringComparison.Ordinal) > 0;
+            var upper = lastExceeded ? _set.Last() : new SimpleObjectWrapper(idTo);
+            var outOfRange = lastExceeded && string.Compare(idFrom, upper.Data.Id, StringComparison.Ordinal) > 0;
+            var list = idFrom == idTo
+                ? _set.ToList()
+                : (outOfRange ? new List<SimpleObjectWrapper>() 
+                    : _set.GetViewBetween(lower, upper).Where(s => s.Data.Id != idTo).ToList());
+            
+            if (lastExceeded) list.AddRange(_set.GetViewBetween(new SimpleObjectWrapper(""), new SimpleObjectWrapper(idTo)).Where(s => s.Data.Id != idTo));
+
+            return new RangeSet(idFrom, idTo, "null", list.Select(s => s.Data)
+                .ToArray());
         }
 
         public RangeSet CreateRangeSet(string idFrom, string idTo, ICollection<SimpleDataObject> exclude)
         {
             if (_set.Count == 0) return new RangeSet(idFrom, idTo, "AA==");
-            if (idFrom == idTo)
-                return new RangeSet(idFrom, idTo, "null",
-                    _set.Select(s => s.Data).Where(
-                        s => !exclude.Contains(s)).ToArray());
-            return new RangeSet(idFrom, idTo, "null", _set.GetViewBetween(new SimpleObjectWrapper(idFrom),
-                string.Compare(idFrom, idTo, StringComparison.Ordinal) > 0 ? _set.Last() : 
-                    new SimpleObjectWrapper(idTo)).Select(s => s.Data).Where(
-                s => s.Id != idTo && !exclude.Contains(s)).ToArray());
+
+            var lower = new SimpleObjectWrapper(idFrom);
+            var lastExceeded = string.Compare(idFrom, idTo, StringComparison.Ordinal) > 0;
+            var upper = lastExceeded ? _set.Last() : new SimpleObjectWrapper(idTo);
+            var outOfRange = lastExceeded && string.Compare(idFrom, upper.Data.Id, StringComparison.Ordinal) > 0;
+            var list = idFrom == idTo
+                ? _set.ToList()
+                : (outOfRange ? new List<SimpleObjectWrapper>() 
+                    : _set.GetViewBetween(lower, upper).Where(s => s.Data.Id != idTo).ToList());
+            if (lastExceeded)
+                list.AddRange(_set.GetViewBetween(new SimpleObjectWrapper(""), new SimpleObjectWrapper(idTo))
+                    .Where(s => s.Data.Id != idTo));
+
+            return new RangeSet(idFrom, idTo, "null", list.Select(s => s.Data)
+                .Where(s => !exclude.Contains(s)).ToArray());
         }
 
 

@@ -100,17 +100,9 @@ namespace RBSS_CS
             };
 
             var localVarContentType = Org.OpenAPITools.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null)
-            {
-                localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-            }
-
+            localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
             var localVarAccept = Org.OpenAPITools.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null)
-            {
-                localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-            }
-
+            localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             localVarRequestOptions.Data = set.ToArray();
 
             _remoteClient.ModifyApi.Client.Post<IActionResult>("/batchInsert", localVarRequestOptions);
@@ -731,7 +723,8 @@ namespace RBSS_CS
             sb.Append(memberName).Append(",").Append(_settings.AuxillaryDS).Append(",").Append("b: ")
                 .Append(_settings.BranchingFactor).Append("t: ").Append(_settings.ItemSize).Append(",").Append(n0)
                 .Append(",").Append(n1).Append(",").Append(bytesReceived).Append(",").Append(bytesSent).Append(",")
-                .Append(c).Append(",").Append(r).Append(",").Append(watch.ElapsedMilliseconds);
+                .Append(c).Append(",").Append(r).Append(",").Append(watch.ElapsedMilliseconds).Append(",").Append(nDelta)
+                .Append(",").Append(nA);
 
             _testLogger.Information(sb.ToString());
         }
@@ -777,7 +770,6 @@ namespace RBSS_CS
             Synchronize();
             Console.SetOut(co);
             Assert.True(SetsSynchronized());
-            
         }
 
         [IntegrationTestMethod]
@@ -891,6 +883,38 @@ namespace RBSS_CS
         {
             TestRandom(10000, 0.9f, true, true);
         }
+
+        [IntegrationTestMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
+        // ReSharper disable once UnusedMember.Local
+        private void TestRandom20000BigDataFixedSeed()
+        {
+            TestRandom(20000, 0.5f, true, true);
+        }
+
+        [IntegrationTestMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
+        // ReSharper disable once UnusedMember.Local
+        private void TestRandom20000BigIntersectionBigDataFixedSeed()
+        {
+            TestRandom(20000, 0.9f, true, true);
+        }
+        [IntegrationTestMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
+        // ReSharper disable once UnusedMember.Local
+        private void TestRandom30000BigIntersectionBigDataFixedSeed()
+        {
+            TestRandom(30000, 0.95f, true, true);
+        }
+        [IntegrationTestMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
+        // ReSharper disable once UnusedMember.Local
+        private void TestRandom30000BigDataFixedSeed()
+        {
+            TestRandom(30000, 0.7f, true, true);
+        }
+
+        
 
         [IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
