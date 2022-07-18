@@ -36,7 +36,7 @@ namespace Models.RBSS_CS
         /// internal identifier for the syncstate
         /// </summary>
         /// <value>internal identifier for the syncstate</value>
-        [DataMember(Name="Id", EmitDefaultValue=false)]
+        [DataMember(Name="id", EmitDefaultValue=false)]
         public long? Id { get; set; }
 
         /// <summary>

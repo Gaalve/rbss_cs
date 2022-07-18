@@ -31,11 +31,13 @@ namespace RBSS_CS
             var connection = Environment.GetEnvironmentVariable("RBSS_CONNECTION");
             if (connection != null)
             {
-                Thread.Sleep(1000);
+                Thread.Sleep(10000);
                 Console.WriteLine("Connecting to: "+ connection);
+                
                 var cm = ClientMap.Instance;
                 cm.SuccessorClient = new Client(connection);
                 cm.PredecessorClient = new Client(connection);
+                Console.WriteLine("Sending Connection-String: "+ cm.SelfClient!.Configuration.BasePath);
                 var successor = cm.PredecessorClient.PeerNetworkApi.JoinPost(
                     new Joining(cm.SelfClient!.Configuration.BasePath));
                 Console.WriteLine("Connecting to: "+ successor.SuccessorIP);
@@ -141,7 +143,6 @@ namespace RBSS_CS
 
                     webBuilder.UseStartup<Startup>();
                     webBuilder.UseUrls("http://0.0.0.0:7042/", "http://0.0.0.0:80/");
-                    
                     ClientMap.Instance.SelfClient = new Client("http://" + Dns.GetHostName() + ":7042/"); //TODO
                 });
     }

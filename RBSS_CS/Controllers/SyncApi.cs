@@ -42,12 +42,12 @@ namespace RBSS_CS.Controllers
                 var step = createStep(rangeSet);
                 if (step != null)
                 {
-                    state.Steps.Add(new Step(0, new OneOfValidateStepInsertStep(step)));
+                    state.Steps.Add(new Step(0, step));
                     notNull = true;
                 }
             }
-            if (!notNull) state.Steps.Add(new Step(0, new OneOfValidateStepInsertStep(
-                new InsertStep(validateStep.IdFrom, new List<string>(), validateStep.IdTo, new List<SimpleDataObject>(), false))));
+            if (!notNull) state.Steps.Add(new Step(0, 
+                new InsertStep(validateStep.IdFrom, new List<string>(), validateStep.IdTo, new List<SimpleDataObject>(), false)));
         }
 
         private void HandleInsertStep(InsertStep insertStep, SyncState state)
@@ -61,8 +61,8 @@ namespace RBSS_CS.Controllers
 
                 if (set.Data != null && set.Data.Length > 0)
                 {
-                    state.Steps.Add(new Step(0, new OneOfValidateStepInsertStep(new InsertStep(insertStep.IdFrom, new List<string>(), 
-                        insertStep.IdTo, new List<SimpleDataObject>(set.Data), true))));
+                    state.Steps.Add(new Step(0, new InsertStep(insertStep.IdFrom, new List<string>(), 
+                        insertStep.IdTo, new List<SimpleDataObject>(set.Data), true)));
                 }
             }
             
@@ -92,13 +92,13 @@ namespace RBSS_CS.Controllers
             SyncState state = new SyncState(0, new List<Step>()); 
             foreach (var step in syncState.Steps)
             {
-                if (step.CurrentStep.Step.GetType() == typeof(ValidateStep))
+                if (step.CurrentStep.GetType() == typeof(ValidateStep))
                 {
-                    HandleValidateStep((ValidateStep)step.CurrentStep.Step, state);
+                    HandleValidateStep((ValidateStep)step.CurrentStep, state);
                 }
-                else if (step.CurrentStep.Step.GetType() == typeof(InsertStep))
+                else if (step.CurrentStep.GetType() == typeof(InsertStep))
                 {
-                    HandleInsertStep((InsertStep)step.CurrentStep.Step, state);
+                    HandleInsertStep((InsertStep)step.CurrentStep, state);
                 }
                 else
                 {

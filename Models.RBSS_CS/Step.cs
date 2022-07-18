@@ -26,7 +26,7 @@ namespace Models.RBSS_CS
         /// </summary>
         /// <param name="timeSent">timestamp of the step.</param>
         /// <param name="currentStep">currentStep.</param>
-        public Step(long? timeSent = default(long?), OneOfValidateStepInsertStep currentStep = default(OneOfValidateStepInsertStep))
+        public Step(long? timeSent = default(long?), AbstractStep currentStep = default(AbstractStep))
         {
             this.TimeSent = timeSent;
             this.CurrentStep = currentStep;
@@ -43,7 +43,7 @@ namespace Models.RBSS_CS
         /// Gets or Sets CurrentStep
         /// </summary>
         [DataMember(Name="currentStep", EmitDefaultValue=false)]
-        public OneOfValidateStepInsertStep CurrentStep { get; set; }
+        public AbstractStep CurrentStep { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object

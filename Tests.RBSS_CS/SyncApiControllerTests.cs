@@ -142,8 +142,8 @@ namespace Tests.RBSS_CS
             Assert.False(equalFP(state));
             Assert.NotEmpty(state.Steps);
             Assert.Single(state.Steps);
-            Assert.IsType<InsertStep>(state.Steps[0].CurrentStep.Step);
-            Assert.Empty(((InsertStep)state.Steps[0].CurrentStep.Step).DataToInsert);
+            Assert.IsType<InsertStep>(state.Steps[0].CurrentStep);
+            Assert.Empty(((InsertStep)state.Steps[0].CurrentStep).DataToInsert);
         }
         [Fact]
         public void PostRequestSetHostOneElementSet()
@@ -169,21 +169,21 @@ namespace Tests.RBSS_CS
             Assert.False(equalFP(state));
             Assert.NotEmpty(state.Steps);
             Assert.Single(state.Steps);
-            Assert.IsType<InsertStep>(state.Steps[0].CurrentStep.Step);
-            Assert.Single(((InsertStep)state.Steps[0].CurrentStep.Step).DataToInsert);
+            Assert.IsType<InsertStep>(state.Steps[0].CurrentStep);
+            Assert.Single(((InsertStep)state.Steps[0].CurrentStep).DataToInsert);
         }
 
         private bool checkValidateStep(Step step, string idFrom, string idTo)
         {
-            if (step.CurrentStep.Step.GetType() != typeof(ValidateStep)) return false;
-            var vs = (ValidateStep)step.CurrentStep.Step;
+            if (step.CurrentStep.GetType() != typeof(ValidateStep)) return false;
+            var vs = (ValidateStep)step.CurrentStep;
             return vs.IdFrom.Equals(idFrom) && vs.IdTo.Equals(idTo);
         }
 
         private bool checkInsertStep(Step step, string idFrom, string idTo, ICollection<string> candidates, bool handled)
         {
-            if (step.CurrentStep.Step.GetType() != typeof(InsertStep)) return false;
-            var ins = (InsertStep)step.CurrentStep.Step;
+            if (step.CurrentStep.GetType() != typeof(InsertStep)) return false;
+            var ins = (InsertStep)step.CurrentStep;
             if (!(ins.IdFrom.Equals(idFrom) && ins.IdTo.Equals(idTo))) return false;
             if (ins.DataToInsert.Count != candidates.Count) return false;
             if (ins.Handled != handled) return false;
@@ -274,8 +274,8 @@ namespace Tests.RBSS_CS
             Assert.False(equalFP(state));
             Assert.NotEmpty(state.Steps);
             Assert.Single(state.Steps);
-            Assert.IsType<InsertStep>(state.Steps[0].CurrentStep.Step);
-            Assert.Empty(((InsertStep)state.Steps[0].CurrentStep.Step).DataToInsert);
+            Assert.IsType<InsertStep>(state.Steps[0].CurrentStep);
+            Assert.Empty(((InsertStep)state.Steps[0].CurrentStep).DataToInsert);
 
 
             Dispose();
@@ -289,8 +289,8 @@ namespace Tests.RBSS_CS
 
             Assert.NotEmpty(state.Steps);
             Assert.Single(state.Steps);
-            Assert.IsType<InsertStep>(state.Steps[0].CurrentStep.Step);
-            Assert.Single(((InsertStep)state.Steps[0].CurrentStep.Step).DataToInsert);
+            Assert.IsType<InsertStep>(state.Steps[0].CurrentStep);
+            Assert.Single(((InsertStep)state.Steps[0].CurrentStep).DataToInsert);
         }
 
         [Fact]
@@ -318,7 +318,7 @@ namespace Tests.RBSS_CS
             var result = _sync.SyncPut(new SyncState(0,
                 new List<Step>()
                 {
-                    new Step(0, new OneOfValidateStepInsertStep(new ValidateStep("industry", "appreciated", "fp")))
+                    new Step(0, new ValidateStep("industry", "appreciated", "fp"))
                 }));
             Assert.IsType<OkObjectResult>(result);
             Assert.NotNull(((OkObjectResult)result).Value);
@@ -352,7 +352,7 @@ namespace Tests.RBSS_CS
             var result = _sync.SyncPut(new SyncState(0,
                 new List<Step>()
                 {
-                    new Step(0, new OneOfValidateStepInsertStep(new InsertStep("observations", new List<string>(), "scotland", new List<SimpleDataObject>(){new SimpleDataObject("observations", "")}, false)))
+                    new Step(0, (new InsertStep("observations", new List<string>(), "scotland", new List<SimpleDataObject>(){new SimpleDataObject("observations", "")}, false)))
                 }));
             Assert.IsType<OkObjectResult>(result);
             Assert.NotNull(((OkObjectResult)result).Value);
@@ -395,8 +395,8 @@ namespace Tests.RBSS_CS
             Assert.False(equalFP(state));
             Assert.NotEmpty(state.Steps);
             Assert.Single(state.Steps);
-            Assert.IsType<InsertStep>(state.Steps[0].CurrentStep.Step);
-            var insert = (InsertStep)state.Steps[0].CurrentStep.Step;
+            Assert.IsType<InsertStep>(state.Steps[0].CurrentStep);
+            var insert = (InsertStep)state.Steps[0].CurrentStep;
             Assert.Contains("ape", insert.DataToInsert.Select(s => s.Id));
 
 
@@ -411,8 +411,8 @@ namespace Tests.RBSS_CS
 
             Assert.NotEmpty(state.Steps);
             Assert.Single(state.Steps);
-            Assert.IsType<InsertStep>(state.Steps[0].CurrentStep.Step);
-            insert = (InsertStep)state.Steps[0].CurrentStep.Step;
+            Assert.IsType<InsertStep>(state.Steps[0].CurrentStep);
+            insert = (InsertStep)state.Steps[0].CurrentStep;
             Assert.True(insert.Handled);
             
             var data = insert.DataToInsert.Select(s => s.Id).ToArray();
@@ -454,7 +454,7 @@ namespace Tests.RBSS_CS
 
             result = _sync.SyncPut(new SyncState(0, new List<Step>()
             {
-                new Step(0, new OneOfValidateStepInsertStep(new InsertStep(
+                new Step(0, (new InsertStep(
                     "cat", new List<string>(), "doe",
                     new List<SimpleDataObject>() { new SimpleDataObject("cat", 500, "") }, false
                 )))
@@ -463,6 +463,7 @@ namespace Tests.RBSS_CS
             Assert.NotNull(((OkObjectResult)result).Value);
             Assert.IsType<SyncState>(((OkObjectResult)result).Value);
             var state2 = (SyncState)((OkObjectResult)result).Value!;
+            var json = state2.ToJson();
 
             result = _sync.SyncPost(new ValidateStep(validate.IdFrom, validate.IdTo, validate.Fingerprint));
             Assert.IsType<OkObjectResult>(result);
@@ -472,7 +473,7 @@ namespace Tests.RBSS_CS
             Assert.True(equalFP(state));
             _sync.SyncPut(new SyncState(0, new List<Step>()
             {
-                new Step(0, new OneOfValidateStepInsertStep(new InsertStep(
+                new Step(0, (new InsertStep(
                     "cat", new List<string>(), "doe",
                     new List<SimpleDataObject>() { new SimpleDataObject("cat", 1, "") }, false
                 )))

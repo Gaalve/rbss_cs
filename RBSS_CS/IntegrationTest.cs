@@ -62,8 +62,22 @@ namespace RBSS_CS
 
         private void Cleanup()
         {
-            _modifyApi.DeletePost(new SimpleDataObject("", ""));
-            _remoteClient.ModifyApi.DeletePost(new SimpleDataObject("", ""));
+            Org.OpenAPITools.Client.RequestOptions localVarRequestOptions = new Org.OpenAPITools.Client.RequestOptions();
+            string[] _contentTypes = new string[] {
+                "application/json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+            };
+
+            var localVarContentType = Org.OpenAPITools.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
+            localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+            var localVarAccept = Org.OpenAPITools.Client.ClientUtils.SelectHeaderAccept(_accepts);
+            localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            _remoteClient.ModifyApi.Client.Post<IActionResult>("/debugReset", localVarRequestOptions);
+            _debugApi.DebugReset();
         }
         private void AddToRemote(SimpleDataObject sdo)
         {
@@ -222,16 +236,16 @@ namespace RBSS_CS
 
         private bool checkValidateStep(Step step, string idFrom, string idTo)
         {
-            if (step.CurrentStep.Step.GetType() != typeof(ValidateStep)) return false;
-            var vs = (ValidateStep)step.CurrentStep.Step;
+            if (step.CurrentStep.GetType() != typeof(ValidateStep)) return false;
+            var vs = (ValidateStep)step.CurrentStep;
             return vs.IdFrom.Equals(idFrom) && vs.IdTo.Equals(idTo);
         }
 
 
         private bool checkInsertStep(Step step, string idFrom, string idTo, ICollection<string> candidates, bool handled)
         {
-            if (step.CurrentStep.Step.GetType() != typeof(InsertStep)) return false;
-            var ins = (InsertStep)step.CurrentStep.Step;
+            if (step.CurrentStep.GetType() != typeof(InsertStep)) return false;
+            var ins = (InsertStep)step.CurrentStep;
             if (!(ins.IdFrom.Equals(idFrom) && ins.IdTo.Equals(idTo))) return false;
             if (ins.DataToInsert.Count != candidates.Count) return false;
             if (ins.Handled != handled) return false;

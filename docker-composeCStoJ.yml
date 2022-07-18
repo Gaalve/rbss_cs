@@ -1,11 +1,11 @@
 version: '3.4'
 
 services:
-  rbss_cs_participant:
+  rbssJSparticipant:
     image: git.tu-berlin.de:5000/ods-pj/rbssf2122/java:latest
     environment:       
       - isRBSSTester=false       
-      - p2pContactIP=firstRBSS       
+      - p2pContactIP=rbssJSparticipant
       - p2pContactPort=7042
     ports:
       - "5634:7042"
@@ -16,7 +16,7 @@ services:
     ports:
       - "5633:80"
     environment:
-      - RBSS_CONNECTION=http://rbss_cs_participant:7042
+      - RBSS_CONNECTION=http://rbssJSparticipant:7042
     entrypoint: sh -c "cp -f settings-testing.yml settings.yml && dotnet RBSS_CS.dll"
     depends_on:
-      - rbss_cs_participant
+      - rbssJSparticipant

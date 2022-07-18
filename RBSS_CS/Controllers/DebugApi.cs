@@ -100,10 +100,10 @@ namespace RBSS_CS.Controllers
 
 
         [HttpPost]
-        [Route("/debugClear")]
+        [Route("/debugReset")]
         [Consumes("application/json")]
         [ValidateModelState]
-        public async Task<IActionResult> DebugClearSet()
+        public IActionResult DebugReset()
         {
             if (!_settings.TestingMode) return Forbid();
             _persistenceLayer.Clear();
