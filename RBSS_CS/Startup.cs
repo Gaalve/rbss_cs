@@ -109,7 +109,7 @@ namespace RBSS_CS
             }
 
             //app.UseHttpsRedirection();
-            
+            // app.UseHttpLogging();
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseSwagger(c =>

@@ -78,6 +78,7 @@ namespace RBSS_CS
 
         private void Cleanup()
         {
+            Console.WriteLine("Cleanup ");
             Org.OpenAPITools.Client.RequestOptions localVarRequestOptions = new Org.OpenAPITools.Client.RequestOptions();
             string[] _contentTypes = new string[] {
                 "application/json"
@@ -235,6 +236,7 @@ namespace RBSS_CS
                     {
                         GC.Collect();
                         Cleanup();
+                        Console.WriteLine("Starting next Test: "+m.Name);
                         m.Invoke(this, null);
                         Console.WriteLine("############################");
                         Console.WriteLine("## " + m.Name + ": Success");

@@ -19,8 +19,16 @@ public class Client
 
     public Client(string inetAddress)
     {
-        var uri = new Uri(inetAddress);
-        if (uri.Scheme is not ("http" or "https")) inetAddress = "http://" + inetAddress;
+        try
+        {
+            var uri = new Uri(inetAddress);
+            if (uri.Scheme is not ("http" or "https")) inetAddress = "http://" + inetAddress;
+        }
+        catch (System.UriFormatException ex)
+        {
+            inetAddress = "http://" + inetAddress;
+        }
+        
         Configuration = new Configuration
         {
             BasePath = inetAddress

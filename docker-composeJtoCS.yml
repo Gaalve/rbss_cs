@@ -1,0 +1,31 @@
+version: '3.4'
+services:
+  firstRBSS:
+    image: git.tu-berlin.de:5000/ods-pj/rbssf2122/java:latest
+    ports:
+      - "7042:7042"
+    environment:
+      - isRBSSTester=false
+      - p2pContactIP=null
+      - p2pContactPort=null
+  testRBSS:
+    image: git.tu-berlin.de:5000/ods-pj/rbssf2122/java:latest
+    ports:
+      - "7044:7042"
+    environment:
+      - isRBSSTester=true
+      - firstPeerIP=firstRBSS
+      - firstPeerPort=7042
+      - secondPeerIP=rbsscsinitiator
+      - secondPeerPort=7042
+  rbsscsinitiator:
+    build:
+      context: .
+      dockerfile: RBSS_CS/Dockerfile
+    ports:
+      - "5633:80"
+    environment:
+      - RBSS_CONNECTION=http://firstRBSS:7042
+    entrypoint: sh -c "cp -f settings-testing2.yml settings.yml && dotnet RBSS_CS.dll"
+    depends_on:
+      - firstRBSS

@@ -35,7 +35,7 @@ namespace Org.OpenAPIToolsServer.Controllers
         [Route("/sync")]
         [Consumes("application/json")]
         [ValidateModelState]
-        [ProducesResponseType(statusCode: 200, type: typeof(SyncState))]
+        [ProducesResponseType(statusCode: 200, type: typeof(InlineResponse))]
         public abstract IActionResult SyncPost([FromBody]ValidateStep validateStep);
 
         /// <summary>

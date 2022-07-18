@@ -110,6 +110,11 @@ namespace RBSS_CS
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    // webBuilder.ConfigureLogging(l =>
+                    // {
+                    //     l.ClearProviders();
+                    //     l.AddConsole();
+                    // });
                     webBuilder.ConfigureServices((services) =>
                     {
                         var auxDsType = GetByName(serverSettings.AuxillaryDS);
