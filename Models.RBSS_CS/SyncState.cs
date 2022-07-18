@@ -18,7 +18,7 @@ namespace Models.RBSS_CS
     /// <summary>
     /// SyncState
     /// </summary>
-    [DataContract]
+    [DataContract(Name = "syncstate")]
         public partial class SyncState :  IEquatable<SyncState>, IValidatableObject
     {
         /// <summary>

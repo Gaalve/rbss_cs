@@ -18,7 +18,7 @@ namespace RBSS_CS.Controllers
             _settings = settings;
             _persistenceLayer = persistenceLayer;
         }
-        private AbstractStep? createStep(RangeSet? set)
+        private OneOfValidateStepInsertStep? createStep(RangeSet? set)
         {
             if (set?.Data == null || set.Data.Length == 0) return null;
             else if (set.Data.Length <= _settings.ItemSize)

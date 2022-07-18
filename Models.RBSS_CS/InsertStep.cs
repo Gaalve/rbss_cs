@@ -19,7 +19,7 @@ namespace Models.RBSS_CS
     /// InsertStep
     /// </summary>
     [DataContract]
-        public partial class InsertStep : AbstractStep, IEquatable<InsertStep>, IValidatableObject
+        public partial class InsertStep : OneOfValidateStepInsertStep, IEquatable<InsertStep>, IValidatableObject
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="InsertStep" /> class.

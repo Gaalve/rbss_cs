@@ -128,6 +128,12 @@ namespace RBSS_CS
             return _remoteClient.SyncApi.SyncPost(new ValidateStep(range.IdFrom, range.IdTo, range.Fingerprint));
         }
 
+        private ApiResponse<SyncState> InitiateSyncWithInfo()
+        {
+            var range = _persistenceLayer.CreateRangeSet();
+            return _remoteClient.SyncApi.SyncPostWithHttpInfo(new ValidateStep(range.IdFrom, range.IdTo, range.Fingerprint));
+        }
+
         private bool SetsSynchronized()
         {
             return InitiateSync().Steps.Count == 0;
@@ -279,6 +285,15 @@ namespace RBSS_CS
             };
             AddToRemoteBatch(setParticipant);
             AddToHostBatch(setInitiator);
+
+            var remoteResultInfo = InitiateSyncWithInfo();
+            Console.WriteLine(remoteResultInfo.RawContent);
+            if (remoteResultInfo.Data.Steps == null)
+            {
+                Console.WriteLine(remoteResultInfo.RawContent);
+            }
+
+            Assert.NotNull(remoteResultInfo.Data);
             
             var remoteResult = InitiateSync();
             Assert.Equal(2, remoteResult.Steps.Count);
