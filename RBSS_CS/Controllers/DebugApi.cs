@@ -37,11 +37,10 @@ namespace RBSS_CS.Controllers
         [Route("/batchInsert")]
         [Consumes("application/json")]
         [ValidateModelState]
-        [ProducesResponseType(statusCode: 200, type: typeof(SimpleDataObject[]))]
-        public IActionResult DebugBatchInsert(SimpleDataObject[] data)
+        public IActionResult DebugBatchInsert(DebugInsert data)
         {
             if (!_settings.TestingMode) return Forbid();
-            foreach (var d in data)
+            foreach (var d in data.DataSet)
             {
                 _persistenceLayer.Insert(d);
             }
@@ -58,12 +57,12 @@ namespace RBSS_CS.Controllers
             Console.WriteLine("Debug Start");
             var remoteClient = new Client(inetAddress);
             var range = _persistenceLayer.CreateRangeSet();
-            var remoteResult = await remoteClient.SyncApi.SyncPostAsync(
-                new ValidateStep(range.IdFrom, range.IdTo, range.Fingerprint));
+            var remoteResult = (await remoteClient.SyncApi.SyncPostAsync(
+                new ValidateStep(range.IdFrom, range.IdTo, range.Fingerprint))).Syncstate;
 
             while (remoteResult.Steps is { Count: > 0 })
             {
-                var localAction = _syncApi.SyncPut(remoteResult);
+                var localAction = _syncApi.SyncPut(new InlineResponse(remoteResult));
 
                 if (localAction.GetType() != typeof(OkObjectResult))
                 {
@@ -92,7 +91,7 @@ namespace RBSS_CS.Controllers
                     break; // Sync finished
                 }
 
-                remoteResult = await remoteClient.SyncApi.SyncPutAsync(localSyncState);
+                remoteResult = (await remoteClient.SyncApi.SyncPutAsync(new InlineResponse(localSyncState))).Syncstate;
             }
             Console.WriteLine("Debug Finished");
             return Ok();

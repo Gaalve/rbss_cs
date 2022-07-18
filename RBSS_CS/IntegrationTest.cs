@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Data;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Reflection;
@@ -58,6 +59,21 @@ namespace RBSS_CS
             _memLogger = new LoggerConfiguration().WriteTo.File(
                 path: "memResults.log", outputTemplate: "{Message}{NewLine}"
             ).CreateLogger();
+
+            Org.OpenAPITools.Client.RequestOptions localVarRequestOptions = new Org.OpenAPITools.Client.RequestOptions();
+            string[] _contentTypes = new string[] {
+                "application/json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+            };
+
+            var localVarContentType = Org.OpenAPITools.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
+            localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+            var localVarAccept = Org.OpenAPITools.Client.ClientUtils.SelectHeaderAccept(_accepts);
+            localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+            _remoteClient.ModifyApi.Client.Post<IActionResult>("/debugSyncStop", localVarRequestOptions);
         }
 
         private void Cleanup()
@@ -98,8 +114,8 @@ namespace RBSS_CS
 
         private void AddToHostBatch(IEnumerable<SimpleDataObject> set)
         {
-            _debugApi.DebugBatchInsert(set.Select(s => 
-                (SimpleDataObject) JsonConvert.DeserializeObject(s.ToJson(), typeof(SimpleDataObject))! ).ToArray());
+            _debugApi.DebugBatchInsert(new DebugInsert(set.Select(s => 
+                (SimpleDataObject) JsonConvert.DeserializeObject(s.ToJson(), typeof(SimpleDataObject))! ).ToArray()));
         }
 
         private void AddToRemoteBatch(IEnumerable<SimpleDataObject> set)
@@ -117,7 +133,7 @@ namespace RBSS_CS
             localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
             var localVarAccept = Org.OpenAPITools.Client.ClientUtils.SelectHeaderAccept(_accepts);
             localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-            localVarRequestOptions.Data = set.ToArray();
+            localVarRequestOptions.Data = new DebugInsert(set.ToArray());
 
             _remoteClient.ModifyApi.Client.Post<IActionResult>("/batchInsert", localVarRequestOptions);
         }
@@ -125,10 +141,10 @@ namespace RBSS_CS
         private SyncState InitiateSync()
         {
             var range = _persistenceLayer.CreateRangeSet();
-            return _remoteClient.SyncApi.SyncPost(new ValidateStep(range.IdFrom, range.IdTo, range.Fingerprint));
+            return _remoteClient.SyncApi.SyncPost(new ValidateStep(range.IdFrom, range.IdTo, range.Fingerprint)).Syncstate;
         }
 
-        private ApiResponse<SyncState> InitiateSyncWithInfo()
+        private ApiResponse<InlineResponse> InitiateSyncWithInfo()
         {
             var range = _persistenceLayer.CreateRangeSet();
             return _remoteClient.SyncApi.SyncPostWithHttpInfo(new ValidateStep(range.IdFrom, range.IdTo, range.Fingerprint));
@@ -142,7 +158,7 @@ namespace RBSS_CS
 
         private SyncState? GetLocalResult(SyncState remoteResult)
         {
-            var localAction = _syncApi.SyncPut(remoteResult);
+            var localAction = _syncApi.SyncPut(new InlineResponse(remoteResult));
 
             if (localAction.GetType() != typeof(OkObjectResult))
             {
@@ -158,13 +174,13 @@ namespace RBSS_CS
                 return null;
             }
 
-            if (localResult.GetType() != typeof(SyncState))
+            if (localResult.GetType() != typeof(InlineResponse))
             {
                 Console.WriteLine("Wrong object attached.");
                 return null;
             }
 
-            return (SyncState)localResult;
+            return ((InlineResponse)localResult).Syncstate;
         }
 
         private (int, int) Synchronize()
@@ -180,7 +196,7 @@ namespace RBSS_CS
                 comTraffic += remoteResult.Steps.Count + localSyncState!.Steps.Count;
                 if (localSyncState!.Steps.Count == 0) break;
                 comRounds += 1;
-                remoteResult = _remoteClient.SyncApi.SyncPut(localSyncState);
+                remoteResult = _remoteClient.SyncApi.SyncPut(new InlineResponse(localSyncState)).Syncstate;
             }
             return (comRounds, comTraffic);
         }
@@ -192,7 +208,7 @@ namespace RBSS_CS
             var range = _persistenceLayer.CreateRangeSet();
             var step = new ValidateStep(range.IdFrom, range.IdTo, range.Fingerprint);
             bytesSent += step.ToJson().Length;
-            var remoteResult = _remoteClient.SyncApi.SyncPost(step);
+            var remoteResult = _remoteClient.SyncApi.SyncPost(step).Syncstate;
             while (remoteResult.Steps is { Count: > 0 })
             {
                 bytesReceived += remoteResult.ToJson().Length;
@@ -200,7 +216,7 @@ namespace RBSS_CS
                 Assert.NotNull(localSyncState);
                 if (localSyncState!.Steps.Count == 0) break;
                 bytesSent += localSyncState.ToJson().Length;
-                remoteResult = _remoteClient.SyncApi.SyncPut(localSyncState);
+                remoteResult = _remoteClient.SyncApi.SyncPut(new InlineResponse(localSyncState)).Syncstate;
             }
             bytesReceived += remoteResult.ToJson().Length;
             return (bytesSent, bytesReceived);
@@ -288,10 +304,7 @@ namespace RBSS_CS
 
             var remoteResultInfo = InitiateSyncWithInfo();
             Console.WriteLine(remoteResultInfo.RawContent);
-            if (remoteResultInfo.Data.Steps == null)
-            {
-                Console.WriteLine(remoteResultInfo.RawContent);
-            }
+
 
             Assert.NotNull(remoteResultInfo.Data);
             
@@ -313,7 +326,7 @@ namespace RBSS_CS
             Assert.Contains(localSyncState.Steps, (step =>
                 checkInsertStep(step, "gnu", "ape", new List<string>(){"gnu"}, false)));
 
-            remoteResult = _remoteClient.SyncApi.SyncPut(localSyncState);
+            remoteResult = _remoteClient.SyncApi.SyncPut(new InlineResponse(localSyncState)).Syncstate;
             Assert.Equal(2, remoteResult.Steps.Count);
             Assert.Contains(remoteResult.Steps, (step =>
                 checkInsertStep(step, "ape", "eel", new List<string>(){"bee", "cat", "doe"}, true)));
@@ -377,7 +390,7 @@ namespace RBSS_CS
             Assert.Contains(localSyncState.Steps, (step =>
                 checkValidateStep(step, "gnu", "ape")));
 
-            remoteResult = _remoteClient.SyncApi.SyncPut(localSyncState);
+            remoteResult = _remoteClient.SyncApi.SyncPut(new InlineResponse(localSyncState)).Syncstate;
             Assert.Single(remoteResult.Steps);
             Assert.Contains(remoteResult.Steps, (step =>
                 checkInsertStep(step, "eel", "gnu", new List<string>(){"eel"}, false)));
@@ -389,7 +402,7 @@ namespace RBSS_CS
             Assert.Contains(localSyncState.Steps, (step =>
                 checkInsertStep(step, "eel", "gnu", new List<string>(){"fox"}, true)));
 
-            remoteResult = _remoteClient.SyncApi.SyncPut(localSyncState);
+            remoteResult = _remoteClient.SyncApi.SyncPut(new InlineResponse(localSyncState)).Syncstate;
             Assert.NotNull(remoteResult);
             Assert.Empty(remoteResult!.Steps);
 
@@ -446,7 +459,7 @@ namespace RBSS_CS
             Assert.Contains(localSyncState.Steps, (step =>
                 checkValidateStep(step, "gnu", "ape")));
 
-            remoteResult = _remoteClient.SyncApi.SyncPut(localSyncState);
+            remoteResult = _remoteClient.SyncApi.SyncPut(new InlineResponse(localSyncState)).Syncstate;
             Assert.Equal(4, remoteResult.Steps.Count);
             Assert.Contains(remoteResult.Steps, (step =>
                 checkInsertStep(step, "ape", "cat", new List<string>(){"ape"}, false)));
@@ -470,7 +483,7 @@ namespace RBSS_CS
             Assert.Contains(localSyncState.Steps, (step =>
                 checkInsertStep(step, "gnu", "ape", new List<string>(){"hog"}, true)));
 
-            remoteResult = _remoteClient.SyncApi.SyncPut(localSyncState);
+            remoteResult = _remoteClient.SyncApi.SyncPut(new InlineResponse(localSyncState)).Syncstate;
             Assert.NotNull(remoteResult);
             Assert.Empty(remoteResult!.Steps);
 

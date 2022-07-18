@@ -78,11 +78,12 @@ namespace RBSS_CS.Controllers
             SyncState state = new SyncState(0, new List<Step>());
             HandleValidateStep(validateStep, state);
             Console.WriteLine("SyncPost End");
-            return Ok(state);
+            return Ok(new InlineResponse(state));
         }
 
-        public override IActionResult SyncPut(SyncState syncState)
+        public override IActionResult SyncPut(InlineResponse inlineResponse)
         {
+            var syncState = inlineResponse.Syncstate;
             Console.WriteLine("SyncPut Begin");
             if (syncState.Steps == null || syncState.Steps.Count == 0)
             {
@@ -107,7 +108,9 @@ namespace RBSS_CS.Controllers
                 }
             }
             Console.WriteLine("SyncPut End");
-            return Ok(state);
+            return Ok(new InlineResponse(state));
         }
+
+
     }
 }

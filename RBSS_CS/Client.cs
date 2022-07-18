@@ -33,13 +33,13 @@ public class Client
     private SyncState InitiateSync(IPersistenceLayerSingleton localPersistence)
     {
         var range = localPersistence.CreateRangeSet();
-        return SyncApi.SyncPost(new ValidateStep(range.IdFrom, range.IdTo, range.Fingerprint));
+        return SyncApi.SyncPost(new ValidateStep(range.IdFrom, range.IdTo, range.Fingerprint)).Syncstate;
     }
 
 
     private static SyncState? GetLocalResult(SyncApiController localSyncApi, SyncState remoteResult)
     {
-        var localAction = localSyncApi.SyncPut(remoteResult);
+        var localAction = localSyncApi.SyncPut(new InlineResponse(remoteResult));
 
         if (localAction.GetType() != typeof(OkObjectResult))
         {
@@ -69,7 +69,7 @@ public class Client
             {
                 var localSyncState = GetLocalResult(localSyncApi, remoteResult);
                 if (localSyncState!.Steps.Count == 0) break;
-                remoteResult = SyncApi.SyncPut(localSyncState);
+                remoteResult = SyncApi.SyncPut(new InlineResponse(localSyncState)).Syncstate;
             }
         });
         

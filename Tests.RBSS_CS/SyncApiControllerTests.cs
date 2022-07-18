@@ -233,11 +233,11 @@ namespace Tests.RBSS_CS
 
             Dispose();
             AddAllToLayer(setInitiator);
-            result = _sync.SyncPut(state);
+            result = _sync.SyncPut(new InlineResponse(state));
             Assert.IsType<OkObjectResult>(result);
             Assert.NotNull(((OkObjectResult)result).Value);
-            Assert.IsType<SyncState>(((OkObjectResult)result).Value);
-            state = (SyncState)((OkObjectResult)result).Value!;
+            Assert.IsType<InlineResponse>(((OkObjectResult)result).Value);
+            state = ((InlineResponse)((OkObjectResult)result).Value!).Syncstate;
             Assert.NotNull(state);
             Assert.NotEmpty(state!.Steps);
             Assert.Equal(3, state.Steps.Count);
@@ -280,12 +280,12 @@ namespace Tests.RBSS_CS
 
             Dispose();
             AddAllToLayer(setRemote);
-            result = _sync.SyncPut(state);
+            result = _sync.SyncPut(new InlineResponse(state));
 
             Assert.IsType<OkObjectResult>(result);
             Assert.NotNull(((OkObjectResult)result).Value);
-            Assert.IsType<SyncState>(((OkObjectResult)result).Value);
-            state = (SyncState)((OkObjectResult)result).Value!;
+            Assert.IsType<InlineResponse>(((OkObjectResult)result).Value);
+            state = ((InlineResponse)((OkObjectResult)result).Value!).Syncstate;
 
             Assert.NotEmpty(state.Steps);
             Assert.Single(state.Steps);
@@ -315,15 +315,15 @@ namespace Tests.RBSS_CS
                 (new SimpleDataObject("theme", "")),
             };
             AddAllToLayer(setHost);
-            var result = _sync.SyncPut(new SyncState(0,
+            var result = _sync.SyncPut(new InlineResponse(new SyncState(0, 
                 new List<Step>()
                 {
                     new Step(0, new ValidateStep("industry", "appreciated", "fp"))
-                }));
+                })));
             Assert.IsType<OkObjectResult>(result);
             Assert.NotNull(((OkObjectResult)result).Value);
-            Assert.IsType<SyncState>(((OkObjectResult)result).Value);
-            var state = (SyncState)((OkObjectResult)result).Value!;
+            Assert.IsType<InlineResponse>(((OkObjectResult)result).Value);
+            var state = ((InlineResponse)((OkObjectResult)result).Value!).Syncstate;
             Assert.False(equalFP(state));
             Assert.NotEmpty(state.Steps);
             Assert.Equal(2, state.Steps.Count);
@@ -349,15 +349,15 @@ namespace Tests.RBSS_CS
             _persistenceLayer.Insert(new SimpleDataObject("failure", ""));
             _persistenceLayer.Insert(new SimpleDataObject("full", ""));
             // _persistenceLayer.Insert(new SimpleDataObject("failure", ""));
-            var result = _sync.SyncPut(new SyncState(0,
+            var result = _sync.SyncPut(new InlineResponse(new SyncState(0,
                 new List<Step>()
                 {
                     new Step(0, (new InsertStep("observations", new List<string>(), "scotland", new List<SimpleDataObject>(){new SimpleDataObject("observations", "")}, false)))
-                }));
+                })));
             Assert.IsType<OkObjectResult>(result);
             Assert.NotNull(((OkObjectResult)result).Value);
-            Assert.IsType<SyncState>(((OkObjectResult)result).Value);
-            var state = (SyncState)((OkObjectResult)result).Value!;
+            Assert.IsType<InlineResponse>(((OkObjectResult)result).Value);
+            var state = ((InlineResponse)((OkObjectResult)result).Value!).Syncstate;
             Assert.False(equalFP(state));
             Assert.NotEmpty(state.Steps);
             Assert.Equal(1, state.Steps.Count);
@@ -402,12 +402,12 @@ namespace Tests.RBSS_CS
 
             Dispose();
             AddAllToLayer(setRemote);
-            result = _sync.SyncPut(state);
+            result = _sync.SyncPut(new InlineResponse(state));
 
             Assert.IsType<OkObjectResult>(result);
             Assert.NotNull(((OkObjectResult)result).Value);
-            Assert.IsType<SyncState>(((OkObjectResult)result).Value);
-            state = (SyncState)((OkObjectResult)result).Value!;
+            Assert.IsType<InlineResponse>(((OkObjectResult)result).Value);
+            state = ((InlineResponse)((OkObjectResult)result).Value!).Syncstate;
 
             Assert.NotEmpty(state.Steps);
             Assert.Single(state.Steps);
@@ -452,17 +452,17 @@ namespace Tests.RBSS_CS
             Assert.False(equalFP(state));
             Assert.NotEmpty(state.Steps);
 
-            result = _sync.SyncPut(new SyncState(0, new List<Step>()
+            result = _sync.SyncPut(new InlineResponse(new SyncState(0, new List<Step>()
             {
                 new Step(0, (new InsertStep(
                     "cat", new List<string>(), "doe",
                     new List<SimpleDataObject>() { new SimpleDataObject("cat", 500, "") }, false
                 )))
-            }));
+            })));
             Assert.IsType<OkObjectResult>(result);
             Assert.NotNull(((OkObjectResult)result).Value);
-            Assert.IsType<SyncState>(((OkObjectResult)result).Value);
-            var state2 = (SyncState)((OkObjectResult)result).Value!;
+            Assert.IsType<InlineResponse>(((OkObjectResult)result).Value);
+            var state2 = ((InlineResponse)((OkObjectResult)result).Value!).Syncstate;
             var json = state2.ToJson();
 
             result = _sync.SyncPost(new ValidateStep(validate.IdFrom, validate.IdTo, validate.Fingerprint));
@@ -471,13 +471,13 @@ namespace Tests.RBSS_CS
             Assert.IsType<SyncState>(((OkObjectResult)result).Value);
             state = (SyncState)((OkObjectResult)result).Value!;
             Assert.True(equalFP(state));
-            _sync.SyncPut(new SyncState(0, new List<Step>()
+            _sync.SyncPut(new InlineResponse(new SyncState(0, new List<Step>()
             {
                 new Step(0, (new InsertStep(
                     "cat", new List<string>(), "doe",
                     new List<SimpleDataObject>() { new SimpleDataObject("cat", 1, "") }, false
                 )))
-            }));
+            })));
             result = _sync.SyncPost(new ValidateStep(validate.IdFrom, validate.IdTo, validate.Fingerprint));
             Assert.IsType<OkObjectResult>(result);
             Assert.NotNull(((OkObjectResult)result).Value);
