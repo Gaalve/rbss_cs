@@ -21,6 +21,7 @@ namespace RBSS_CS
         /// <param name="args"></param>
         public static void Main(string[] args)
         {
+
             var yamlDeserializer = new DeserializerBuilder().WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
             var settingsStr = System.IO.File.Exists("settings.yml") ? System.IO.File.ReadAllText("settings.yml") : null;
             if (settingsStr == null) throw new NullReferenceException("settings file does not exist");

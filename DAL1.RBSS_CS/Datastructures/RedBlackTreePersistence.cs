@@ -33,7 +33,9 @@ namespace DAL1.RBSS_CS.Datastructures
         {
             var lowerWrapper = new SimpleObjectWrapper(lower);
             var upperWrapper = new SimpleObjectWrapper(upper);
-            return GetFingerprint(_set.GetSortedListBetween(lowerWrapper, upperWrapper));
+            var fp = GetFingerprint(_set.GetSortedListBetween(lowerWrapper, upperWrapper));
+            Console.WriteLine("Hash from " + lower+ " to " + upper + ": " + fp);
+            return fp;
         }
 
         private string GetFingerprint(List<SimpleObjectWrapper> list)
@@ -41,10 +43,17 @@ namespace DAL1.RBSS_CS.Datastructures
             var pc = _bifunctor.GetNewEmpty();
             foreach (var v in list)
             {
+                Console.WriteLine("Hash from " + v.Data.Id + ": " + Convert.ToBase64String(v.Hash.Reverse().ToArray()));
+                Console.WriteLine("Hash from " + v.Data.Id + ": " + "IntHash: " + BitConverter.ToInt32(v.Hash));
+                Console.WriteLine("Hash from " + v.Data.Id + ": " +  "IntHashR: " + BitConverter.ToInt32(v.Hash.Reverse().ToArray()));
                 pc.Apply(v.Hash);
             }
-
-            return Convert.ToBase64String(pc.Hash);
+            //Console.WriteLine("IntHash: " + BitConverter.ToInt32(pc.Hash));
+            //Console.WriteLine("IntHashR: " + BitConverter.ToInt32(pc.Hash.Reverse().ToArray()));
+            Console.WriteLine("Base64: " + Convert.ToBase64String(pc.Hash));
+            Console.WriteLine("Hash.Length: " + pc.Hash.Length);
+            Console.WriteLine("HashR.Length: " + pc.Hash.Reverse().ToArray().Length);
+            return Convert.ToBase64String(pc.Hash.Reverse().ToArray());
         }
 
         public bool Insert(SimpleDataObject data)

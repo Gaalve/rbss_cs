@@ -93,8 +93,11 @@ namespace RBSS_CS
             var localVarAccept = Org.OpenAPITools.Client.ClientUtils.SelectHeaderAccept(_accepts);
             localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
 
+            Console.WriteLine("SendingRequest ");
             _remoteClient.ModifyApi.Client.Post<IActionResult>("/debugReset", localVarRequestOptions);
+            Console.WriteLine("RequestComplete ");
             _debugApi.DebugReset();
+            Console.WriteLine("Local Reset Complete ");
         }
         private void AddToRemote(SimpleDataObject sdo)
         {
@@ -968,7 +971,7 @@ namespace RBSS_CS
             TestRandomUpdate(1000, 0.5f, 0.2f);
         }
 
-        [IntegrationTestMethod]
+        //[IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void TestMemory()

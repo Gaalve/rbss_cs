@@ -71,6 +71,15 @@ namespace Models.RBSS_CS
             sb.Append("}\n");
             return sb.ToString();
         }
+
+        public String toStringWithoutTime() {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("{");
+            sb.Append("\"id\":\"").Append(Id).Append("\",");
+            sb.Append("\"additionalProperties\":\"").Append(AdditionalProperties).Append("\"");
+            sb.Append("}");
+            return sb.ToString();
+        }
   
         /// <summary>
         /// Returns the JSON string presentation of the object

@@ -30,12 +30,15 @@ namespace DAL1.RBSS_CS.Hashfunction
 
         public byte[] Hash(string str)
         {
-            return Hash(Encoding.ASCII.GetBytes(str));
+            return Hash(str.ToCharArray().Select(c => (byte)c).ToArray());
         }
 
         public byte[] Hash(SimpleDataObject dataObject)
         {
-            return Hash(dataObject.ToJson());
+            var str = dataObject.toStringWithoutTime();
+            Console.WriteLine("Length: " + str.Length);
+            Console.WriteLine(str);
+            return Hash(str);
         }
     }
 }

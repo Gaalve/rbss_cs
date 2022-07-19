@@ -14,9 +14,9 @@ services:
       - "7044:7042"
     environment:
       - isRBSSTester=true
-      - firstPeerIP=firstRBSS
+      - firstPeerIP=rbsscsinitiator
       - firstPeerPort=7042
-      - secondPeerIP=rbsscsinitiator
+      - secondPeerIP=firstRBSS
       - secondPeerPort=7042
   rbsscsinitiator:
     build:
