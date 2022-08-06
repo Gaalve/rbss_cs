@@ -752,9 +752,10 @@ namespace RBSS_CS
         }
 
 
-        private void TestRandomUpdate(int length, float intersection, float updateAmount)
+        private void TestRandomUpdate(int length, float intersection, float updateAmount, bool fixedSeed)
         {
             Cleanup();
+            var random = fixedSeed ? new Random(5438648) : Random.Shared;
             var setParticipant = new HashSet<SimpleDataObject>();
             var setInitiator = new HashSet<SimpleDataObject>();
 
@@ -763,35 +764,56 @@ namespace RBSS_CS
             int al = arr.Length;
             for (int i = 0; i < l2; i++)
             {
-                int r1 = Random.Shared.Next(al);
-                int r2 = Random.Shared.Next(al);
+                int r1 = random.Next(al);
+                int r2 = random.Next(al);
                 setInitiator.Add(arr[r1]);
                 setParticipant.Add(arr[r2]);
-                if (Random.Shared.NextSingle() < intersection) setInitiator.Add(arr[r2]);
-                if (Random.Shared.NextSingle() < intersection) setParticipant.Add(arr[r1]);
+                if (random.NextSingle() < intersection) setInitiator.Add(arr[r2]);
+                if (random.NextSingle() < intersection) setParticipant.Add(arr[r1]);
             }
             AddToRemoteBatch(setParticipant);
             AddToHostBatch(setInitiator);
 
+            
+
             var co = Console.Out;
-            Console.SetOut(StreamWriter.Null);
+            if (!fixedSeed) Console.SetOut(StreamWriter.Null);
             Synchronize();
             Console.SetOut(co);
+            
             Assert.True(SetsSynchronized());
+            
+            if (fixedSeed)
+            {
+                var set = _persistenceLayer.GetDataObjects();
+                foreach (var sd in set)
+                {
+                    Console.WriteLine(sd.ToJson());
+                }
+            }
+            
             for (int i = 0; i < length * updateAmount; i++)
             {
-                var e_in = setInitiator.ElementAt(Random.Shared.Next(setInitiator.Count));
+                var e_in = setInitiator.ElementAt(random.Next(setInitiator.Count));
                 e_in.AdditionalProperties = "updated";
                 AddToHost(e_in);
-                var e_pa = setParticipant.ElementAt(Random.Shared.Next(setParticipant.Count));
+                var e_pa = setParticipant.ElementAt(random.Next(setParticipant.Count));
                 e_pa.AdditionalProperties = "updated";
                 AddToRemote(e_pa);
             }
             Assert.False(SetsSynchronized());
-            Console.SetOut(StreamWriter.Null);
+            if (!fixedSeed) Console.SetOut(StreamWriter.Null);
             Synchronize();
             Console.SetOut(co);
             Assert.True(SetsSynchronized());
+            if (fixedSeed)
+            {
+                var set = _persistenceLayer.GetDataObjects();
+                foreach (var sd in set)
+                {
+                    Console.WriteLine(sd.ToJson());
+                }
+            }
         }
 
         [IntegrationTestMethod]
@@ -826,7 +848,7 @@ namespace RBSS_CS
             TestRandom(1000, 0.9f, false);
         }
 
-        [IntegrationTestMethod]
+        //[IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void TestRandom10000BigIntersection()
@@ -834,7 +856,7 @@ namespace RBSS_CS
             TestRandom(10000, 0.9f, false);
         }
 
-        [IntegrationTestMethod]
+        //[IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void TestRandom10000BigData()
@@ -842,7 +864,7 @@ namespace RBSS_CS
             TestRandom(10000, 0.5f, true);
         }
 
-        [IntegrationTestMethod]
+        //[IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void TestRandom10000BigIntersectionBigData()
@@ -874,7 +896,7 @@ namespace RBSS_CS
             TestRandom(1000, 0.5f, false, true);
         }
 
-        [IntegrationTestMethod]
+        //[IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void TestRandom1000BigIntersectionFixedSeed()
@@ -882,7 +904,7 @@ namespace RBSS_CS
             TestRandom(1000, 0.9f, false, true);
         }
 
-        [IntegrationTestMethod]
+        //[IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void TestRandom10000BigIntersectionFixedSeed()
@@ -890,7 +912,7 @@ namespace RBSS_CS
             TestRandom(10000, 0.9f, false, true);
         }
 
-        [IntegrationTestMethod]
+        //[IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void TestRandom10000BigDataFixedSeed()
@@ -898,7 +920,7 @@ namespace RBSS_CS
             TestRandom(10000, 0.5f, true, true);
         }
 
-        [IntegrationTestMethod]
+        //[IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void TestRandom10000BigIntersectionBigDataFixedSeed()
@@ -906,7 +928,7 @@ namespace RBSS_CS
             TestRandom(10000, 0.9f, true, true);
         }
 
-        [IntegrationTestMethod]
+        //[IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void TestRandom20000BigDataFixedSeed()
@@ -914,21 +936,21 @@ namespace RBSS_CS
             TestRandom(20000, 0.5f, true, true);
         }
 
-        [IntegrationTestMethod]
+        //[IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void TestRandom20000BigIntersectionBigDataFixedSeed()
         {
             TestRandom(20000, 0.9f, true, true);
         }
-        [IntegrationTestMethod]
+        //[IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void TestRandom30000BigIntersectionBigDataFixedSeed()
         {
             TestRandom(30000, 0.95f, true, true);
         }
-        [IntegrationTestMethod]
+        //[IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void TestRandom30000BigDataFixedSeed()
@@ -943,7 +965,15 @@ namespace RBSS_CS
         // ReSharper disable once UnusedMember.Local
         private void TestRandom1000Update()
         {
-            TestRandomUpdate(1000, 0.5f, 0.2f);
+            TestRandomUpdate(1000, 0.5f, 0.2f, false);
+        }
+
+        //[IntegrationTestMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
+        // ReSharper disable once UnusedMember.Local
+        private void TestRandom10UpdateFixedSeedPresentation3()
+        {
+            TestRandomUpdate(8, 0.5f, 0.2f, true);
         }
 
         //[IntegrationTestMethod]
