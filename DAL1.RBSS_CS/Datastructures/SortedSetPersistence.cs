@@ -13,6 +13,12 @@ namespace DAL1.RBSS_CS.Datastructures
         private IHashFunction _hashFunction;
         private int _branching;
 
+        private static byte[] HostToNetworkBytes(IEnumerable<byte> arr)
+        {
+            var na = arr.ToArray();
+            if (BitConverter.IsLittleEndian) Array.Reverse(na);
+            return na;
+        }
         public SortedSetPersistence()
         {
             _set = new SortedSet<SimpleObjectWrapper>();
@@ -23,7 +29,7 @@ namespace DAL1.RBSS_CS.Datastructures
         }
         public string GetFingerprint(string idFrom, string idTo)
         {
-            if (_set.Count == 0) return "AA==";
+            if (_set.Count == 0) return "AAAAAA==";
             if (idFrom == idTo) return GetFingerprint(_set);
             var lower = new SimpleObjectWrapper(idFrom);
             var lastExceeded = string.Compare(idFrom, idTo, StringComparison.Ordinal) > 0;
@@ -45,13 +51,13 @@ namespace DAL1.RBSS_CS.Datastructures
                 pc.Apply(v.Hash);
             }
 
-            return Convert.ToBase64String(pc.Hash);
+            return Convert.ToBase64String(HostToNetworkBytes(pc.Hash));
         }
 
         private static int ByteArrayComparator(byte[] arr1, byte[] arr2)
         {
-            var s1 = Convert.ToBase64String(arr1);
-            var s2 = Convert.ToBase64String(arr2);
+            var s1 = Convert.ToBase64String(HostToNetworkBytes(arr1));
+            var s2 = Convert.ToBase64String(HostToNetworkBytes(arr2));
             return string.Compare(s1, s2, StringComparison.Ordinal);
         }
 
@@ -128,7 +134,7 @@ namespace DAL1.RBSS_CS.Datastructures
 
         public RangeSet CreateRangeSet(string idFrom, string idTo)
         {
-            if (_set.Count == 0) return new RangeSet(idFrom, idTo, "AA==");
+            if (_set.Count == 0) return new RangeSet(idFrom, idTo, "AAAAAA==");
 
             var lower = new SimpleObjectWrapper(idFrom);
             var lastExceeded = string.Compare(idFrom, idTo, StringComparison.Ordinal) > 0;
@@ -147,7 +153,7 @@ namespace DAL1.RBSS_CS.Datastructures
 
         public RangeSet CreateRangeSet(string idFrom, string idTo, ICollection<SimpleDataObject> exclude)
         {
-            if (_set.Count == 0) return new RangeSet(idFrom, idTo, "AA==");
+            if (_set.Count == 0) return new RangeSet(idFrom, idTo, "AAAAAA==");
 
             var lower = new SimpleObjectWrapper(idFrom);
             var lastExceeded = string.Compare(idFrom, idTo, StringComparison.Ordinal) > 0;
@@ -168,7 +174,7 @@ namespace DAL1.RBSS_CS.Datastructures
 
         public RangeSet CreateRangeSet()
         {
-            if (_set.Count == 0) return new RangeSet("", "", "AA==");
+            if (_set.Count == 0) return new RangeSet("", "", "AAAAAA==");
             var data = _set.First();
 
             return new RangeSet(data.Data.Id, data.Data.Id, GetFingerprint(data.Data.Id, data.Data.Id));

@@ -652,31 +652,6 @@ namespace RBSS_CS
 
             Synchronize();
 
-            var union = setInitiator.Union(setParticipant);
-            // var controlSetInitiatorAction = _debugApi.DebugGetSet();
-            // Assert.IsType<OkObjectResult>(controlSetInitiatorAction.GetType());
-            // var controlSetInitiatorResult = ((OkObjectResult)controlSetInitiatorAction).Value;
-            // Assert.NotNull(controlSetInitiatorResult);
-            // Assert.IsType<SimpleDataObject[]>(controlSetInitiatorResult!.GetType());
-            // var controlSetInitiator = (SimpleDataObject[])controlSetInitiatorResult!;
-
-            var controlSetInitiator = _persistenceLayer.GetDataObjects();
-
-            var controlSetParticipant =
-                _remoteClient.SyncApi.Client.Get<SimpleDataObject[]>("/getset", new RequestOptions()).Data;
-
-            Console.WriteLine("Initiator: ");
-            foreach (var v in controlSetInitiator)
-            {
-                Console.WriteLine("\t" + v.Id);
-            }
-            Console.WriteLine("Participant: ");
-            foreach (var v in controlSetParticipant)
-            {
-                Console.WriteLine("\t" + v.Id);
-            }
-
-
             Assert.True(SetsSynchronized());
         }
 

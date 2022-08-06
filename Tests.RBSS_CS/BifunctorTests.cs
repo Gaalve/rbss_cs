@@ -21,7 +21,6 @@ namespace Tests.RBSS_CS
             var na = arr.ToArray();
             if (BitConverter.IsLittleEndian) Array.Reverse(na);
             return na;
-
         }
 
         [Fact]

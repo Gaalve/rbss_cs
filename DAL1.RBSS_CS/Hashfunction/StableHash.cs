@@ -36,8 +36,6 @@ namespace DAL1.RBSS_CS.Hashfunction
         public byte[] Hash(SimpleDataObject dataObject)
         {
             var str = dataObject.toStringWithoutTime();
-            Console.WriteLine("Length: " + str.Length);
-            Console.WriteLine(str);
             return Hash(str);
         }
     }

@@ -20,7 +20,6 @@ namespace DAL1.RBSS_CS.Databse
 
         public void Insert(SimpleDataObject data)
         {
-            Console.WriteLine("Adding element: " + data);
             var pds = ObjectSet.Find(data.Id);
             if (pds == null)
                 ObjectSet.Add(new SimpleDataObjectPDS(data));
@@ -35,7 +34,6 @@ namespace DAL1.RBSS_CS.Databse
 
         public SimpleDataObject[] GetAllDataObjects()
         {
-            Console.WriteLine("Getting all Elements");
             return ObjectSet.Select(s => new SimpleDataObject(s.Id, s.Timestamp, 
                 JsonConvert.DeserializeObject(s.JsonData)!)).ToArray();
         }

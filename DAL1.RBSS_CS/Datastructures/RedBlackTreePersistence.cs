@@ -13,6 +13,12 @@ namespace DAL1.RBSS_CS.Datastructures
         private IHashFunction _hashFunction;
         private int _branching;
 
+        private static byte[] HostToNetworkBytes(IEnumerable<byte> arr)
+        {
+            var na = arr.ToArray();
+            if (BitConverter.IsLittleEndian) Array.Reverse(na);
+            return na;
+        }
         public RedBlackTreePersistence()
         {
             _set = new RedBlackTree<SimpleObjectWrapper>();
@@ -22,10 +28,10 @@ namespace DAL1.RBSS_CS.Datastructures
             _branching = 2;
         }
 
-        private static int ByteArrayComparator(byte[] arr1, byte[] arr2)
+        private static int ByteArrayComparator(IEnumerable<byte> arr1, IEnumerable<byte> arr2)
         {
-            var s1 = Convert.ToBase64String(arr1);
-            var s2 = Convert.ToBase64String(arr2);
+            var s1 = Convert.ToBase64String(HostToNetworkBytes(arr1));
+            var s2 = Convert.ToBase64String(HostToNetworkBytes(arr2));
             return string.Compare(s1, s2, StringComparison.Ordinal);
         }
 
@@ -34,7 +40,6 @@ namespace DAL1.RBSS_CS.Datastructures
             var lowerWrapper = new SimpleObjectWrapper(lower);
             var upperWrapper = new SimpleObjectWrapper(upper);
             var fp = GetFingerprint(_set.GetSortedListBetween(lowerWrapper, upperWrapper));
-            Console.WriteLine("Hash from " + lower+ " to " + upper + ": " + fp);
             return fp;
         }
 
@@ -43,17 +48,9 @@ namespace DAL1.RBSS_CS.Datastructures
             var pc = _bifunctor.GetNewEmpty();
             foreach (var v in list)
             {
-                Console.WriteLine("Hash from " + v.Data.Id + ": " + Convert.ToBase64String(v.Hash.Reverse().ToArray()));
-                Console.WriteLine("Hash from " + v.Data.Id + ": " + "IntHash: " + BitConverter.ToInt32(v.Hash));
-                Console.WriteLine("Hash from " + v.Data.Id + ": " +  "IntHashR: " + BitConverter.ToInt32(v.Hash.Reverse().ToArray()));
                 pc.Apply(v.Hash);
             }
-            //Console.WriteLine("IntHash: " + BitConverter.ToInt32(pc.Hash));
-            //Console.WriteLine("IntHashR: " + BitConverter.ToInt32(pc.Hash.Reverse().ToArray()));
-            Console.WriteLine("Base64: " + Convert.ToBase64String(pc.Hash));
-            Console.WriteLine("Hash.Length: " + pc.Hash.Length);
-            Console.WriteLine("HashR.Length: " + pc.Hash.Reverse().ToArray().Length);
-            return Convert.ToBase64String(pc.Hash.Reverse().ToArray());
+            return Convert.ToBase64String(HostToNetworkBytes(pc.Hash));
         }
 
         public bool Insert(SimpleDataObject data)
@@ -136,7 +133,7 @@ namespace DAL1.RBSS_CS.Datastructures
         public RangeSet CreateRangeSet()
         {
             var list = _set.GetSortedList();
-            if (list.Count == 0) return new RangeSet("", "", "AA==");
+            if (list.Count == 0) return new RangeSet("", "", "AAAAAA==");
             var data = list[0];
             return new RangeSet(data.Data.Id, data.Data.Id, GetFingerprint(list));
         }
