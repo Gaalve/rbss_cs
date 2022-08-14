@@ -19,7 +19,7 @@
         {
             Hash = b1.ToArray();
             int remainder = 0;
-            int i = 0;
+            int i;
             for (i = 0; i < b2.Length; i++)
             {
                 int result = Hash[i] + b2[i] + remainder;

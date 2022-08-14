@@ -6,6 +6,9 @@ using Xunit;
 
 namespace RBSS_CS.Controllers
 {
+    /// <summary>
+    /// This controller adds the implementation for the RESTful-API specification of the range-based set synchronization protocol.
+    /// </summary>
     [ApiController]
     public class SyncApi : SyncApiController
     {
@@ -13,6 +16,15 @@ namespace RBSS_CS.Controllers
         private readonly IPersistenceLayerSingleton _persistenceLayer;
         
 
+        /// <summary>
+        /// The controller receives a settings object that is treated as immutable singleton object.
+        /// The settings control configuration parameters of the rbss protocol.
+        /// The persistenceLayer object specifies the type of persistence used. See <see cref="ServerSettings"/> for more information.
+        ///
+        /// All constructor parameters are supplied by the dependency injection design pattern at the startup of the web application.
+        /// </summary>
+        /// <param name="settings"></param>
+        /// <param name="persistenceLayer"></param>
         public SyncApi(ServerSettings settings, IPersistenceLayerSingleton persistenceLayer)
         {
             _settings = settings;
@@ -72,6 +84,11 @@ namespace RBSS_CS.Controllers
             }
         }
 
+        /// <summary>
+        /// Checks if the fingerprint of the own data set matches the given fingerprint
+        /// </summary>
+        /// <param name="validateStep">the validatestep of another peer</param>
+        /// <response code="200">Returns a syncstate with one or more steps if the fingerprint does not match</response>
         public override IActionResult SyncPost(ValidateStep validateStep)
         {
             // Console.WriteLine("SyncPost Begin");
@@ -81,6 +98,11 @@ namespace RBSS_CS.Controllers
             return Ok(new InlineResponse(state));
         }
 
+        /// <summary>
+        /// Checks and performs required actions for given list of sync steps
+        /// </summary>
+        /// <param name="inlineResponse">the syncstate of another peer</param>
+        /// <response code="200">Returns a syncstate with one or more steps if the synchronization is not finished</response>
         public override IActionResult SyncPut(InlineResponse inlineResponse)
         {
             var syncState = inlineResponse.Syncstate;

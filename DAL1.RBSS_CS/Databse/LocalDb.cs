@@ -7,7 +7,7 @@ namespace DAL1.RBSS_CS.Databse
     public sealed class LocalDb : DbContext, IDatabase
     {
         private DbSet<SimpleDataObjectPDS> ObjectSet { get; set; }
-        public LocalDb() : base()
+        public LocalDb()
         {
             
             ObjectSet = Set<SimpleDataObjectPDS>();

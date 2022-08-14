@@ -19,6 +19,11 @@ using Xunit.Sdk;
 namespace RBSS_CS
 {
 
+    /// <summary>
+    /// A class to perform IntegrationTests
+    /// The Attribute [IntegrationTestMethod] specifies if a method should be called as an integration test case.
+    /// The correctness of a test case should be verified by assertions provided by the xUnit-Test-Framework.
+    /// </summary>
     public class IntegrationTest
     {
 

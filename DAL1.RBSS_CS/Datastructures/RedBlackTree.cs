@@ -198,46 +198,6 @@
             } while ((parent = newNode.Parent) != null);
         }
 
-        private void Delete(TreeNode<T> node)
-        {
-            //TODO
-            if (node == _root)
-            {
-                if (node.LeftChild == null && node.RightChild == null)
-                {
-                    _root = null;
-                    return;
-                }
-
-                if (node.LeftChild != null && node.RightChild != null)
-                {
-                    //TODO
-                    return;
-                }
-
-                if (node.LeftChild != null)
-                {
-                    _root = node.LeftChild;
-                    _root.Parent = null;
-                    _root.Color = NodeColor.Black;
-                }
-                else
-                {
-                    _root = node.RightChild;
-                    _root!.Parent = null;
-                    _root.Color = NodeColor.Black;
-                }
-
-                return;
-            }
-
-            var parent = node.Parent;
-            var dir = parent!.LeftChild == node ? Direction.Left : Direction.Right;
-
-            GetChild(parent, dir) = null;
-
-
-        }
 
         /// <summary>
         /// Find the node within with [x, y)S that is closest to the root, assuming x is less than y 
@@ -264,22 +224,8 @@
             return node;
         }
 
-        //
-        // private static PrecalculatedHash GetFingerprint(TreeNode<T>? node, T x, T y, bool enableLeftBoundCheck, bool enableRightBoundCheck)
-        // {
-        //
-        //     if (node == null) return new PrecalculatedHash();
-        //     if (node.Data.CompareTo(x) < 0) return GetFingerprint(node.RightChild, x, y, enableRightBoundCheck);
-        //     if (enableRightBoundCheck && node.Data.CompareTo(y) >= 0) return GetFingerprint(node.LeftChild, x, y, enableRightBoundCheck);
-        //     return node.Data.Bifunctor(GetFingerprint(node.LeftChild, x, y, enableRightBoundCheck)).Bifunctor(GetFingerprint(node.RightChild, x, y, enableRightBoundCheck));
-        // }
 
-        /// <summary>
-        /// Calculates Hash within the range [x, y) via bifunctor xor
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <returns></returns>
+        
         private static List<T> GetSortedListBetween(List<T> list, TreeNode<T>? node, T x, T y, bool enableLeftBoundCheck, bool enableRightBoundCheck)
         {
             if (node == null) return list;
@@ -291,6 +237,12 @@
 
             return list;
         }
+        /// <summary>
+        /// Calculates Hash within the range [x, y) via bifunctor xor
+        /// </summary>
+        /// <param name="x">left bound</param>
+        /// <param name="y">right bound</param>
+        /// <returns></returns>
         public List<T> GetSortedListBetween(T x, T y)
         {
             var enableRightBoundCheck = x.CompareTo(y) < 0;

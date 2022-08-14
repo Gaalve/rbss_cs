@@ -8,15 +8,35 @@ using Xunit.Sdk;
 
 namespace RBSS_CS;
 
+/// <summary>
+/// A client is used to connect to other peers.
+/// Creates Client-RESTful-API-controllers to allow for easy calling of controller routines.
+/// </summary>
 public class Client
 {
+    /// <summary>
+    /// The configuration of the client. Contains the internet address.
+    /// </summary>
     public Configuration Configuration { get;  }
 
+    /// <summary>
+    /// The ModifyApi to modify objects on the connected peer. <see cref="Controllers.ModifyApi"/>
+    /// </summary>
     public ModifyApi ModifyApi { get; }
+    /// <summary>
+    /// The SyncApi to synchronize objects with the connected peer. <see cref="Controllers.SyncApi"/>
+    /// </summary>
     public SyncApi SyncApi { get; }
 
+    /// <summary>
+    /// The PeerNetworkApi to connect and disconnect from connected peer. <see cref="Controllers.PeerNetworkApi"/>
+    /// </summary>
     public PeerNetworkApi PeerNetworkApi { get; }
 
+    /// <summary>
+    /// A client is created by providing a internet address.
+    /// </summary>
+    /// <param name="inetAddress"></param>
     public Client(string inetAddress)
     {
         try
@@ -68,6 +88,11 @@ public class Client
 
         return (SyncState)localResult;
     }
+    /// <summary>
+    /// Starts an asynchronous process to synchronize the set with the connected client.
+    /// </summary>
+    /// <param name="localSyncApi">Reference to the local syncApi</param>
+    /// <param name="localPersistence">Reference to the local persistence layer</param>
     public void Synchronize(Controllers.SyncApi  localSyncApi, IPersistenceLayerSingleton localPersistence)
     {
         Task.Run(() =>

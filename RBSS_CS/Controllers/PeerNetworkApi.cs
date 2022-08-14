@@ -4,8 +4,16 @@ using Org.OpenAPIToolsServer.Controllers;
 
 namespace RBSS_CS.Controllers
 {
+    /// <summary>
+    /// The Api to control joins and exits of other peers in a p2p ring structure 
+    /// </summary>
     public class PeerNetworkApi : PeerNetworkApiController
     {
+        /// <summary>
+        /// Called when the successor peer gracefully leaves the p2p network.
+        /// </summary>
+        /// <param name="successor">the new successor of this peer</param>
+        /// <response code="200"> successor was successfully added </response>
         public override IActionResult ExitPost(Successor successor)
         {
             var cm = ClientMap.Instance;
@@ -24,6 +32,11 @@ namespace RBSS_CS.Controllers
             return BadRequest();
         }
 
+        /// <summary>
+        /// Peer joins this node as a predecessor.
+        /// </summary>
+        /// <param name="joining"> IP of the other peer </param>
+        /// <response code="200"> join operation was successful, successor is returned</response>
         public override IActionResult JoinPost(Joining joining)
         {
             var cm = ClientMap.Instance;
@@ -46,6 +59,12 @@ namespace RBSS_CS.Controllers
             return BadRequest();
         }
 
+        /// <summary>
+        /// notifies the successor of a successful join operation,
+        /// this peer will add the received ip-address as a predecessor
+        /// </summary>
+        /// <param name="predecessor">the ip address of the predecessor </param>
+        /// <returns></returns>
         public override IActionResult NotifyPost(Predecessor predecessor)
         {
             ClientMap.Instance.PredecessorClient = new Client(predecessor.PredecessorIP);

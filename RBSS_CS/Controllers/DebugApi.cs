@@ -5,6 +5,11 @@ using Org.OpenAPIToolsServer.Attributes;
 
 namespace RBSS_CS.Controllers
 {
+    /// <summary>
+    /// The DebugApi controls certain functionality to allow developers easy access to data and methods
+    /// required to perform unit tests or integration tests.
+    /// RESTful-API paths are only callable if the server is set to TestingMode.
+    /// </summary>
     [ApiController]
     public class DebugApi : ControllerBase
     {
@@ -13,6 +18,18 @@ namespace RBSS_CS.Controllers
         private readonly SyncApi _syncApi;
         private readonly IPersistenceLayerSingleton _persistenceLayer;
 
+        /// <summary>
+        /// The controller receives a settings object that is treated as immutable singleton object.
+        /// The settings control configuration parameters of the rbss protocol.
+        /// The modifyApi controller object is used to modify the data set.
+        /// The syncApi controller object is used to start synchronization processes.
+        /// The persistenceLayer object specifies the type of persistence used. See <see cref="ServerSettings"/> for more information.
+        ///
+        /// </summary>
+        /// <param name="modifyApi"></param>
+        /// <param name="syncApi"></param>
+        /// <param name="persistence"></param>
+        /// <param name="settings"></param>
         public DebugApi(ModifyApi modifyApi, SyncApi syncApi, IPersistenceLayerSingleton persistence, ServerSettings settings)
         {
             _modifyApi = modifyApi;
@@ -22,6 +39,10 @@ namespace RBSS_CS.Controllers
         }
 
 
+        /// <summary>
+        /// Returns the data set as an array
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("/getset")]
         [Consumes("application/json")]
@@ -33,6 +54,12 @@ namespace RBSS_CS.Controllers
             return Ok(_persistenceLayer.GetDataObjects());
         }
 
+        /// <summary>
+        /// Allows for multiple data objects to be inserted.
+        /// Is faster than calling ModifyApi.Insert multiple times.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("/batchInsert")]
         [Consumes("application/json")]
@@ -47,6 +74,11 @@ namespace RBSS_CS.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Sets the successor to a specific internet address
+        /// </summary>
+        /// <param name="inetAddress"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("/connect")]
         [Consumes("application/json")]
@@ -98,6 +130,10 @@ namespace RBSS_CS.Controllers
         }
 
 
+        /// <summary>
+        /// Clears the data set of this peer.
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         [Route("/debugReset")]
         [Consumes("application/json")]
@@ -109,6 +145,11 @@ namespace RBSS_CS.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Searches for a specific ID and returns the data object.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("/debugSearch")]
         [Consumes("application/json")]

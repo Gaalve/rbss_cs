@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 
 namespace DAL1.RBSS_CS.Databse
 {
+    // ReSharper disable once InconsistentNaming
     public class SimpleDataObjectPDS
     {
         [Key]
