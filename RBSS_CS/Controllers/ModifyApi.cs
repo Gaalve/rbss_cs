@@ -43,7 +43,15 @@ namespace RBSS_CS.Controllers
 
         public override IActionResult UpdatePost(SimpleDataObject simpleDataObject)
         {
-            throw new NotImplementedException();
+            simpleDataObject.Timestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
+
+            if (_persistenceLayer.GetDataObjects().Any(s => s.Id.Equals(simpleDataObject.Id)))
+            {
+                _persistenceLayer.Insert(simpleDataObject);
+                if(!_settings.UseIntervalForSync)ClientMap.Instance.SuccessorClient?.Synchronize(_syncApi, _persistenceLayer);
+                return Ok();
+            }
+            return Conflict();
         }
     }
 }

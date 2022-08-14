@@ -27,7 +27,7 @@ namespace RBSS_CS
         /// DAL1.RBSS_CS.RedBlackTreePersistence
         /// DAL1.RBSS_CS.SortedSetPersistence
         /// </summary>
-        public string AuxillaryDS { get; set; } = typeof(RedBlackTreePersistence).FullName!;
+        public string AuxiliaryDS { get; set; } = typeof(RedBlackTreePersistence).FullName!;
 
         /// <summary>
         /// The minimum required elements to send an InsertStep. Has to bigger than 0.
@@ -92,7 +92,7 @@ namespace RBSS_CS
         ///
         /// Only "Ring" is valid
         /// </summary>
-        public string P2pStructure { get; set; } = "Ring";
+        public string P2PStructure { get; set; } = "Ring";
 
 
     }

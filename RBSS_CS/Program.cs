@@ -29,11 +29,14 @@ namespace RBSS_CS
             if (settings == null) throw new NullReferenceException("settings file could not be loaded");
             var hostB = CreateHostBuilder(args, settings);
             var host = hostB.Build();
+            var overwriteSelf = Environment.GetEnvironmentVariable("RBSS_SELF");
+            if (overwriteSelf != null) ClientMap.Instance.SelfClient = new Client(overwriteSelf);
             var connection = Environment.GetEnvironmentVariable("RBSS_CONNECTION");
             if (connection != null)
             {
                 Thread.Sleep(10000);
                 Console.WriteLine("Connecting to: "+ connection);
+                
                 
                 var cm = ClientMap.Instance;
                 cm.SuccessorClient = new Client(connection);
@@ -74,14 +77,14 @@ namespace RBSS_CS
 
                 Console.WriteLine("TestMode as Initiator");
 
-                var syncAPI = host.Services.GetService(typeof(SyncApi));
-                var debugAPI = host.Services.GetService(typeof(DebugApi));
-                var modifyAPI = host.Services.GetService(typeof(ModifyApi));
+                var syncApi = host.Services.GetService(typeof(SyncApi));
+                var debugApi = host.Services.GetService(typeof(DebugApi));
+                var modifyApi = host.Services.GetService(typeof(ModifyApi));
                 
 
-                if (debugAPI != null && syncAPI != null && modifyAPI != null)
+                if (debugApi != null && syncApi != null && modifyApi != null)
                 {
-                    var integrationTest = new IntegrationTest((DebugApi)debugAPI, (SyncApi)syncAPI, (ModifyApi)modifyAPI, 
+                    var integrationTest = new IntegrationTest((DebugApi)debugApi, (SyncApi)syncApi, (ModifyApi)modifyApi, 
                         host.Services.GetService<IPersistenceLayerSingleton>()!, settings);
                     integrationTest.Run();
                 }
@@ -118,9 +121,9 @@ namespace RBSS_CS
                     // });
                     webBuilder.ConfigureServices((services) =>
                     {
-                        var auxDsType = GetByName(serverSettings.AuxillaryDS);
+                        var auxDsType = GetByName(serverSettings.AuxiliaryDS);
                         if (auxDsType == null)
-                            throw new TypeAccessException("Type not found: " + serverSettings.AuxillaryDS);
+                            throw new TypeAccessException("Type not found: " + serverSettings.AuxiliaryDS);
 
                         var genric = typeof(PersistenceLayer<>).MakeGenericType(auxDsType);
 
@@ -141,7 +144,7 @@ namespace RBSS_CS
                         var hashFunction = Activator.CreateInstance(hashType);
 
                         if (Activator.CreateInstance(genric, persDb, bifunctor, hashFunction, serverSettings.BranchingFactor) is not IPersistenceLayerSingleton instance) 
-                            throw new TypeAccessException("Type is not assignable as auxillaryDS: " + serverSettings.AuxillaryDS);
+                            throw new TypeAccessException("Type is not assignable as auxillaryDS: " + serverSettings.AuxiliaryDS);
                         instance.Initialize();
                         services.AddSingleton<ServerSettings>(serverSettings);
                         services.AddSingleton<IPersistenceLayerSingleton>(instance);
@@ -149,7 +152,7 @@ namespace RBSS_CS
 
                     webBuilder.UseStartup<Startup>();
                     webBuilder.UseUrls("http://0.0.0.0:7042/", "http://0.0.0.0:80/");
-                    ClientMap.Instance.SelfClient = new Client("http://" + Dns.GetHostName() + ":7042/"); //TODO
+                    ClientMap.Instance.SelfClient = new Client("http://" + Dns.GetHostName() + ":7042/");
                 });
     }
 }

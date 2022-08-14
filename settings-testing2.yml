@@ -1,4 +1,4 @@
-﻿testingMode: true
+testingMode: true
 testingModeInitiator: false
 auxiliaryDS: DAL1.RBSS_CS.Datastructures.RedBlackTreePersistence
 dbKind: none
@@ -6,6 +6,6 @@ hashFunc: DAL1.RBSS_CS.Hashfunction.StableHash
 bifunctor: DAL1.RBSS_CS.Bifunctors.XorBifunctor
 useIntervalForSync: true
 syncIntervalMs: -1
-branchingFactor: 2
-itemSize: 1
+branchingFactor: 6
+itemSize: 4
 p2PStructure: RING

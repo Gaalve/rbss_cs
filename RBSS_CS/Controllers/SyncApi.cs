@@ -18,7 +18,7 @@ namespace RBSS_CS.Controllers
             _settings = settings;
             _persistenceLayer = persistenceLayer;
         }
-        private OneOfValidateStepInsertStep? createStep(RangeSet? set)
+        private OneOfValidateStepInsertStep? CreateStep(RangeSet? set)
         {
             if (set?.Data == null || set.Data.Length == 0) return null;
             else if (set.Data.Length <= _settings.ItemSize)
@@ -29,7 +29,7 @@ namespace RBSS_CS.Controllers
 
         private void HandleValidateStep(ValidateStep validateStep, SyncState state)
         {
-            Console.WriteLine("\tHandleValidateStep: " + validateStep.ToString());
+            // Console.WriteLine("\tHandleValidateStep: " + validateStep.ToString());
             var equalFp = _persistenceLayer.GetFingerprint(validateStep.IdFrom, validateStep.IdTo).ToString() ==
                           validateStep.FpOfData;
             if (equalFp) return;
@@ -39,7 +39,7 @@ namespace RBSS_CS.Controllers
 
             foreach (var rangeSet in ranges)
             {
-                var step = createStep(rangeSet);
+                var step = CreateStep(rangeSet);
                 if (step != null)
                 {
                     state.Steps.Add(new Step(0, step));
@@ -52,7 +52,7 @@ namespace RBSS_CS.Controllers
 
         private void HandleInsertStep(InsertStep insertStep, SyncState state)
         {
-            Console.WriteLine("\tInsertStep: " + insertStep.ToString());
+            // Console.WriteLine("\tInsertStep: " + insertStep.ToString());
 
 
             if (insertStep.Handled == false)
@@ -74,20 +74,20 @@ namespace RBSS_CS.Controllers
 
         public override IActionResult SyncPost(ValidateStep validateStep)
         {
-            Console.WriteLine("SyncPost Begin");
+            // Console.WriteLine("SyncPost Begin");
             SyncState state = new SyncState(0, new List<Step>());
             HandleValidateStep(validateStep, state);
-            Console.WriteLine("SyncPost End");
+            // Console.WriteLine("SyncPost End");
             return Ok(new InlineResponse(state));
         }
 
         public override IActionResult SyncPut(InlineResponse inlineResponse)
         {
             var syncState = inlineResponse.Syncstate;
-            Console.WriteLine("SyncPut Begin");
+            // Console.WriteLine("SyncPut Begin");
             if (syncState.Steps == null || syncState.Steps.Count == 0)
             {
-                Console.WriteLine("Bad SyncState");
+                // Console.WriteLine("Bad SyncState");
                 return BadRequest();
             }
             SyncState state = new SyncState(0, new List<Step>()); 
@@ -103,11 +103,11 @@ namespace RBSS_CS.Controllers
                 }
                 else
                 {
-                    Console.WriteLine("Wrong Step Type");
+                    // Console.WriteLine("Wrong Step Type");
                     return Forbid();
                 }
             }
-            Console.WriteLine("SyncPut End");
+            // Console.WriteLine("SyncPut End");
             return Ok(new InlineResponse(state));
         }
 

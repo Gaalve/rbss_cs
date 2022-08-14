@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Net;
 using System.Reflection;
 using System.Text;
@@ -61,17 +62,17 @@ namespace RBSS_CS
             ).CreateLogger();
 
             Org.OpenAPITools.Client.RequestOptions localVarRequestOptions = new Org.OpenAPITools.Client.RequestOptions();
-            string[] _contentTypes = new string[] {
+            string[] contentTypes = new string[] {
                 "application/json"
             };
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] accepts = new string[] {
             };
 
-            var localVarContentType = Org.OpenAPITools.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
+            var localVarContentType = Org.OpenAPITools.Client.ClientUtils.SelectHeaderContentType(contentTypes);
             localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-            var localVarAccept = Org.OpenAPITools.Client.ClientUtils.SelectHeaderAccept(_accepts);
+            var localVarAccept = Org.OpenAPITools.Client.ClientUtils.SelectHeaderAccept(accepts);
             localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             _remoteClient.ModifyApi.Client.Post<IActionResult>("/debugSyncStop", localVarRequestOptions);
         }
@@ -80,17 +81,17 @@ namespace RBSS_CS
         {
             Console.WriteLine("Cleanup ");
             Org.OpenAPITools.Client.RequestOptions localVarRequestOptions = new Org.OpenAPITools.Client.RequestOptions();
-            string[] _contentTypes = new string[] {
+            string[] contentTypes = new string[] {
                 "application/json"
             };
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] accepts = new string[] {
             };
 
-            var localVarContentType = Org.OpenAPITools.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
+            var localVarContentType = Org.OpenAPITools.Client.ClientUtils.SelectHeaderContentType(contentTypes);
             localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-            var localVarAccept = Org.OpenAPITools.Client.ClientUtils.SelectHeaderAccept(_accepts);
+            var localVarAccept = Org.OpenAPITools.Client.ClientUtils.SelectHeaderAccept(accepts);
             localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
 
             Console.WriteLine("SendingRequest ");
@@ -125,17 +126,17 @@ namespace RBSS_CS
         private void AddToRemoteBatch(IEnumerable<SimpleDataObject> set)
         {
             Org.OpenAPITools.Client.RequestOptions localVarRequestOptions = new Org.OpenAPITools.Client.RequestOptions();
-            string[] _contentTypes = new string[] {
+            string[] contentTypes = new string[] {
                 "application/json"
             };
 
             // to determine the Accept header
-            string[] _accepts = new string[] {
+            string[] accepts = new string[] {
             };
 
-            var localVarContentType = Org.OpenAPITools.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
+            var localVarContentType = Org.OpenAPITools.Client.ClientUtils.SelectHeaderContentType(contentTypes);
             localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-            var localVarAccept = Org.OpenAPITools.Client.ClientUtils.SelectHeaderAccept(_accepts);
+            var localVarAccept = Org.OpenAPITools.Client.ClientUtils.SelectHeaderAccept(accepts);
             localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             localVarRequestOptions.Data = new DebugInsert(set.ToArray());
 
@@ -189,8 +190,8 @@ namespace RBSS_CS
 
         private (int, int) Synchronize()
         {
-            var comRounds = 2; // Verification Step + Response
-            var comTraffic = 0;
+            var comRounds = 1; // Verification Step
+            var comTraffic = 1; 
             var remoteResult = InitiateSync();
             while (remoteResult.Steps is { Count: > 0 })
             {
@@ -261,7 +262,7 @@ namespace RBSS_CS
             }
         }
 
-        private bool checkValidateStep(Step step, string idFrom, string idTo)
+        private bool CheckValidateStep(Step step, string idFrom, string idTo)
         {
             if (step.CurrentStep.GetType() != typeof(ValidateStep)) return false;
             var vs = (ValidateStep)step.CurrentStep;
@@ -269,7 +270,7 @@ namespace RBSS_CS
         }
 
 
-        private bool checkInsertStep(Step step, string idFrom, string idTo, ICollection<string> candidates, bool handled)
+        private bool CheckInsertStep(Step step, string idFrom, string idTo, ICollection<string> candidates, bool handled)
         {
             if (step.CurrentStep.GetType() != typeof(InsertStep)) return false;
             var ins = (InsertStep)step.CurrentStep;
@@ -282,7 +283,7 @@ namespace RBSS_CS
         /// <summary>
         /// Runs the rbss protocol for the example given on pg. 37
         /// </summary>
-        [IntegrationTestMethod]
+        // [IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void TestExampleRun1()
@@ -316,27 +317,27 @@ namespace RBSS_CS
             var remoteResult = InitiateSync();
             Assert.Equal(2, remoteResult.Steps.Count);
             Assert.Contains(remoteResult.Steps, (step =>
-                checkValidateStep(step, "ape", "eel")));
+                CheckValidateStep(step, "ape", "eel")));
             Assert.Contains(remoteResult.Steps, (step =>
-                checkValidateStep(step, "eel", "ape")));
+                CheckValidateStep(step, "eel", "ape")));
 
             var localSyncState = GetLocalResult(remoteResult);
             Assert.NotNull(localSyncState);
             Assert.NotEmpty(localSyncState!.Steps);
             Assert.Equal(3, localSyncState.Steps.Count);
             Assert.Contains(localSyncState.Steps, (step =>
-                checkInsertStep(step, "ape", "eel", new List<string>(){"ape"}, false)));
+                CheckInsertStep(step, "ape", "eel", new List<string>(){"ape"}, false)));
             Assert.Contains(localSyncState.Steps, (step =>
-                checkValidateStep(step, "eel", "gnu")));
+                CheckValidateStep(step, "eel", "gnu")));
             Assert.Contains(localSyncState.Steps, (step =>
-                checkInsertStep(step, "gnu", "ape", new List<string>(){"gnu"}, false)));
+                CheckInsertStep(step, "gnu", "ape", new List<string>(){"gnu"}, false)));
 
             remoteResult = _remoteClient.SyncApi.SyncPut(new InlineResponse(localSyncState)).Syncstate;
             Assert.Equal(2, remoteResult.Steps.Count);
             Assert.Contains(remoteResult.Steps, (step =>
-                checkInsertStep(step, "ape", "eel", new List<string>(){"bee", "cat", "doe"}, true)));
+                CheckInsertStep(step, "ape", "eel", new List<string>(){"bee", "cat", "doe"}, true)));
             Assert.Contains(remoteResult.Steps, (step =>
-                checkInsertStep(step, "gnu", "ape", new List<string>(){"hog"}, true)));
+                CheckInsertStep(step, "gnu", "ape", new List<string>(){"hog"}, true)));
 
             localSyncState = GetLocalResult(remoteResult);
             Assert.NotNull(localSyncState);
@@ -349,7 +350,7 @@ namespace RBSS_CS
         /// <summary>
         /// Runs the rbss protocol for the example given on pg. 40, fig. 3.2
         /// </summary>
-        [IntegrationTestMethod]
+        // [IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void TestExampleRun2()
@@ -382,30 +383,30 @@ namespace RBSS_CS
             var remoteResult = InitiateSync();
             Assert.Equal(2, remoteResult.Steps.Count);
             Assert.Contains(remoteResult.Steps, (step =>
-                checkValidateStep(step, "ape", "eel")));
+                CheckValidateStep(step, "ape", "eel")));
             Assert.Contains(remoteResult.Steps, (step =>
-                checkValidateStep(step, "eel", "ape")));
+                CheckValidateStep(step, "eel", "ape")));
 
             var localSyncState = GetLocalResult(remoteResult);
             Assert.NotNull(localSyncState);
             Assert.NotEmpty(localSyncState!.Steps);
             Assert.Equal(2, localSyncState.Steps.Count);
             Assert.Contains(localSyncState.Steps, (step =>
-                checkValidateStep(step, "eel", "gnu")));
+                CheckValidateStep(step, "eel", "gnu")));
             Assert.Contains(localSyncState.Steps, (step =>
-                checkValidateStep(step, "gnu", "ape")));
+                CheckValidateStep(step, "gnu", "ape")));
 
             remoteResult = _remoteClient.SyncApi.SyncPut(new InlineResponse(localSyncState)).Syncstate;
             Assert.Single(remoteResult.Steps);
             Assert.Contains(remoteResult.Steps, (step =>
-                checkInsertStep(step, "eel", "gnu", new List<string>(){"eel"}, false)));
+                CheckInsertStep(step, "eel", "gnu", new List<string>(){"eel"}, false)));
 
             localSyncState = GetLocalResult(remoteResult);
             Assert.NotNull(localSyncState);
             Assert.NotEmpty(localSyncState!.Steps);
             Assert.Single(localSyncState.Steps);
             Assert.Contains(localSyncState.Steps, (step =>
-                checkInsertStep(step, "eel", "gnu", new List<string>(){"fox"}, true)));
+                CheckInsertStep(step, "eel", "gnu", new List<string>(){"fox"}, true)));
 
             remoteResult = _remoteClient.SyncApi.SyncPut(new InlineResponse(localSyncState)).Syncstate;
             Assert.NotNull(remoteResult);
@@ -417,7 +418,7 @@ namespace RBSS_CS
         /// <summary>
         /// Runs the rbss protocol for the example given on pg. 40, fig. 3.3
         /// </summary>
-        [IntegrationTestMethod]
+        // [IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void TestExampleRun3()
@@ -447,46 +448,46 @@ namespace RBSS_CS
             var remoteResult = InitiateSync();
             Assert.Equal(2, remoteResult.Steps.Count);
             Assert.Contains(remoteResult.Steps, (step =>
-                checkValidateStep(step, "ape", "eel")));
+                CheckValidateStep(step, "ape", "eel")));
             Assert.Contains(remoteResult.Steps, (step =>
-                checkValidateStep(step, "eel", "ape")));
+                CheckValidateStep(step, "eel", "ape")));
 
             var localSyncState = GetLocalResult(remoteResult);
             Assert.NotNull(localSyncState);
             Assert.NotEmpty(localSyncState!.Steps);
             Assert.Equal(4, localSyncState.Steps.Count);
             Assert.Contains(localSyncState.Steps, (step =>
-                checkValidateStep(step, "ape", "cat")));
+                CheckValidateStep(step, "ape", "cat")));
             Assert.Contains(localSyncState.Steps, (step =>
-                checkValidateStep(step, "cat", "eel")));
+                CheckValidateStep(step, "cat", "eel")));
             Assert.Contains(localSyncState.Steps, (step =>
-                checkValidateStep(step, "eel", "gnu")));
+                CheckValidateStep(step, "eel", "gnu")));
             Assert.Contains(localSyncState.Steps, (step =>
-                checkValidateStep(step, "gnu", "ape")));
+                CheckValidateStep(step, "gnu", "ape")));
 
             remoteResult = _remoteClient.SyncApi.SyncPut(new InlineResponse(localSyncState)).Syncstate;
             Assert.Equal(4, remoteResult.Steps.Count);
             Assert.Contains(remoteResult.Steps, (step =>
-                checkInsertStep(step, "ape", "cat", new List<string>(){"ape"}, false)));
+                CheckInsertStep(step, "ape", "cat", new List<string>(){"ape"}, false)));
             Assert.Contains(remoteResult.Steps, (step =>
-                checkInsertStep(step, "cat", "eel", new List<string>(){"cat"}, false)));
+                CheckInsertStep(step, "cat", "eel", new List<string>(){"cat"}, false)));
             Assert.Contains(remoteResult.Steps, (step =>
-                checkInsertStep(step, "eel", "gnu", new List<string>(){"eel"}, false)));
+                CheckInsertStep(step, "eel", "gnu", new List<string>(){"eel"}, false)));
             Assert.Contains(remoteResult.Steps, (step =>
-                checkInsertStep(step, "gnu", "ape", new List<string>(){"gnu"}, false)));
+                CheckInsertStep(step, "gnu", "ape", new List<string>(){"gnu"}, false)));
 
             localSyncState = GetLocalResult(remoteResult);
             Assert.NotNull(localSyncState);
             Assert.NotEmpty(localSyncState!.Steps);
             Assert.Equal(4, localSyncState.Steps.Count);
             Assert.Contains(localSyncState.Steps, (step =>
-                checkInsertStep(step, "ape", "cat", new List<string>(){"bee"}, true)));
+                CheckInsertStep(step, "ape", "cat", new List<string>(){"bee"}, true)));
             Assert.Contains(localSyncState.Steps, (step =>
-                checkInsertStep(step, "cat", "eel", new List<string>(){"doe"}, true)));
+                CheckInsertStep(step, "cat", "eel", new List<string>(){"doe"}, true)));
             Assert.Contains(localSyncState.Steps, (step =>
-                checkInsertStep(step, "eel", "gnu", new List<string>(){"fox"}, true)));
+                CheckInsertStep(step, "eel", "gnu", new List<string>(){"fox"}, true)));
             Assert.Contains(localSyncState.Steps, (step =>
-                checkInsertStep(step, "gnu", "ape", new List<string>(){"hog"}, true)));
+                CheckInsertStep(step, "gnu", "ape", new List<string>(){"hog"}, true)));
 
             remoteResult = _remoteClient.SyncApi.SyncPut(new InlineResponse(localSyncState)).Syncstate;
             Assert.NotNull(remoteResult);
@@ -498,7 +499,7 @@ namespace RBSS_CS
         /// <summary>
         /// Tests for equal Fp when both peers have no elements in their respective sets
         /// </summary>
-        [IntegrationTestMethod]
+        // [IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void Test0To0()
@@ -520,7 +521,7 @@ namespace RBSS_CS
         /// <summary>
         /// Tests for equal Fp after synchronization when the participant has exactly one element in the set and the initiator has none
         /// </summary>
-        [IntegrationTestMethod]
+        // [IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void Test0To1()
@@ -544,7 +545,7 @@ namespace RBSS_CS
         /// <summary>
         /// Tests for equal Fp after synchronization when the initiator has exactly one element in the set and the participant has none
         /// </summary>
-        [IntegrationTestMethod]
+        // [IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void Test1To0()
@@ -567,7 +568,7 @@ namespace RBSS_CS
         /// <summary>
         /// Tests for equal Fp after synchronization when the initiator has some elements in the set and the participant has none
         /// </summary>
-        [IntegrationTestMethod]
+        // [IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void TestNTo0()
@@ -597,7 +598,7 @@ namespace RBSS_CS
         /// <summary>
         /// Tests for equal Fp after synchronization when the participant has some elements in the set and the initiator has none
         /// </summary>
-        [IntegrationTestMethod]
+        // [IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void Test0ToN()
@@ -625,7 +626,7 @@ namespace RBSS_CS
             Assert.True(SetsSynchronized());
         }
 
-        [IntegrationTestMethod]
+        // [IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void TestNToN()
@@ -664,12 +665,12 @@ namespace RBSS_CS
             return $"{adjSize} {ByteSuffix[magnitute]}";
         }
 
-        private void TestRandom(int length, float intersection, bool big, bool fixedSeed = false,
+        private void TestRandom(int length, float intersection, bool big, bool fixedSeed = false, int addSeed = 0,
             [System.Runtime.CompilerServices.CallerMemberName] string memberName = "")
         {
             Cleanup();
 
-            var random = fixedSeed ? new Random(5663334) : Random.Shared;
+            var random = fixedSeed ? new Random(5663334 + addSeed) : Random.Shared;
 
             var setParticipant = new HashSet<SimpleDataObject>();
             var setInitiator = new HashSet<SimpleDataObject>();
@@ -742,7 +743,7 @@ namespace RBSS_CS
             Assert.True(SetsSynchronized());
             //Test succeeded, write to File
             StringBuilder sb = new StringBuilder();
-            sb.Append(memberName).Append(",").Append(_settings.AuxillaryDS).Append(",").Append("b: ")
+            sb.Append(memberName).Append(",").Append(_settings.AuxiliaryDS).Append(",").Append("b: ")
                 .Append(_settings.BranchingFactor).Append("t: ").Append(_settings.ItemSize).Append(",").Append(n0)
                 .Append(",").Append(n1).Append(",").Append(bytesReceived).Append(",").Append(bytesSent).Append(",")
                 .Append(c).Append(",").Append(r).Append(",").Append(watch.ElapsedMilliseconds).Append(",").Append(nDelta)
@@ -794,12 +795,12 @@ namespace RBSS_CS
             
             for (int i = 0; i < length * updateAmount; i++)
             {
-                var e_in = setInitiator.ElementAt(random.Next(setInitiator.Count));
-                e_in.AdditionalProperties = "updated";
-                AddToHost(e_in);
-                var e_pa = setParticipant.ElementAt(random.Next(setParticipant.Count));
-                e_pa.AdditionalProperties = "updated";
-                AddToRemote(e_pa);
+                var eIn = setInitiator.ElementAt(random.Next(setInitiator.Count));
+                eIn.AdditionalProperties = "updated";
+                AddToHost(eIn);
+                var ePa = setParticipant.ElementAt(random.Next(setParticipant.Count));
+                ePa.AdditionalProperties = "updated";
+                AddToRemote(ePa);
             }
             Assert.False(SetsSynchronized());
             if (!fixedSeed) Console.SetOut(StreamWriter.Null);
@@ -816,7 +817,7 @@ namespace RBSS_CS
             }
         }
 
-        [IntegrationTestMethod]
+        // [IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void TestRandom10()
@@ -824,7 +825,7 @@ namespace RBSS_CS
             TestRandom(10, 0.5f, false);
         }
 
-        [IntegrationTestMethod]
+        // [IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void TestRandom100()
@@ -832,7 +833,7 @@ namespace RBSS_CS
             TestRandom(100, 0.5f, false);
         }
 
-        [IntegrationTestMethod]
+        // [IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void TestRandom1000()
@@ -840,7 +841,7 @@ namespace RBSS_CS
             TestRandom(1000, 0.5f, false);
         }
 
-        [IntegrationTestMethod]
+        // [IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void TestRandom1000BigIntersection()
@@ -872,7 +873,7 @@ namespace RBSS_CS
             TestRandom(10000, 0.9f, true);
         }
 
-        [IntegrationTestMethod]
+        // [IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void TestRandom10FixedSeed()
@@ -880,7 +881,7 @@ namespace RBSS_CS
             TestRandom(10, 0.5f, false, true);
         }
 
-        [IntegrationTestMethod]
+        // [IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void TestRandom100FixedSeed()
@@ -888,7 +889,7 @@ namespace RBSS_CS
             TestRandom(100, 0.5f, false, true);
         }
 
-        [IntegrationTestMethod]
+        // [IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void TestRandom1000FixedSeed()
@@ -960,7 +961,7 @@ namespace RBSS_CS
 
         
 
-        [IntegrationTestMethod]
+        // [IntegrationTestMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
         // ReSharper disable once UnusedMember.Local
         private void TestRandom1000Update()
@@ -990,8 +991,48 @@ namespace RBSS_CS
                 GC.Collect();
                 var memAfter = GC.GetTotalMemory(true);
                 var sb = new StringBuilder();
-                sb.Append(_settings.AuxillaryDS).Append(',').Append((memAfter - memBefore)).Append(',').Append(i);
+                sb.Append(_settings.AuxiliaryDS).Append(',').Append((memAfter - memBefore)).Append(',').Append(i);
                 _memLogger.Information(sb.ToString());
+            }
+        }
+
+        // [IntegrationTestMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
+        // ReSharper disable once UnusedMember.Local
+        private void TestRandomFinalDocumentationEx1()
+        {
+            
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 2; j++)
+                {
+                    TestRandom(1000, 0.5f, false, true, i, "Test1000I50");
+                    TestRandom(1000, 0.9f, false, true, i, "Test1000I90");
+                    TestRandom(10000, 0.5f, false, true, i, "Test10000I50");
+                    TestRandom(10000, 0.9f, false, true, i, "Test10000I90");
+                    TestRandom(30000, 0.5f, false, true, i, "Test30000I50");
+                    TestRandom(30000, 0.95f, false, true, i, "Test30000I95");
+                }
+            }
+        }
+
+        [IntegrationTestMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Called via Reflection")]
+        // ReSharper disable once UnusedMember.Local
+        private void TestRandomFinalDocumentationEx23()
+        {
+            
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 2; j++)
+                {
+                    TestRandom(1000, 0.5f, true, true, i, "Test1000I50");
+                    TestRandom(1000, 0.9f, true, true, i, "Test1000I90");
+                    TestRandom(10000, 0.5f, true, true, i, "Test10000I50");
+                    TestRandom(10000, 0.9f, true, true, i, "Test10000I90");
+                    TestRandom(30000, 0.5f, true, true, i, "Test30000I50");
+                    TestRandom(30000, 0.95f, true, true, i, "Test30000I95");
+                }
             }
         }
     }
