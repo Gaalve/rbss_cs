@@ -5,6 +5,9 @@ using Models.RBSS_CS;
 
 namespace DAL1.RBSS_CS.Datastructures
 {
+    /// <summary>
+    /// <see cref="RedBlackTreePersistence"/> for a more detailed description of all methods.
+    /// </summary>
     public class SortedSetPersistence: IPersistenceLayer
     {
         private readonly SortedSet<SimpleObjectWrapper> _set;

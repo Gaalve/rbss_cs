@@ -13,6 +13,11 @@ namespace DAL1.RBSS_CS.Datastructures
         private IHashFunction _hashFunction;
         private int _branching;
 
+        /// <summary>
+        /// Converts the byte array from the host byte order to the network byte order
+        /// </summary>
+        /// <param name="arr"></param>
+        /// <returns></returns>
         private static byte[] HostToNetworkBytes(IEnumerable<byte> arr)
         {
             var na = arr.ToArray();
@@ -28,6 +33,12 @@ namespace DAL1.RBSS_CS.Datastructures
             _branching = 2;
         }
 
+        /// <summary>
+        /// Compares two byte arrays by converting them to their base64 representation
+        /// </summary>
+        /// <param name="arr1"></param>
+        /// <param name="arr2"></param>
+        /// <returns></returns>
         private static int ByteArrayComparator(IEnumerable<byte> arr1, IEnumerable<byte> arr2)
         {
             var s1 = Convert.ToBase64String(HostToNetworkBytes(arr1));
@@ -35,6 +46,12 @@ namespace DAL1.RBSS_CS.Datastructures
             return string.Compare(s1, s2, StringComparison.Ordinal);
         }
 
+        /// <summary>
+        /// Return the incremental fingerprint over all elements within the specified bound
+        /// </summary>
+        /// <param name="lower"></param>
+        /// <param name="upper"></param>
+        /// <returns></returns>
         public string GetFingerprint(string lower, string upper)
         {
             var lowerWrapper = new SimpleObjectWrapper(lower);
@@ -43,6 +60,11 @@ namespace DAL1.RBSS_CS.Datastructures
             return fp;
         }
 
+        /// <summary>
+        /// Returns the incremental fingerprint over all items contained in the list
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
         private string GetFingerprint(List<SimpleObjectWrapper> list)
         {
             var pc = _bifunctor.GetNewEmpty();
@@ -53,6 +75,11 @@ namespace DAL1.RBSS_CS.Datastructures
             return Convert.ToBase64String(HostToNetworkBytes(pc.Hash));
         }
 
+        /// <summary>
+        /// Inserts or updates an element
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public bool Insert(SimpleDataObject data)
         {
             var curElement = _set.Search(new SimpleObjectWrapper(data.Id));
@@ -73,11 +100,21 @@ namespace DAL1.RBSS_CS.Datastructures
 
         }
 
+        /// <summary>
+        /// Returns all items contained in the set in ascending order
+        /// </summary>
+        /// <returns></returns>
         public SimpleDataObject[] GetDataObjects()
         {
             return _set.GetSortedList().Select(s => s.Data).ToArray();
         }
 
+        /// <summary>
+        /// Splits the range specified by the bounds according to the set branching factor
+        /// </summary>
+        /// <param name="idFrom">lower bound</param>
+        /// <param name="idTo">upper bound</param>
+        /// <returns></returns>
         public RangeSet[] SplitRange(string idFrom, string idTo)
         {
             var lowerWrapper = new SimpleObjectWrapper(idFrom);
@@ -113,6 +150,12 @@ namespace DAL1.RBSS_CS.Datastructures
             return ranges;
         }
 
+        /// <summary>
+        /// Creates a range set over the specified bound
+        /// </summary>
+        /// <param name="idFrom"></param>
+        /// <param name="idTo"></param>
+        /// <returns></returns>
         public RangeSet CreateRangeSet(string idFrom, string idTo)
         {
             var lowerWrapper = new SimpleObjectWrapper(idFrom);
@@ -121,6 +164,13 @@ namespace DAL1.RBSS_CS.Datastructures
             return new RangeSet(idFrom, idTo, "null", list.Select(s => s.Data).ToArray());
         }
 
+        /// <summary>
+        /// Creates a range set over the specified bound and excluding certain elements
+        /// </summary>
+        /// <param name="idFrom"></param>
+        /// <param name="idTo"></param>
+        /// <param name="exclude"></param>
+        /// <returns></returns>
         public RangeSet CreateRangeSet(string idFrom, string idTo, ICollection<SimpleDataObject> exclude)
         {
             var lowerWrapper = new SimpleObjectWrapper(idFrom);
@@ -130,6 +180,10 @@ namespace DAL1.RBSS_CS.Datastructures
                 .Where(s => !exclude.Contains(s)).ToArray());
         }
 
+        /// <summary>
+        /// Creates a range set over all elements
+        /// </summary>
+        /// <returns></returns>
         public RangeSet CreateRangeSet()
         {
             var list = _set.GetSortedList();
@@ -138,37 +192,64 @@ namespace DAL1.RBSS_CS.Datastructures
             return new RangeSet(data.Data.Id, data.Data.Id, GetFingerprint(list));
         }
 
+        /// <summary>
+        /// Searches for an element by the ID and returns it or null
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public SimpleDataObject? Search(string key)
         {
             return _set.Search(new SimpleObjectWrapper(key))?.Data;
         }
 
+        /// <summary>
+        /// Deletes all items in the data structure, does not affect the database
+        /// </summary>
         public void Clear()
         {
             _set.Clear();
         }
 
+        /// <summary>
+        /// Sets the database implementation
+        /// </summary>
+        /// <param name="db"></param>
         public void SetDb(IDatabase db)
         {
             _db = db;
         }
 
+        /// <summary>
+        /// Sets the hash function implementation used to calcualte hashes of data objects
+        /// </summary>
+        /// <param name="hashFunction"></param>
         public void SetHashFunction(IHashFunction hashFunction)
         {
             _hashFunction = hashFunction;
         }
 
+        /// <summary>
+        /// Sets the bifunctor implementation
+        /// </summary>
+        /// <param name="bifunctor"></param>
         public void SetBifunctor(IBifunctor bifunctor)
         {
             _bifunctor = bifunctor;
         }
 
+        /// <summary>
+        /// Sets the branching factor of the rbss protocol
+        /// </summary>
+        /// <param name="branchingFactor"></param>
+        /// <exception cref="Exception"></exception>
         public void SetBranchingFactor(int branchingFactor)
         {
             if (branchingFactor < 2) throw new Exception("Branching Factor is not supported: " + branchingFactor);
             _branching = branchingFactor;
         }
-
+        /// <summary>
+        /// Initializes the datastructure by adding all objects contained within the databse
+        /// </summary>
         public void Initialize()
         {
             var objs = _db.GetAllDataObjects();
